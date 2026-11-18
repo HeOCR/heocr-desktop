@@ -24,9 +24,13 @@ PY="${PYTHON:-python3}"
 "$PY" scripts/prebuild_wheels.py
 "$PY" scripts/assemble_resources.py "$1" "$2"
 
-briefcase create macOS --no-input
-briefcase build macOS --no-input
 APP="build/heocr_desktop/macos/app/HeOCR.app"
+if [ -d "$APP" ]; then
+  briefcase update macOS --update-requirements --update-resources --no-input
+else
+  briefcase create macOS --no-input
+fi
+briefcase build macOS --no-input
 
 # Sign the app bundle (Briefcase signs nested binaries inside-out, with --options runtime).
 briefcase package macOS --identity "$IDENTITY" --no-notarize --no-input
@@ -38,7 +42,10 @@ lipo -info "$TESS"
 
 "$PY" scripts/smoke_app.py macos
 
-DMG=$(ls -t dist/*.dmg | head -1)
+VERSION=$(sed -n 's/^version = "\(.*\)"/\1/p' pyproject.toml | head -1)
+BUILT=$(ls -t dist/*.dmg | grep -v -- '-macos.dmg' | head -1)
+DMG="dist/HeOCR-${VERSION}-macos.dmg"   # the name the download page links to
+cp "$BUILT" "$DMG"
 codesign --verify --verbose=2 "$DMG"
 
 if xcrun notarytool history --keychain-profile "$PROFILE" >/dev/null 2>&1; then
