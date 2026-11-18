@@ -1,6 +1,6 @@
-# Builds the Tesseract the app ships, from pinned sources, on GitHub's runners.
-# Reused by ci.yml and release.yml; cached by the hash of its inputs, so a PR that does not touch
-# tesseract/ or scripts/build_tesseract.py reuses the last build.
+# Builds the Tesseract the app ships, from pinned sources, for every target, and uploads each as
+# an artifact. Used by release.yml and by hand. Per-PR CI (ci.yml) builds or restores the same
+# cache entries inside its own jobs instead, so a PR queues only one macOS job.
 name: Tesseract
 
 on:
@@ -28,27 +28,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Cache the build
-        id: cache
-        uses: actions/cache@v4
+      - uses: ./.github/actions/tesseract
         with:
-          path: build/tess/${{ matrix.target }}
-          key: tesseract-${{ matrix.target }}-${{ hashFiles('tesseract/**', 'scripts/build_tesseract.py') }}
-      - name: Tools (macOS)
-        if: steps.cache.outputs.cache-hit != 'true' && runner.os == 'macOS'
-        run: brew list ninja >/dev/null 2>&1 || brew install ninja
-      - name: MSVC environment (Windows)
-        if: steps.cache.outputs.cache-hit != 'true' && runner.os == 'Windows'
-        uses: ilammy/msvc-dev-cmd@v1
-        with:
-          arch: x64
-      - name: Build
-        if: steps.cache.outputs.cache-hit != 'true'
-        shell: bash
-        run: python scripts/build_tesseract.py --target ${{ matrix.target }} --out build/tess/${{ matrix.target }} --work "${RUNNER_TEMP}/tess-work"
-      - name: Show build info
-        shell: bash
-        run: cat build/tess/${{ matrix.target }}/BUILD_INFO.json
+          target: ${{ matrix.target }}
       - uses: actions/upload-artifact@v4
         with:
           name: tesseract-${{ matrix.target }}
