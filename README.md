@@ -1,71 +1,92 @@
 # HeOCR for the desktop
 
-Drop in a PDF, a Word document or an image, and get its Hebrew text out, with its headings, paragraphs and tables. For macOS and Windows. **Fully offline:** your files never leave the computer, and the app makes no network connections and collects nothing.
+**Drop in a PDF, a Word file or an image, and get its Hebrew text out, with its headings, paragraphs and tables.** For macOS and Windows. Free and open source (Apache-2.0).
 
-It is a window around [heocr](https://github.com/HeOCR/heocr), HeOCR's open pipeline for Hebrew documents, with Tesseract OCR and the Hebrew model bundled. Apache-2.0.
+**Fully offline.** Your files never leave your computer. The app makes no network connections at all: no telemetry, no analytics, no update checks, no downloads. The guarantee is enforced in the app itself, not just promised (see [Privacy](#privacy)).
+
+It is a window around [heocr](https://github.com/HeOCR/heocr), HeOCR's open pipeline for Hebrew documents, with Tesseract OCR and its Hebrew model built in.
+
+> Status: preview, built on heocr 0.1.0rc1 (the release candidate in heocr's release gate). Not released yet.
 
 ## What it does
 
-- **Opens** PDF, DOCX, DOC, PNG, JPEG and TIFF, by drag and drop or the open button. heocr decides the format from the content, not the file name.
-  - DOC needs LibreOffice, which is not bundled because its licence is copyleft. If LibreOffice is installed, heocr uses it; otherwise the app says how to proceed.
-- **Shows** the text right to left where it is Hebrew, with headings, paragraphs and tables. A plain-text view is one click away.
-- **Says how each page was read:**
-  - PDF text layer;
-  - OCR;
-  - the Word document itself.
+- **Opens** PDF, Word (DOCX), and images (PNG, JPEG, TIFF; also GIF, BMP, WebP, JPEG 2000), plus Excel (XLSX), PowerPoint (PPTX) and saved web pages (HTML). Drag a file into the window, or use **Open file…**. The format is decided from the file's content, not its name.
+  - **Older Word files (.doc), RTF and OpenDocument** need LibreOffice to convert, which the app does not include (its licence is copyleft). The app says so, and asks you to save the file as DOCX or PDF.
+- **Shows** the text right to left where it is Hebrew and left to right where it is English, with headings, paragraphs, lists and tables. Three views: formatted, plain text, and Markdown.
+- **Says how it was read:**
+  - from the PDF's own text layer, when it can be trusted;
+  - by OCR, for scans and photos;
+  - from the document file itself, for Word, Excel and PowerPoint.
+  It also says when parts could not be read (details in the JSON record), and marks OCR text as a reading that may have mistakes.
+- **Copies** the text, or **saves** it as `.txt`, `.md` (Markdown, tables kept) or `.json` (heocr's full `heocr_document.v1` record).
+- **Progress:** page by page for long PDFs, with Cancel.
+- **Language:** Hebrew or English, following your system, with a toggle.
 
-  It also notes what could not be read, and why.
-- **Copies** the text, or saves it as `.txt`, as `.md` (Markdown), or as `.json` (heocr's full `heocr_document.v1` record).
-- **Progress:** a bar, page by page, for long PDFs.
-- **Language:** Hebrew or English, following the system, with a toggle.
+## Download
 
-OCR text is a reading, not a verified transcript, and the app says so.
+Not yet. Releases will be on [heocr.github.io](https://heocr.github.io) and on this repository's Releases page:
+- **macOS** 13 or later, one app for Apple silicon and Intel: a signed and notarized DMG.
+- **Windows** 10 and 11, 64-bit: an MSI installer.
+
+## Privacy
+
+HeOCR does not transfer any information to other networked systems. Concretely:
+- the window is one page passed to the system web view as a string, with a content security policy that lets it load nothing (`default-src 'none'`, `connect-src 'none'`);
+- the app's own process refuses every network connection except to itself (`engine.install_offline_guard`); a library that tried to connect would fail instead of sending anything;
+- heocr's optional model download is never called; OCR uses only the bundled models;
+- the only file the app writes on its own is a one-line settings file with your interface language.
 
 ## Inside
 
-| Part | |
-|---|---|
-| heocr 0.1.0rc1 | The release candidate in HeOCR's release gate; 0.1.0 after the verdict |
-| Tesseract 5.5.3 | Built from source by `scripts/build_tesseract.py`, statically, with Leptonica, libpng and zlib only |
-| Models | `heb` from tessdata_best and `eng` (for heocr's second reading of numbers) from tessdata_fast, both 4.1.0 and pinned by sha256: the models heocr's release gate used |
-| Window | [pywebview](https://pywebview.flowrl.com): the system's own web view (WebKit on macOS, WebView2 on Windows), showing one inline page |
-| Packaging | [Briefcase](https://briefcase.readthedocs.io): a signed `.app` and DMG for macOS, an MSI for Windows |
+| Part | Version | Licence |
+|---|---|---|
+| [heocr](https://github.com/HeOCR/heocr) | 0.1.0rc1 (`57e58de`); 0.1.0 after the gate | Apache-2.0 |
+| [Tesseract OCR](https://github.com/tesseract-ocr/tesseract) | 5.5.3, built from source in CI by `scripts/build_tesseract.py`: static, without network code (no libcurl, no libarchive) | Apache-2.0 |
+| Leptonica and image libraries | 1.87.0, via vcpkg `2026.10.16` | BSD-style, see the list |
+| OCR models | `heb` from [tessdata_best](https://github.com/tesseract-ocr/tessdata_best) 4.1.0 (`e12c65a`) and `eng` from [tessdata_fast](https://github.com/tesseract-ocr/tessdata_fast) 4.1.0 (for heocr's second reading of numbers): exactly the files heocr's release gate ran with, pinned by sha256 in `tesseract/pins.json` | Apache-2.0 |
+| pypdfium2 / PDFium, Pillow, defusedxml | 5.15.2, 13.0.0, 0.7.1: the versions heocr's gate ran with | Apache-2.0/BSD-3, MIT-CMU, PSF |
+| [pywebview](https://pywebview.flowrl.com) | 6.2.1: the system's own web view (WebKit on macOS, WebView2 on Windows) | BSD-3-Clause |
+| Python | 3.12, from Briefcase's support packages | PSF |
 
-Every bundled component is permissive. The list is in [THIRD_PARTY_LICENSES.md](src/heocr_desktop/THIRD_PARTY_LICENSES.md), and in the app's About box.
+Every bundled component is permissive; none is copyleft. The full list, with each component's licence, is in [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md) and in the app's About box. Licence texts ship inside the app.
 
 ### Why pywebview inside Briefcase
 
-Briefcase gives one codebase for a signed, notarisable macOS app and a Windows MSI. For the window, Toga (Briefcase's own toolkit) has no drop-target API, and right-to-left mixed text and tables are what a web view does best. pywebview's DOM events deliver dropped files as paths, on both systems. The page is inline, so nothing is fetched.
+[Briefcase](https://briefcase.readthedocs.io) builds a signed, notarizable macOS app and a Windows MSI from one Python codebase, which matters because heocr is Python. For the window, Toga (Briefcase's own toolkit) has no drop target, and right-to-left text mixed with English, numbers and tables is what a web view renders best. pywebview gives dropped files as full paths on both systems and uses the web view the OS already has, so nothing heavy is bundled.
 
 ## Building
 
-```sh
-pip install -e . briefcase==0.4.7
-python scripts/wheels.py                             # heocr (pinned) and proxy_tools as wheels, for Briefcase
-python scripts/build_tesseract.py --out vendor      # or download CI's tesseract-<os> artifact into vendor/
-python scripts/vendor.py --tesseract vendor          # Tesseract, configs, models and licences into resources/
-python -m unittest discover -s tests -t .
+Requires Python 3.12, and for Tesseract CMake, Ninja and a C++ compiler (Xcode command line tools, or MSVC on Windows).
 
-briefcase create macOS app && briefcase build macOS app
-briefcase package macOS app --identity "Developer ID Application: …"   # signed, hardened runtime
+```sh
+python -m pip install -e ".[test]" briefcase==0.4.7
+python -m pytest                                     # unit tests; OCR tests need a Tesseract (below)
+
+python scripts/build_tesseract.py --target macos-arm64  --out build/tess/macos-arm64
+python scripts/build_tesseract.py --target macos-x86_64 --out build/tess/macos-x86_64
+python scripts/prebuild_wheels.py                     # proxy_tools has no wheel on PyPI
+python scripts/assemble_resources.py build/tess/macos-arm64 build/tess/macos-x86_64
+
+briefcase create macOS && briefcase build macOS
+python scripts/smoke_app.py macos                     # the packaged app reads every fixture
 ```
 
-**Notarisation** needs a `notarytool` keychain profile. With one, `briefcase package macOS app --identity "…" --notarize` signs, notarises and staples the DMG.
+Instead of building Tesseract, you can download the `tesseract-<target>` artifacts of the **Tesseract** workflow into `build/tess/`.
 
-**Windows:** `briefcase create windows app && briefcase build windows app && briefcase package windows app --adhoc-sign` makes an unsigned MSI. CI has a placeholder step for signing once a certificate exists.
+- **macOS release:** `scripts/release_mac.sh build/tess/macos-arm64 build/tess/macos-x86_64` signs with the Developer ID Application identity (hardened runtime), smoke-tests the signed app, builds and signs the DMG, and notarizes and staples it when the `heocr-notary` notarytool profile exists.
+- **Windows:** CI builds the MSI on `windows-latest`, smoke-tests the built app, installs the MSI silently and smoke-tests the installed app. Release builds will be signed through SignPath Foundation; see [docs/code-signing-policy.md](docs/code-signing-policy.md).
 
-**Universal macOS builds:**
-- The app is built for arm64 first.
-- `build_tesseract.py --arch x86_64` cross-builds Tesseract for Intel, and `vendor.py` joins every `tesseract-<arch>` it finds with `lipo`.
-- Then set `universal_build = true` in `pyproject.toml`.
+In development, without bundled resources, point the app at a local Tesseract:
+`HEOCR_DESKTOP_DEV_TESSERACT=/path/to/tesseract HEOCR_DESKTOP_DEV_TESSDATA=/path/to/tessdata python -m heocr_desktop`.
 
-## Tests
+Test fixtures in `tests/fixtures/` hold invented text only (a made-up community-garden memo, `garden.source.html`). They were made with LibreOffice from that HTML in the OFL fonts David Libre and Alef, and the "scan" is the PDF rendered and degraded with Pillow.
 
-`python -m unittest discover -s tests -t .` runs:
-- one fixture of each type, all invented text: a text-layer PDF, a DOCX, a scanned PDF, PNG, JPEG and TIFF;
-- a DOC without LibreOffice;
-- the Markdown renderer, including escaping;
-- the offline guard;
-- the strings.
+## Code signing policy
 
-CI also builds both apps and converts the same fixtures with the built app's own Python, Tesseract and models (`HeOCR --smoke report.json FILE…`). The Windows job does so after installing the MSI too.
+Windows builds will be signed by SignPath Foundation (free code signing for open source), after a manual approval for each release. The policy, the team's roles and what gets signed are in [docs/code-signing-policy.md](docs/code-signing-policy.md). macOS builds are signed with the maintainer's Apple Developer ID and notarized by Apple.
+
+## Licence
+
+Apache-2.0. See [LICENSE](LICENSE), [NOTICE](NOTICE) and [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md).
+
+HeOCR is an open Hebrew OCR project: [github.com/HeOCR](https://github.com/HeOCR), [heocr.github.io](https://heocr.github.io).

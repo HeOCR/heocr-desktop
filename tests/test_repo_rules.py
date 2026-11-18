@@ -1,4 +1,4 @@
-"""The public repository holds no machine paths and no build state."""
+"""The public repository holds no machine paths and no build state (from pipeline's first branch, kept)."""
 import re
 import subprocess
 import unittest

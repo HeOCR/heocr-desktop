@@ -1,0 +1,8 @@
+{
+  "name": "heocr-tesseract-deps",
+  "version-string": "1",
+  "description": "Leptonica and its image libraries, all static, for the Tesseract that HeOCR desktop ships.",
+  "builtin-baseline": "9eec002df1cd109f8f104cd966a763daf9751489",
+  "dependencies": ["leptonica"],
+  "overrides": [{ "name": "leptonica", "version": "1.87.0" }]
+}

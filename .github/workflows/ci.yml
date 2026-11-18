@@ -1,0 +1,107 @@
+# Every PR and every push to main: unit tests, then the real app built and packaged on macOS
+# and Windows, then a smoke conversion of one fixture per file type inside the packaged app.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-15, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install ".[test]"
+      - run: python -m pytest -q
+
+  tesseract:
+    uses: ./.github/workflows/tesseract.yml
+
+  macos:
+    needs: [test, tesseract]
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: tesseract-macos-*
+          path: build/tess
+      - name: Bundle Tesseract (universal2) and its models
+        run: |
+          chmod +x build/tess/*/tesseract
+          python scripts/assemble_resources.py build/tess/tesseract-macos-arm64 build/tess/tesseract-macos-x86_64
+      - run: |
+          python -m pip install briefcase==0.4.7
+          python scripts/prebuild_wheels.py
+      - name: Build the app (ad-hoc signed; release builds are signed locally with Developer ID)
+        run: |
+          briefcase create macOS --no-input
+          briefcase build macOS --no-input
+      - name: Smoke-test the packaged app (one fixture per type)
+        run: python scripts/smoke_app.py macos
+      - name: Package a DMG (ad-hoc)
+        run: briefcase package macOS --adhoc-sign --no-input
+      - uses: actions/upload-artifact@v4
+        with:
+          name: heocr-macos-adhoc-dmg
+          path: dist/*.dmg
+          retention-days: 14
+
+  windows:
+    needs: [test, tesseract]
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/download-artifact@v4
+        with:
+          name: tesseract-windows-x64
+          path: build/tess/windows-x64
+      - name: Bundle Tesseract and its models
+        run: python scripts/assemble_resources.py build/tess/windows-x64
+      - run: |
+          python -m pip install briefcase==0.4.7
+          python scripts/prebuild_wheels.py
+      - name: Build the app
+        run: |
+          briefcase create windows --no-input
+          briefcase build windows --no-input
+      - name: Smoke-test the built app (one fixture per type)
+        run: python scripts/smoke_app.py windows
+      - name: Package the MSI (unsigned)
+        run: briefcase package windows --adhoc-sign --no-input
+      # Code signing slot. SignPath Foundation signs release builds only, after a manual approval
+      # per release (docs/code-signing-policy.md); PR builds stay unsigned.
+      - name: Install the MSI and smoke-test the installed app
+        shell: pwsh
+        run: |
+          $msi = Get-ChildItem dist\*.msi | Select-Object -First 1
+          $p = Start-Process msiexec.exe -ArgumentList "/i `"$($msi.FullName)`" /qn /norestart /l*v msi-install.log" -Wait -PassThru
+          if ($p.ExitCode -ne 0) { Get-Content msi-install.log -Tail 50; exit $p.ExitCode }
+          python scripts/smoke_app.py windows-installed
+      - uses: actions/upload-artifact@v4
+        with:
+          name: heocr-windows-msi-unsigned
+          path: dist/*.msi
+          retention-days: 14

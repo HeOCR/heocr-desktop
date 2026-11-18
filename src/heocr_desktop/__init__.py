@@ -1,2 +1,3 @@
-"""HeOCR desktop: drop in a PDF, a Word document or an image and get its Hebrew text, offline."""
-__version__ = "0.1.0"
+"""HeOCR desktop: drag a document in, get its Hebrew text and structure out. Offline."""
+
+__version__ = "0.1.0rc1"
