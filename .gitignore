@@ -1,2 +1,15 @@
 __pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+logs/
+.venv/
 .DS_Store
+# filled by scripts/vendor.py at build time; never committed
+src/heocr_desktop/resources/
+vendor/
+vendor-out/
+fixtures/
+report.json
+installed.json
