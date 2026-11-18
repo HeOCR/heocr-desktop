@@ -2,6 +2,7 @@
 """Run the packaged app in smoke mode on the fixtures and fail unless every one passes.
 
     python scripts/smoke_app.py macos              # build/…/HeOCR.app
+    python scripts/smoke_app.py macos-x86_64       # the same app's Intel slice, under Rosetta
     python scripts/smoke_app.py windows            # build/…/HeOCR.exe
     python scripts/smoke_app.py windows-installed  # the MSI-installed HeOCR.exe
     python scripts/smoke_app.py path/to/executable
@@ -25,7 +26,7 @@ BUILD = ROOT / "build" / "heocr_desktop"
 
 
 def executable(where: str) -> Path:
-    if where == "macos":
+    if where in ("macos", "macos-x86_64"):
         return BUILD / "macos" / "app" / "HeOCR.app" / "Contents" / "MacOS" / "HeOCR"
     if where == "windows":
         return BUILD / "windows" / "app" / "src" / "HeOCR.exe"
@@ -49,7 +50,8 @@ def main(where: str) -> int:
     shutil.copytree(ROOT / "tests" / "fixtures", work / "fixtures")
     env = dict(os.environ, HEOCR_DESKTOP_SMOKE=str(work / "fixtures"))
     print("running", exe, flush=True)
-    proc = subprocess.run([str(exe)], env=env, timeout=900, capture_output=True, text=True, encoding="utf-8", errors="replace")
+    argv = ["arch", "-x86_64", str(exe)] if where == "macos-x86_64" else [str(exe)]
+    proc = subprocess.run(argv, env=env, timeout=900, capture_output=True, text=True, encoding="utf-8", errors="replace")
     print(proc.stdout[-4000:], proc.stderr[-4000:], sep="\n")
     report_path = work / "fixtures" / "smoke-report.json"
     if not report_path.is_file():
