@@ -1,0 +1,34 @@
+# Restore Tesseract for one target from the cache, or build it from pinned sources
+# (scripts/build_tesseract.py). Shared by ci.yml (per PR) and tesseract.yml (releases), so both
+# use the same cache entries.
+name: Tesseract
+description: Bundled Tesseract for one target, cached by the hash of its inputs
+inputs:
+  target:
+    description: macos-arm64, macos-x86_64 or windows-x64
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Cache ${{ inputs.target }}
+      id: cache
+      uses: actions/cache@v4
+      with:
+        path: build/tess/${{ inputs.target }}
+        key: tesseract-${{ inputs.target }}-${{ hashFiles('tesseract/**', 'scripts/build_tesseract.py') }}
+    - name: Tools (macOS)
+      if: steps.cache.outputs.cache-hit != 'true' && runner.os == 'macOS'
+      shell: bash
+      run: brew list ninja >/dev/null 2>&1 || brew install ninja
+    - name: MSVC environment (Windows)
+      if: steps.cache.outputs.cache-hit != 'true' && runner.os == 'Windows'
+      uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: x64
+    - name: Build ${{ inputs.target }}
+      if: steps.cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: python scripts/build_tesseract.py --target ${{ inputs.target }} --out build/tess/${{ inputs.target }} --work "${RUNNER_TEMP}/tess-work-${{ inputs.target }}"
+    - name: Build info
+      shell: bash
+      run: cat build/tess/${{ inputs.target }}/BUILD_INFO.json
