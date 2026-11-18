@@ -74,7 +74,8 @@ def cmake(src: Path, build: Path, prefix: Path, arch: str | None, *flags: str):
     if MACOS:
         args += [f"-DCMAKE_OSX_DEPLOYMENT_TARGET={MACOS_MIN}", f"-DCMAKE_OSX_ARCHITECTURES={arch}"]
     if WINDOWS:
-        args += ["-DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded"]  # static C runtime: no VC++ redistributable
+        # Static C runtime everywhere (no VC++ redistributable). The policy makes older CMakeLists honour it.
+        args += ["-DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded", "-DCMAKE_POLICY_DEFAULT_CMP0091=NEW"]
     sh(args + list(flags))
     sh(["cmake", "--build", build, "--config", "Release", "--parallel", str(os.cpu_count() or 2)])
     sh(["cmake", "--install", build, "--config", "Release"])
