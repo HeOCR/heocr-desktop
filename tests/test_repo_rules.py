@@ -6,9 +6,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 # Built from parts, so this file does not match itself.
-_U, _P = "/" + "Users/", "/" + "private/"
-MACHINE_PATH = re.compile(("(" + re.escape(_U) + r"[A-Za-z0-9._-]+/|/home/" + "runner/|C:\\" + "Users\\\\|"
-                           + re.escape(_P) + "(tmp|var)/)").encode())
+_MARKERS = ["/" + "Users/", "/home/" + "runner/", "C:\\" + "Users\\", "/" + "private/tmp/", "/" + "private/var/"]
+MACHINE_PATH = re.compile(b"|".join(re.escape(m.encode()) for m in _MARKERS))
 
 
 class RepoRulesTest(unittest.TestCase):
