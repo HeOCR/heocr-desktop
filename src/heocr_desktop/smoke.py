@@ -18,6 +18,9 @@ from heocr_desktop import engine
 
 
 def run(folder: str) -> int:
+    for stream in (sys.stdout, sys.stderr):
+        if stream is not None and hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8", errors="replace")
     base = Path(folder)
     expect = json.loads((base / "expect.json").read_text("utf-8"))
     report: dict = {
@@ -46,11 +49,13 @@ def run(folder: str) -> int:
             entry["problems"] = [f"{type(exc).__name__}: {exc}"]
         failures += bool(entry["problems"])
         report["files"][name] = entry
-        print(name, "OK" if not entry["problems"] else entry["problems"], flush=True)
+        if sys.stdout is not None:  # a Windows GUI app may have no console at all
+            print(name, "OK" if not entry["problems"] else entry["problems"], flush=True)
     report["ok"] = failures == 0
     out = base / "smoke-report.json"
     try:
         out.write_text(json.dumps(report, ensure_ascii=False, indent=2), "utf-8")
     except OSError:
-        print(json.dumps(report, ensure_ascii=False, indent=2), file=sys.stderr)
+        if sys.stderr is not None:
+            print(json.dumps(report, ensure_ascii=False, indent=2), file=sys.stderr)
     return 0 if failures == 0 else 1

@@ -39,6 +39,9 @@ def executable(where: str) -> Path:
 
 
 def main(where: str) -> int:
+    for stream in (sys.stdout, sys.stderr):  # Windows consoles default to cp1252; the report is Hebrew
+        if hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8", errors="replace")
     exe = executable(where)
     if not exe.is_file():
         sys.exit(f"no app at {exe}")
@@ -46,7 +49,7 @@ def main(where: str) -> int:
     shutil.copytree(ROOT / "tests" / "fixtures", work / "fixtures")
     env = dict(os.environ, HEOCR_DESKTOP_SMOKE=str(work / "fixtures"))
     print("running", exe, flush=True)
-    proc = subprocess.run([str(exe)], env=env, timeout=900, capture_output=True, text=True)
+    proc = subprocess.run([str(exe)], env=env, timeout=900, capture_output=True, text=True, encoding="utf-8", errors="replace")
     print(proc.stdout[-4000:], proc.stderr[-4000:], sep="\n")
     report_path = work / "fixtures" / "smoke-report.json"
     if not report_path.is_file():

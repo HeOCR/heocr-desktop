@@ -10,7 +10,7 @@
 #      identity, hardened runtime on (Briefcase does this);
 #   3. smoke-tests the signed app on the fixtures;
 #   4. builds the DMG and signs it;
-#   5. notarizes and staples it, only if `xcrun notarytool history --keychain-profile heocr-notary`
+#   5. notarizes and staples the app, then the DMG, only if `xcrun notarytool history --keychain-profile heocr-notary`
 #      works. The maintainer creates that profile himself (`xcrun notarytool store-credentials
 #      heocr-notary`); this script never asks for, reads or prints a password.
 set -euo pipefail
@@ -45,18 +45,44 @@ lipo -info "$TESS"
 VERSION=$(sed -n 's/^version = "\(.*\)"/\1/p' pyproject.toml | head -1)
 BUILT=$(ls -t dist/*.dmg | grep -v -- '-macos.dmg' | head -1)
 DMG="dist/HeOCR-${VERSION}-macos.dmg"   # the name the download page links to
-cp "$BUILT" "$DMG"
-codesign --verify --verbose=2 "$DMG"
+WORK="build/notarize"
+rm -rf "$WORK" "$DMG"; mkdir -p "$WORK"
 
-if xcrun notarytool history --keychain-profile "$PROFILE" >/dev/null 2>&1; then
-  echo "Notarizing $DMG with profile $PROFILE"
-  xcrun notarytool submit "$DMG" --keychain-profile "$PROFILE" --wait
-  xcrun stapler staple "$DMG"
-  xcrun stapler validate "$DMG"
-  spctl -a -t open --context context:primary-signature -v "$DMG"
-else
+if ! xcrun notarytool history --keychain-profile "$PROFILE" >/dev/null 2>&1; then
+  cp "$BUILT" "$DMG"
+  codesign --verify --verbose=2 "$DMG"
   echo "No notary profile '$PROFILE' yet: the DMG is signed but NOT notarized."
-  echo "Gatekeeper will warn on other Macs until it is. To notarize later:"
-  echo "  xcrun notarytool submit '$DMG' --keychain-profile $PROFILE --wait && xcrun stapler staple '$DMG'"
+  echo "Gatekeeper will warn on other Macs until it is. Rerun this script once the profile exists."
+  shasum -a 256 "$DMG"
+  exit 0
 fi
+
+# 1. Notarize the app itself and staple its ticket, so it opens offline even when copied out
+#    of the DMG (many HeOCR users work without internet; Gatekeeper needs the ticket then).
+ditto -c -k --keepParent "$APP" "$WORK/HeOCR-app.zip"
+xcrun notarytool submit "$WORK/HeOCR-app.zip" --keychain-profile "$PROFILE" --wait | tee "$WORK/app-notary.txt"
+grep -q "status: Accepted" "$WORK/app-notary.txt" || { echo "app notarization not accepted"; exit 1; }
+xcrun stapler staple "$APP"
+xcrun stapler validate "$APP"
+
+# 2. Put the stapled app into Briefcase's DMG (same layout), without re-signing the app.
+hdiutil convert "$BUILT" -format UDRW -o "$WORK/rw.dmg" -quiet
+hdiutil resize -size 400m "$WORK/rw.dmg" -quiet
+MNT="$WORK/mnt"; mkdir -p "$MNT"
+hdiutil attach "$WORK/rw.dmg" -nobrowse -noautoopen -mountpoint "$MNT" -quiet
+rm -rf "$MNT/HeOCR.app"
+ditto "$APP" "$MNT/HeOCR.app"
+xcrun stapler validate "$MNT/HeOCR.app"
+hdiutil detach "$MNT" -quiet
+hdiutil convert "$WORK/rw.dmg" -format UDZO -imagekey zlib-level=9 -o "$DMG" -quiet
+
+# 3. Sign, notarize and staple the DMG.
+codesign --sign "$IDENTITY" --timestamp "$DMG"
+codesign --verify --verbose=2 "$DMG"
+xcrun notarytool submit "$DMG" --keychain-profile "$PROFILE" --wait | tee "$WORK/dmg-notary.txt"
+grep -q "status: Accepted" "$WORK/dmg-notary.txt" || { echo "DMG notarization not accepted"; exit 1; }
+xcrun stapler staple "$DMG"
+xcrun stapler validate "$DMG"
+spctl -a -vv -t exec "$APP"
+spctl -a -vv -t open --context context:primary-signature "$DMG"
 shasum -a 256 "$DMG"
