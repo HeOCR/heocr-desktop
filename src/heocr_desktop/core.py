@@ -146,6 +146,7 @@ class Result:
     routes: list = field(default_factory=list)   # [(route, [page numbers])], or [(route, None)] without pages
     unread: list = field(default_factory=list)   # [(reason, detail)]
     flags: list = field(default_factory=list)
+    notes: list = field(default_factory=list)    # the app's own notes, e.g. "numbers_not_rechecked"
 
     def json(self) -> str:
         return json.dumps(self.record, ensure_ascii=False, indent=2) + "\n"
@@ -163,10 +164,26 @@ def summarise(doc) -> tuple[list, list]:
     return list(routes.items()), unread
 
 
+def _number_reading_path_error(e: Exception) -> bool:
+    """heocr 0.1.0rc1 rejects its own record when a second reading of a number starts with '/' (its
+    provenance path guard also covers OCR readings). Only that error is retried."""
+    return type(e).__name__ == "ContractError" and "number_readings" in str(e) and "filesystem path" in str(e)
+
+
 def convert(path, progress: Progress | None = None) -> Result:
     path = Path(path)
+    notes = []
     with _counting(progress) if progress else contextlib.nullcontext():
-        doc = heocr.extract(path)
+        try:
+            doc = heocr.extract(path)
+        except Exception as e:  # noqa: BLE001 - only the one known error is retried; others propagate
+            if not _number_reading_path_error(e):
+                raise
+            if progress:
+                progress.done = 0
+            doc = heocr.extract(path, check_numbers=False)
+            notes.append("numbers_not_rechecked")
     routes, unread = summarise(doc)
     return Result(text=doc.text, markdown=doc.markdown, record=doc.to_dict(), format=doc.format,
-                  pages=doc.page_count or len(doc.pages), routes=routes, unread=unread, flags=list(doc.flags))
+                  pages=doc.page_count or len(doc.pages), routes=routes, unread=unread,
+                  flags=list(doc.flags), notes=notes)

@@ -144,6 +144,35 @@ class OcrTest(Base):
         self.check(r)
 
 
+class NumberReadingFallbackTest(Base):
+    def test_known_contract_error_is_retried_without_number_checks(self):
+        from unittest import mock
+        import heocr
+        from heocr.contract import ContractError
+        path = self.write("invented.pdf", make_pdf([PdfPage(lines=lines_block(LINES))]))
+        real = heocr.extract
+        calls = []
+
+        def flaky(p, **kw):
+            calls.append(kw)
+            if not kw:
+                raise ContractError("record.blocks[1].checks.number_readings[1].first looks like a local filesystem path")
+            return real(p, **kw)
+
+        with mock.patch.object(heocr, "extract", flaky):
+            r = core.convert(path)
+        self.assertEqual(calls, [{}, {"check_numbers": False}])
+        self.assertEqual(r.notes, ["numbers_not_rechecked"])
+        self.assertIn(LINES[0], r.text)
+
+    def test_other_errors_propagate(self):
+        from unittest import mock
+        import heocr
+        with mock.patch.object(heocr, "extract", side_effect=ValueError("invented failure")):
+            with self.assertRaises(ValueError):
+                core.convert(self.write("x.pdf", b"%PDF-1.4"))
+
+
 class DocWithoutLibreOfficeTest(Base):
     def test_doc_is_reported_not_guessed(self):
         if shutil.which("soffice") or Path("/Applications/LibreOffice.app").exists():

@@ -39,6 +39,8 @@ STRINGS = {
                                         " as DOCX and open that.",
         "unread_ocr_route_unavailable": "OCR is not available on this computer.",
         "unverified": "OCR text is a reading, not a verified transcript: check names and numbers.",
+        "note_numbers_not_rechecked": "Numbers on this page were not read a second time (a known issue in"
+                                      " heocr 0.1.0rc1): check them against the original.",
         "error": "Could not read this file",
         "about": "About",
         "close": "Close",
@@ -81,6 +83,8 @@ STRINGS = {
                                         " כ־DOCX ופתחו אותו.",
         "unread_ocr_route_unavailable": "זיהוי תווים אינו זמין במחשב הזה.",
         "unverified": "טקסט מזיהוי תווים הוא קריאה ולא תמלול מאומת: בדקו שמות ומספרים.",
+        "note_numbers_not_rechecked": "המספרים בעמוד הזה לא נקראו פעם שנייה (תקלה ידועה ב־heocr 0.1.0rc1):"
+                                      " בדקו אותם מול המקור.",
         "error": "לא ניתן לקרוא את הקובץ",
         "about": "אודות",
         "close": "סגירה",

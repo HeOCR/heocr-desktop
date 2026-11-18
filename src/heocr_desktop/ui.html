@@ -153,6 +153,7 @@ function showResult(r) {
   const notes = $("notices"); notes.innerHTML = "";
   const add = (text) => { const d = document.createElement("div"); d.className = "notice"; d.dir = "auto"; d.textContent = text; notes.appendChild(d); };
   if (r.routes.some(([route]) => route === "ocr")) add(S.unverified);
+  for (const n of (r.notes || [])) add(S["note_" + n] || n);
   for (const [reason, detail] of r.unread) add(S.unread_title + ": " + (S["unread_" + reason] || (reason + (detail ? " (" + detail + ")" : ""))));
   $("doc").innerHTML = r.html;           // built and escaped in Python (render.py)
   $("plain").textContent = r.text;

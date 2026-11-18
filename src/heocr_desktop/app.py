@@ -84,7 +84,8 @@ class Api:
                 r = st.result
                 page = i18n.STRINGS[self._lang]["page"]
                 out["result"] = {"name": st.name, "text": r.text, "html": render.to_html(r.markdown, page),
-                                 "routes": r.routes, "unread": r.unread, "flags": r.flags, "pages": r.pages}
+                                 "routes": r.routes, "unread": r.unread, "flags": r.flags, "pages": r.pages,
+                                 "notes": r.notes}
                 st.state = "shown"
             elif st.state == "error":
                 out["error"] = st.error
