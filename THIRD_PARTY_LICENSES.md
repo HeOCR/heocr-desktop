@@ -2,7 +2,7 @@
 
 HeOCR desktop is Apache-2.0. This is every component its macOS app and Windows installer contain, with each one's licence. **All are permissive. None is copyleft.** The licence texts ship inside the app: Python packages carry theirs in their `*.dist-info` folders; Tesseract, Leptonica and the image libraries have theirs in `resources/licenses/`.
 
-- **Audited:** 2026-11-18, on the macOS universal2 bundle (Briefcase 0.4.7, Python 3.12 support revision 13) and the Windows x64 MSI built in CI.
+- **Audited:** 2026-11-18, on the macOS universal2 bundle (Briefcase 0.4.7, Python 3.12 support revision 13) and on the contents of the Windows x64 MSI built in CI (every PE file identified by its version resource; every licence text in the cabinet scanned for GPL terms).
 - **Method:** each Python package's own licence metadata and files; each native library's licence from its vcpkg `copyright` file; `otool -L` / `dumpbin /dependents` on every executable we build, to check it links only to the OS.
 
 ## The pipeline
@@ -42,9 +42,10 @@ heocr passes Tesseract PNG images only; Leptonica's other image libraries come w
 | proxy_tools | 0.1.0 | MIT | both |
 | typing_extensions | 4.16.0 | PSF-2.0 | both |
 | PyObjC (core, Cocoa, Quartz, WebKit, Security, UniformTypeIdentifiers) | 13.0 | MIT | macOS |
-| pythonnet, clr_loader | from PyPI | MIT | Windows |
-| cffi, pycparser | from PyPI | MIT, BSD-3-Clause | Windows |
-| Microsoft WebView2 SDK loader (`WebView2Loader.dll`, `Microsoft.Web.WebView2.*.dll`) | inside pywebview | BSD-3-Clause (Microsoft's WebView2 SDK licence) | Windows. The WebView2 runtime itself is part of Windows 10 and 11 and is not bundled |
+| pythonnet, clr_loader | 3.2.1, 0.3.1 | MIT | Windows |
+| distlib launcher (`t64.exe`, the console-script stubs pip writes) | from pip | PSF-2.0 / MIT | Windows |
+| cffi, pycparser | 2.1.1, from PyPI | MIT, BSD-3-Clause | Windows |
+| Microsoft WebView2 SDK 1.0.3856.49 (`WebView2Loader.dll`, `Microsoft.Web.WebView2.Core.dll`, `.WinForms.dll`) | inside pywebview | BSD-3-Clause (its NuGet package's LICENSE.txt; its NOTICE lists ANTLR 3 and StringTemplate 4, both BSD-3-Clause) | Windows. Published by Microsoft as binaries. pywebview omits the texts, so the app ships them (`third_party/webview2/`). The WebView2 runtime itself is part of Windows 10 and 11 and is not bundled |
 
 ## Python
 
@@ -61,6 +62,12 @@ heocr passes Tesseract PNG images only; Leptonica's other image libraries come w
 | Microsoft Visual C++ runtime (`vcruntime140*.dll`) | Microsoft redistributable | Windows only: ships with every python.org Windows Python; a system runtime, not modified |
 
 On macOS the app removes the parts of Python it never uses: Tcl/Tk, curses (ncurses), IDLE and the test suite (`cleanup_paths` in `pyproject.toml`). Python's `readline` module links to macOS's own libedit.
+
+## Copyleft words found, and why none apply
+
+- **FreeType** (inside PDFium and Pillow) is dual-licensed; its FTL applies, not the GPLv2 alternative.
+- **pypdfium2** ships `BUILD_LICENSES/cibw_musl/libgcc_and_libstdc++.txt` (GCC's licence with the Runtime Library Exception) in every wheel; it applies to its musl-Linux builds, not to the macOS or Windows binaries, and the exception allows use in non-GPL programs anyway.
+- **Microsoft's WebView2 NOTICE** carries Microsoft's standard sentence about LGPL libraries; the components it lists are BSD-3-Clause.
 
 ## Not bundled, on purpose
 

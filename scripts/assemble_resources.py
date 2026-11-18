@@ -63,6 +63,10 @@ def main(dirs: list[str]) -> None:
     for name, pin in PINS["tessdata"]["files"].items():
         shutil.copy2(model(name, pin), RESOURCES / "tessdata" / name)
     shutil.copytree(builds[0] / "licenses", RESOURCES / "licenses")
+    # Licence texts the bundled wheels do not carry themselves (third_party/<name>/).
+    for folder in sorted((ROOT / "third_party").iterdir()):
+        for text in sorted(folder.glob("*.txt")):
+            shutil.copy2(text, RESOURCES / "licenses" / f"{folder.name}-{text.name}")
     info = [json.loads((b / "BUILD_INFO.json").read_text("utf-8")) for b in builds]
     (RESOURCES / "BUILD_INFO.json").write_text(json.dumps({"tesseract_builds": info, "tessdata": PINS["tessdata"]}, indent=2) + "\n", "utf-8")
     shutil.copy2(ROOT / "THIRD_PARTY_LICENSES.md", RESOURCES / "THIRD_PARTY_LICENSES.md")

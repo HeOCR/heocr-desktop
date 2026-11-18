@@ -22,7 +22,7 @@ Draft form answers are not in this repository; they go to the maintainer for rev
 ## Open questions for the maintainer
 
 - **One-person team.** SignPath asks for defined roles; today one person holds them all, with AI coding agents preparing pull requests. Decide how to describe this, or name a second reviewer.
-- **VC++ runtime.** Python's Windows build ships Microsoft's `vcruntime140*.dll`. Ask SignPath whether that counts against "all components open source" (it is in every Python-on-Windows app they sign).
+- **Microsoft binaries.** Python's Windows build ships Microsoft's `vcruntime140*.dll`, and pywebview ships Microsoft's WebView2 SDK DLLs (BSD-3-Clause, but published as binaries). Ask SignPath whether these count against "all components open source"; both are in most Python desktop apps on Windows.
 - **What to sign.** The plan is the MSI plus our own `HeOCR.exe` and `tesseract.exe`; Briefcase's stub is generated from its template at build time.
 
 ## Order of steps
