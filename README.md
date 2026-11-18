@@ -41,6 +41,7 @@ Briefcase gives one codebase for a signed, notarisable macOS app and a Windows M
 
 ```sh
 pip install -e . briefcase==0.4.7
+python scripts/wheels.py                             # heocr (pinned) and proxy_tools as wheels, for Briefcase
 python scripts/build_tesseract.py --out vendor      # or download CI's tesseract-<os> artifact into vendor/
 python scripts/vendor.py --tesseract vendor          # Tesseract, configs, models and licences into resources/
 python -m unittest discover -s tests -t .

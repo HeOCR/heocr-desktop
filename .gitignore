@@ -13,3 +13,5 @@ vendor-out/
 fixtures/
 report.json
 installed.json
+wheels/
+.briefcase/

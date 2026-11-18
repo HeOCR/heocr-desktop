@@ -8,6 +8,7 @@ version = "0.1.0"
 description = "HeOCR for the desktop: Hebrew text out of PDFs, Word documents and images, offline"
 requires-python = ">=3.11"
 license = "Apache-2.0"
+license-files = ["LICENSE"]
 authors = [{ name = "HeOCR maintainers" }]
 dependencies = [
   # heocr 0.1.0rc1, the release candidate in the D-bench gate. Moves to 0.1.0 after the verdict.
@@ -27,7 +28,8 @@ project_name = "HeOCR"
 bundle = "io.github.heocr"
 version = "0.1.0"
 url = "https://heocr.github.io"
-license.file = "LICENSE"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
 author = "HeOCR maintainers"
 author_email = "heocr@users.noreply.github.com"
 
@@ -38,10 +40,10 @@ long_description = """Drop in a PDF, a Word document or an image and get its Heb
 paragraphs and tables. Everything runs on this computer: no network, no telemetry."""
 icon = "icons/heocr"
 sources = ["src/heocr_desktop"]
-requires = [
-  "heocr @ git+https://github.com/HeOCR/heocr@57e58deb3a230a86b07e9fdf110223cac9fbf471",
-  "pywebview==6.2.1",
-]
+requires = ["heocr==0.1.0rc1", "pywebview==6.2.1"]
+# heocr (pinned commit) and proxy_tools come from wheels/, made by scripts/wheels.py: Briefcase installs
+# binary wheels only.
+requirement_installer_args = ["--find-links", "wheels"]
 
 [tool.briefcase.app.heocr_desktop.macOS]
 universal_build = false     # arm64 for now; see README "Universal macOS builds"
