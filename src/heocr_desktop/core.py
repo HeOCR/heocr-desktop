@@ -61,10 +61,12 @@ def configure() -> dict:
     }
 
 
-def page_count(path: Path) -> int | None:
+def page_count(path) -> int | None:
     """Pages to expect, for the progress bar: PDF pages or image frames. None when unknown."""
+    path = Path(path)
     try:
-        head = path.open("rb").read(8)
+        with path.open("rb") as f:
+            head = f.read(8)
     except OSError:
         return None
     if head.startswith(b"%PDF"):

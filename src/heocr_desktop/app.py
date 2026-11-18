@@ -147,7 +147,13 @@ def main() -> None:
     from webview.dom import DOMEventHandler
 
     info = core.configure()
+    args = sys.argv[1:]
     lang = i18n.system_language()
+    if "--lang" in args and args.index("--lang") + 1 < len(args):  # --lang he|en overrides the system's
+        i = args.index("--lang")
+        lang = args[i + 1] if args[i + 1] in i18n.STRINGS else lang
+        del args[i:i + 2]
+    to_open = next((a for a in args if not a.startswith("-") and Path(a).is_file()), None)
     api = Api(info, lang)
     window = webview.create_window("HeOCR", html=page_html(lang), js_api=api, width=1040, height=760,
                                    min_size=(640, 480))
@@ -162,8 +168,10 @@ def main() -> None:
                 return
 
     def on_loaded():
-        window.dom.document.events.drop += DOMEventHandler(on_drop, True, True)
-        window.dom.document.events.dragover += DOMEventHandler(lambda e: None, True, True)
+        window.dom.document.on("drop", DOMEventHandler(on_drop, True, True))
+        window.dom.document.on("dragover", DOMEventHandler(lambda e: None, True, True))
+        if to_open and api.start(to_open):  # a file passed at launch ("open with", or the command line)
+            window.evaluate_js("window.heocrStarted && window.heocrStarted()")
 
     window.events.loaded += on_loaded
     webview.start(private_mode=True)
