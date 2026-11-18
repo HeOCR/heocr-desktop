@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<!-- Nothing may load: no network, no files, no frames. Inline styles and script only ('unsafe-eval' because pywebview passes calls from Python as script strings). -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval'; style-src 'unsafe-inline'; img-src data:; connect-src 'none'; form-action 'none'; base-uri 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HeOCR</title>
+<style>/*STYLE*/</style>
+</head>
+<body>
+<header class="bar">
+  <div class="brand">
+    <span class="logo" aria-hidden="true">א</span>
+    <div>
+      <div class="name">HeOCR</div>
+      <div class="tagline" data-i18n="tagline"></div>
+    </div>
+  </div>
+  <div class="bar-actions">
+    <button class="ghost" id="lang" type="button" data-i18n="lang_toggle"></button>
+    <button class="ghost" id="about-open" type="button" data-i18n="about"></button>
+  </div>
+</header>
+
+<main>
+  <!-- 1. Waiting for a file -->
+  <section id="view-drop" class="view active">
+    <div id="dropzone" class="dropzone">
+      <svg class="drop-icon" viewBox="0 0 48 48" aria-hidden="true"><path d="M14 6h14l10 10v26a2 2 0 0 1-2 2H14a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/><path d="M28 6v10h10" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/><path d="M19 28h12M19 34h8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+      <div class="drop-title" data-i18n="drop"></div>
+      <div class="drop-or" data-i18n="or"></div>
+      <button class="primary" id="open" type="button" data-i18n="open"></button>
+      <div class="drop-hint" data-i18n="drop_hint"></div>
+    </div>
+    <p class="offline"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2l6 2.5v5c0 4-2.6 7.2-6 8.5-3.4-1.3-6-4.5-6-8.5v-5L10 2z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M7 10l2 2 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="offline"></span></p>
+  </section>
+
+  <!-- 2. Reading -->
+  <section id="view-work" class="view">
+    <div class="work">
+      <div class="file-name" id="work-name" dir="auto"></div>
+      <div class="meter"><div class="meter-fill" id="meter"></div></div>
+      <div class="work-status" id="work-status"></div>
+      <button class="secondary" id="cancel" type="button" data-i18n="cancel"></button>
+    </div>
+  </section>
+
+  <!-- 3. Result -->
+  <section id="view-result" class="view">
+    <div class="toolbar">
+      <div class="file-meta">
+        <div class="file-name" id="result-name" dir="auto"></div>
+        <div class="chips" id="chips"></div>
+      </div>
+      <div class="actions">
+        <button class="primary" id="copy" type="button" data-i18n="copy"></button>
+        <button class="secondary" data-save="txt" type="button" data-i18n="save_txt"></button>
+        <button class="secondary" data-save="md" type="button" data-i18n="save_md"></button>
+        <button class="secondary" data-save="json" type="button" data-i18n="save_json"></button>
+        <button class="ghost" id="again" type="button" data-i18n="new_file"></button>
+      </div>
+    </div>
+    <div class="notes" id="notes"></div>
+    <div class="tabs" role="tablist">
+      <button class="tab active" data-view="formatted" role="tab" type="button" data-i18n="view_formatted"></button>
+      <button class="tab" data-view="text" role="tab" type="button" data-i18n="view_text"></button>
+      <button class="tab" data-view="markdown" role="tab" type="button" data-i18n="view_markdown"></button>
+    </div>
+    <article class="doc" id="doc-formatted"></article>
+    <pre class="doc plain" id="doc-text" hidden></pre>
+    <pre class="doc plain mono" id="doc-markdown" hidden></pre>
+  </section>
+
+  <!-- 4. A message instead of a result -->
+  <section id="view-message" class="view">
+    <div class="message">
+      <div class="file-name" id="message-name" dir="auto"></div>
+      <p id="message-text"></p>
+      <button class="primary" id="message-again" type="button" data-i18n="new_file"></button>
+    </div>
+  </section>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<dialog id="about">
+  <h2>HeOCR</h2>
+  <p class="muted" id="about-version"></p>
+  <p data-i18n="about_body"></p>
+  <p class="offline small"><span data-i18n="offline"></span></p>
+  <p class="muted" dir="ltr">heocr.github.io</p>
+  <h3 class="about-h" data-i18n="about_models"></h3>
+  <ul id="models" class="models" dir="ltr"></ul>
+  <details>
+    <summary data-i18n="about_components"></summary>
+    <pre id="third-party" dir="ltr"></pre>
+  </details>
+  <div class="dialog-actions"><button class="primary" id="about-close" type="button" data-i18n="close"></button></div>
+</dialog>
+
+<script>/*BOOT*/</script>
+<script>/*SCRIPT*/</script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+{
+  "tesseract": {
+    "version": "5.5.3",
+    "url": "https://github.com/tesseract-ocr/tesseract/archive/refs/tags/5.5.3.tar.gz",
+    "sha256": "9218e62793116d42a9f6d14cd9348518b27f382096eea3d0f2d1a24616bb5884"
+  },
+  "vcpkg": {
+    "tag": "2026.10.16",
+    "commit": "9eec002df1cd109f8f104cd966a763daf9751489"
+  },
+  "tessdata": {
+    "source": "The models heocr's registered release gate ran with, confirmed by sha256 from a gate record's producer.components",
+    "files": {
+      "heb.traineddata": {
+        "origin": "tesseract-ocr/tessdata_best 4.1.0 (commit e12c65a)",
+        "url": "https://github.com/tesseract-ocr/tessdata_best/raw/4.1.0/heb.traineddata",
+        "sha256": "dbaa827aea6bc21215638447f17783a1004987c2d0bf5573d111fee397abdae5"
+      },
+      "eng.traineddata": {
+        "origin": "tesseract-ocr/tessdata_fast 4.1.0, used only for heocr's second reading of numbers",
+        "url": "https://github.com/tesseract-ocr/tessdata_fast/raw/4.1.0/eng.traineddata",
+        "sha256": "7d4322bd2a7749724879683fc3912cb542f19906c83bcc1a52132556427170b2"
+      }
+    }
+  }
+}

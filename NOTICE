@@ -1,0 +1,10 @@
+HeOCR desktop
+Copyright the HeOCR maintainers. Licensed under the Apache License, Version 2.0 (see LICENSE).
+
+The app bundles heocr (Apache License 2.0), whose own NOTICE ships with it inside the app,
+Tesseract OCR (Apache License 2.0) built from source, the tessdata_fast heb and eng models
+(Apache License 2.0), Python, pywebview and the libraries listed in THIRD_PARTY_LICENSES.md,
+each under its own permissive licence. It bundles no copyleft component.
+
+Portions of this software are copyright © 2025 The FreeType Project (www.freetype.org).
+All rights reserved.

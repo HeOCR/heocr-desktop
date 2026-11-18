@@ -1,0 +1,90 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "heocr-desktop"
+version = "0.1.0rc1"
+description = "HeOCR desktop app: drop in a PDF, Word file or image and get its Hebrew text out. Fully offline."
+readme = "README.md"
+requires-python = ">=3.12"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE", "THIRD_PARTY_LICENSES.md"]
+authors = [{ name = "HeOCR maintainers" }]
+dependencies = [
+  # heocr 0.1.0rc1, the release candidate (HeOCR/heocr 57e58de). Switches to heocr==0.1.0 after the gate.
+  "heocr @ git+https://github.com/HeOCR/heocr@57e58deb3a230a86b07e9fdf110223cac9fbf471",
+  "pywebview==6.2.1",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=8"]
+
+[project.urls]
+Homepage = "https://heocr.github.io"
+Source = "https://github.com/HeOCR/heocr-desktop"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+heocr_desktop = ["ui/*", "resources/**/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+# ---------------------------------------------------------------------------------------------
+# Briefcase: the macOS .app/.dmg and the Windows .msi.
+# ---------------------------------------------------------------------------------------------
+[tool.briefcase]
+project_name = "HeOCR"
+bundle = "io.github.heocr"
+version = "0.1.0rc1"
+url = "https://heocr.github.io"
+license = "Apache-2.0"
+author = "HeOCR maintainers"
+
+[tool.briefcase.app.heocr_desktop]
+formal_name = "HeOCR"
+description = "Hebrew text out of any document, fully offline"
+long_description = """HeOCR reads Hebrew text out of PDFs, Word files and images. Drop a file \
+into the window and get its text, headings and tables, ready to copy or save as text, \
+Markdown or JSON. It runs entirely on your computer: no network, no telemetry."""
+sources = ["src/heocr_desktop"]
+icon = "icons/heocr"
+# Pinned to the versions heocr's release gate ran with, so the app reads PDFs exactly as measured.
+requires = [
+  "heocr @ git+https://github.com/HeOCR/heocr@57e58deb3a230a86b07e9fdf110223cac9fbf471",
+  "pypdfium2==5.15.2",
+  "Pillow==13.0.0",
+  "defusedxml==0.7.1",
+  "pywebview==6.2.1",
+]
+# proxy_tools (a pywebview dependency, MIT) ships no wheel; scripts/prebuild_wheels.py builds it.
+requirement_installer_args = ["--find-links", "build/wheels"]
+test_sources = ["tests"]
+test_requires = ["pytest"]
+
+[tool.briefcase.app.heocr_desktop.macOS]
+universal_build = true
+# Parts of Python the app never uses: Tk, curses, the test suite and IDLE. Smaller, and fewer
+# components to audit.
+cleanup_paths = [
+  "**/lib/libtcl8*", "**/lib/libtk8*", "**/lib/libtclstub*", "**/lib/libtkstub*",
+  "**/lib/tcl8*", "**/lib/tk8*", "**/lib/itcl*", "**/lib/thread2*", "**/lib/tclConfig.sh", "**/lib/tclooConfig.sh", "**/lib/tkConfig.sh",
+  "**/lib/libncurses*", "**/lib/libpanel*", "**/lib/libform*", "**/lib/libmenu*", "**/lib/libcurses*",
+  "**/lib-dynload/_curses*", "**/lib-dynload/_tkinter*", "**/lib-dynload/_test*", "**/lib-dynload/_ctypes_test*", "**/lib-dynload/xx*",
+  "**/lib/python3.12/test", "**/lib/python3.12/idlelib", "**/lib/python3.12/tkinter", "**/lib/python3.12/turtledemo", "**/lib/python3.12/ensurepip", "**/lib/python3.12/lib2to3", "**/lib/python3.12/curses",
+]
+min_os_version = "13.0"  # pypdfium2 5.15.2 wheels need macOS 13
+requires = []
+# pywebview's WebKit window. No camera, microphone, location or network entitlement.
+info."NSHumanReadableCopyright" = "Apache-2.0. heocr.github.io"
+info."LSApplicationCategoryType" = "public.app-category.productivity"
+
+[tool.briefcase.app.heocr_desktop.windows]
+requires = []
+use_full_install_path = false
+
+[tool.briefcase.app.heocr_desktop.linux]
+requires = []

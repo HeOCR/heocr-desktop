@@ -1,0 +1,80 @@
+# Release builds: run by hand (workflow_dispatch) or by a maintainer pushing a v* tag.
+# Builds the Windows MSI from the tagged source, smoke-tests it, submits it to SignPath for
+# signing when SignPath is configured (each request is approved by hand there), and attaches it
+# to a DRAFT GitHub release. A maintainer publishes the draft; nothing here publishes anything.
+# The macOS DMG is signed and notarized on the maintainer's Mac (scripts/release_mac.sh) and
+# uploaded to the same draft.
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  tesseract:
+    uses: ./.github/workflows/tesseract.yml
+
+  windows:
+    needs: tesseract
+    runs-on: windows-latest
+    permissions:
+      contents: write   # the draft release
+      actions: read     # SignPath reads the artifact
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/download-artifact@v4
+        with:
+          name: tesseract-windows-x64
+          path: build/tess/windows-x64
+      - run: |
+          python -m pip install briefcase==0.4.7
+          python scripts/prebuild_wheels.py
+          python scripts/assemble_resources.py build/tess/windows-x64
+          briefcase create windows --no-input
+          briefcase build windows --no-input
+          python scripts/smoke_app.py windows
+          briefcase package windows --adhoc-sign --no-input
+      - id: unsigned
+        uses: actions/upload-artifact@v4
+        with:
+          name: heocr-windows-msi-unsigned
+          path: dist/*.msi
+
+      # --- Code signing slot (SignPath Foundation) ------------------------------------------
+      # Enabled once the SignPath project exists: set the repository variables
+      # SIGNPATH_ORGANIZATION_ID, SIGNPATH_PROJECT_SLUG and SIGNPATH_SIGNING_POLICY_SLUG,
+      # and the secret SIGNPATH_API_TOKEN. The signing policy requires manual approval.
+      - name: Sign with SignPath
+        if: vars.SIGNPATH_ORGANIZATION_ID != ''
+        uses: signpath/github-action-submit-signing-request@v1
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: ${{ vars.SIGNPATH_PROJECT_SLUG }}
+          signing-policy-slug: ${{ vars.SIGNPATH_SIGNING_POLICY_SLUG }}
+          github-artifact-id: ${{ steps.unsigned.outputs.artifact-id }}
+          wait-for-completion: true
+          output-artifact-directory: dist/signed
+      - name: Pick the MSI to release
+        shell: bash
+        run: |
+          mkdir -p release
+          if ls dist/signed/*.msi >/dev/null 2>&1; then cp dist/signed/*.msi release/; else cp dist/*.msi release/; fi
+          cd release && for f in *.msi; do mv "$f" "HeOCR-${GITHUB_REF_NAME#v}-windows-x64.msi" 2>/dev/null || true; done; ls -la
+          sha256sum *.msi > SHA256SUMS-windows.txt
+      - name: Draft release (not published)
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1 || gh release create "$GITHUB_REF_NAME" --draft --prerelease --title "HeOCR desktop $GITHUB_REF_NAME" --notes "Draft. Built by the Release workflow from $GITHUB_SHA."
+          gh release upload "$GITHUB_REF_NAME" release/* --clobber

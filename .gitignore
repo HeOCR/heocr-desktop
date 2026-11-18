@@ -1,2 +1,13 @@
+build/
+dist/
+logs/
 __pycache__/
+*.pyc
+.venv/
+src/heocr_desktop/resources/
+tests/fixtures/smoke-report.json
 .DS_Store
+.briefcase/
+wheels/
+vendor/
+.pytest_cache/
