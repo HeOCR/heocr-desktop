@@ -76,5 +76,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
-          gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1 || gh release create "$GITHUB_REF_NAME" --draft --prerelease --title "HeOCR desktop $GITHUB_REF_NAME" --notes "Draft. Built by the Release workflow from $GITHUB_SHA."
+          # Only ever into a draft. A published release (the macOS-only v0.1.0, say) is never touched:
+          # the MSI stays in this run's artifacts, and a maintainer adds it to a release by hand.
+          if draft=$(gh release view "$GITHUB_REF_NAME" --json isDraft -q .isDraft 2>/dev/null); then
+            if [ "$draft" != "true" ]; then
+              echo "::error::Release $GITHUB_REF_NAME is already published; not uploading to it. The MSI is in this run's artifacts."
+              exit 1
+            fi
+          else
+            gh release create "$GITHUB_REF_NAME" --draft --prerelease --title "HeOCR desktop $GITHUB_REF_NAME" --notes "Draft. Built by the Release workflow from $GITHUB_SHA."
+          fi
           gh release upload "$GITHUB_REF_NAME" release/* --clobber
