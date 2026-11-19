@@ -69,7 +69,13 @@ def main() -> None:
         CIBW_BUILD_VERBOSITY="1",
         CIBW_CONFIG_SETTINGS=" ".join(["platform-guessing=disable", *(f"{f}=enable" for f in ON), *(f"{f}=disable" for f in OFF)]),
         CIBW_ENVIRONMENT=f'{roots} LDFLAGS="-L{deps}/lib -llzma -lsharpyuv" CFLAGS="-I{deps}/include"',
+        # Pillow's own [tool.cibuildwheel] builds its dependencies with a script that is not in the
+        # sdist, and tests with numpy; here the dependencies come from deps/ and tests run on the
+        # app (android/tests). Environment variables take precedence over pyproject.toml.
+        CIBW_BEFORE_ALL="true",
         CIBW_TEST_COMMAND="",
+        CIBW_TEST_REQUIRES="",
+        CIBW_TEST_EXTRAS="",
     )
     if out.exists():
         shutil.rmtree(out)
