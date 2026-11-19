@@ -113,7 +113,7 @@ import re, sys
 xml, want = open(sys.argv[1], encoding="utf-8").read(), sys.argv[2]
 for node in re.finditer(r"<node [^>]*>", xml):
     n = node.group(0)
-    label = " ".join(re.findall(r'(?:text|content-desc)="([^"]*)"', n))
+    label = " ".join(x for x in re.findall(r'(?:text|content-desc)="([^"]*)"', n) if x).strip()
     m = re.search(r'bounds="\[(\d+),(\d+)\]\[(\d+),(\d+)\]"', n)
     if m and re.search(want, label, re.I):
         print(f"{(int(m[1]) + int(m[3])) // 2} {(int(m[2]) + int(m[4])) // 2}")
