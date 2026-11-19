@@ -93,6 +93,9 @@
     $("doc-formatted").innerHTML = r.html; // built by Python from the record, every text escaped
     $("doc-text").textContent = r.text;
     $("doc-markdown").textContent = r.markdown;
+    // Save offers what the installed heocr can write: Word first when it can.
+    var formats = r.formats || ["txt", "md", "json"];
+    document.querySelectorAll("[data-save]").forEach(function (b) { b.hidden = formats.indexOf(b.getAttribute("data-save")) < 0; });
     applyLanguage(); // fills the page and section labels inside the document
     setView("formatted");
     show("result");

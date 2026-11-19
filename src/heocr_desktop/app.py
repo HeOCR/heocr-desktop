@@ -17,7 +17,7 @@ import traceback
 from importlib import metadata
 from pathlib import Path
 
-from heocr_desktop import engine, i18n, render
+from heocr_desktop import engine, exports, i18n, render
 
 UI = Path(__file__).resolve().parent / "ui"
 APP_NAME = "HeOCR"
@@ -136,13 +136,14 @@ class Api:
             "html": render.document_html(doc) if r.kind == "ok" else "",
             "text": doc.text if r.kind == "ok" else "",
             "markdown": doc.markdown if r.kind == "ok" else "",
+            "formats": list(exports.formats()),
         }
 
     def save(self, kind: str) -> str | None:
         import webview
 
         r = self._result
-        if r is None or r.doc is None or kind not in ("txt", "md", "json"):
+        if r is None or r.doc is None or kind not in exports.formats():
             return None
         stem = self._source.stem if self._source else "heocr"
         target = self._window.create_file_dialog(
@@ -153,13 +154,7 @@ class Api:
         if not target:
             return None
         target = target[0] if isinstance(target, (list, tuple)) else target
-        if kind == "txt":
-            body = r.doc.text
-        elif kind == "md":
-            body = r.doc.markdown
-        else:
-            body = json.dumps(r.doc.to_dict(), ensure_ascii=False, indent=2) + "\n"
-        Path(target).write_text(body, encoding="utf-8")
+        Path(target).write_bytes(exports.export(r.doc, kind))
         return Path(target).name
 
     def third_party(self) -> str:
