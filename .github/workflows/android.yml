@@ -74,6 +74,8 @@ jobs:
           cp docs/stores/fdroid/*.yml "$RUNNER_TEMP/fdroiddata/metadata/"
           cd "$RUNNER_TEMP/fdroiddata"
           printf 'repo_url: https://example.invalid/repo\n' > config.yml
+          # fdroiddata's own category list, which lint checks against.
+          mkdir -p config && curl -fsSL https://gitlab.com/fdroid/fdroiddata/-/raw/master/config/categories.yml -o config/categories.yml
           fdroid readmeta
           fdroid lint io.github.heocr.heocr_mobile
       - name: Store text lengths (F-Droid and Play limits)

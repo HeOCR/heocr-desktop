@@ -3,7 +3,7 @@
 # account, on the maintainer's go. Checked in CI with `fdroid readmeta` and `fdroid lint`.
 # The descriptions, icon and screenshots come from fastlane/metadata/android/ in the source repo.
 Categories:
-  - Reading
+  - OCR
 License: Apache-2.0
 AuthorName: HeOCR
 WebSite: https://heocr.github.io
