@@ -1,0 +1,82 @@
+{
+  "camera": {
+    "mirrors_in_rtl": false,
+    "use": "Take a photo"
+  },
+  "open-file": {
+    "mirrors_in_rtl": false,
+    "use": "Open a file"
+  },
+  "sample": {
+    "mirrors_in_rtl": false,
+    "use": "Try a sample"
+  },
+  "copy": {
+    "mirrors_in_rtl": false,
+    "use": "Copy"
+  },
+  "share": {
+    "mirrors_in_rtl": false,
+    "use": "Share"
+  },
+  "save": {
+    "mirrors_in_rtl": false,
+    "use": "Save"
+  },
+  "word-doc": {
+    "mirrors_in_rtl": false,
+    "use": "Word document"
+  },
+  "text-file": {
+    "mirrors_in_rtl": false,
+    "use": "Text file"
+  },
+  "info": {
+    "mirrors_in_rtl": false,
+    "use": "About / info"
+  },
+  "close": {
+    "mirrors_in_rtl": false,
+    "use": "Close / cancel"
+  },
+  "warning": {
+    "mirrors_in_rtl": false,
+    "use": "Warning"
+  },
+  "check": {
+    "mirrors_in_rtl": false,
+    "use": "Check / done"
+  },
+  "diagnostics": {
+    "mirrors_in_rtl": false,
+    "use": "Copy diagnostics"
+  },
+  "back": {
+    "mirrors_in_rtl": true,
+    "use": "Back (points to the start side)"
+  },
+  "more": {
+    "mirrors_in_rtl": false,
+    "use": "More actions"
+  },
+  "external": {
+    "mirrors_in_rtl": true,
+    "use": "Opens in the browser"
+  },
+  "private": {
+    "mirrors_in_rtl": false,
+    "use": "Stays on the phone"
+  },
+  "image-file": {
+    "mirrors_in_rtl": false,
+    "use": "Image file"
+  },
+  "chevron": {
+    "mirrors_in_rtl": true,
+    "use": "Goes to another screen (points to the end side)"
+  },
+  "retry": {
+    "mirrors_in_rtl": false,
+    "use": "Read again"
+  }
+}
