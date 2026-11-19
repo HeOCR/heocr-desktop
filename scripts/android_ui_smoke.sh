@@ -12,9 +12,14 @@ AVD="${AVD:-heocrPhone}"
 OUT="dist/ui-smoke${AVD_SUFFIX:-}"
 "$SDK/emulator/emulator" -avd "$AVD" -no-window -no-snapshot -no-audio -no-boot-anim > "dist/ui-smoke-emulator-$AVD.log" 2>&1 &
 trap '"$ADB" emu kill >/dev/null 2>&1 || true' EXIT  # one emulator at a time
-"$ADB" wait-for-device
+# A deadline on each wait: an emulator that never starts fails the step instead of the job's timeout.
+timeout 300 "$ADB" wait-for-device || { echo "emulator $AVD did not start"; tail -20 "dist/ui-smoke-emulator-$AVD.log"; exit 1; }
 echo "emulator $AVD: Android $("$ADB" shell getprop ro.build.version.release | tr -d '\r') (API $("$ADB" shell getprop ro.build.version.sdk | tr -d '\r')), ABIs $("$ADB" shell getprop ro.product.cpu.abilist | tr -d '\r')"
-until [ "$("$ADB" shell getprop sys.boot_completed | tr -d '\r')" = "1" ]; do sleep 5; done
+deadline=$((SECONDS + 600))
+until [ "$("$ADB" shell getprop sys.boot_completed | tr -d '\r')" = "1" ]; do
+  [ $SECONDS -lt $deadline ] || { echo "emulator $AVD did not finish booting"; exit 1; }
+  sleep 5
+done
 "$ADB" install -r "$APK"
 "$ADB" logcat -c
 "$ADB" shell am start -n "$PKG/org.beeware.android.MainActivity"

@@ -186,10 +186,14 @@ jobs:
           FIXTURES: android/tests/fixtures
           AVD: heocrPhone35
           AVD_SUFFIX: "-api35"
+          # One place for avdmanager and the emulator: newer avdmanager writes under ~/.config otherwise.
+          ANDROID_AVD_HOME: ${{ github.workspace }}/.avd
         run: |
+          mkdir -p "$ANDROID_AVD_HOME"
           image="system-images;android-35;google_apis;x86_64"
           yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --install "$image" > /dev/null
           echo no | "$ANDROID_HOME/cmdline-tools/latest/bin/avdmanager" create avd -n heocrPhone35 -k "$image" -d pixel --force
+          "$ANDROID_HOME/emulator/emulator" -list-avds
           scripts/android_ui_smoke.sh dist/HeOCR-android-arm64-debug.apk
       - uses: actions/upload-artifact@v4
         if: always()
