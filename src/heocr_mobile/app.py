@@ -69,9 +69,10 @@ class HeOCR(toga.App):
         self.sheet = False
         self.result_page = ""
         self.toast_id = 0
-        self.laid_out = False  # the first page loads before the WebView has its size
+        self.page = ""  # the page on screen, drawn again when the window's size changes
+        self.size = None
         self.webview = toga.WebView(style=Pack(flex=1), on_navigation_starting=self.navigate)
-        self.main_window = toga.MainWindow(title=self.formal_name, on_gain_focus=self.on_focus)
+        self.main_window = toga.MainWindow(title=self.formal_name, on_gain_focus=self.on_focus, on_resize=self.on_resize)
         self.main_window.content = self.webview
         back.handler = self.on_back
         activity = self._impl.native
@@ -93,8 +94,27 @@ class HeOCR(toga.App):
         self.sheet = False
         # The reading can be pinch-zoomed (a document to read closely); the app's screens cannot.
         device.allow_zoom(self.webview._impl.native, screen in ("result", "licences"))
+        self.page = page
         self.webview.set_content("about:blank", page)
         print(f"HeOCR screen {screen}", flush=True)
+
+    def on_resize(self, window, **kwargs):
+        """Draw the page again when the window's size changes: the first page loads before the WebView
+        has its final size (the action bar is hidden after it), and the viewport tag applies only at
+        load. Also after a rotation. Layout passes that change nothing are ignored."""
+        content = self._impl.native.findViewById(device._jclass("android.R$id").content)
+        size = (content.getWidth(), content.getHeight()) if content is not None else None
+        if not size or 0 in size or size == self.size:
+            return
+        self.size = size
+        if self.page and self.screen != "reading":  # the reading screen is drawn again at each page
+            asyncio.get_running_loop().call_soon(self.redraw)
+
+    def redraw(self):
+        if self.page:
+            print(f"HeOCR redraw {self.screen} at {self.size}", flush=True)
+            self.sheet = False  # a new load closes the sheet
+            self.webview.set_content("about:blank", self.page)
 
     def js(self, code: str):
         """Change the page in place (a toast, the sheet, the elapsed time): the page itself has no script."""
@@ -203,11 +223,6 @@ class HeOCR(toga.App):
     def on_focus(self, window, **kwargs):
         """A document shared to HeOCR, or opened with it: at launch, or while the app was open."""
         activity = self._impl.native
-        if not self.laid_out:
-            # The WebView has its size now: draw Home again, so the viewport tag applies to it.
-            self.laid_out = True
-            if self.screen == "home":
-                self.go_home_now()
         uri = device.incoming_uri(activity.getIntent())
         if uri is None:
             return
