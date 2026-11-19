@@ -1,5 +1,0 @@
-heocr @ git+https://github.com/HeOCR/heocr@ac1ad2063f0f66208f5949295e17ae1aa0e97783
-pywebview==6.2.1
-
-[test]
-pytest>=8
