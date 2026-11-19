@@ -14,11 +14,13 @@ authors = [{ name = "HeOCR maintainers" }]
 dependencies = [
   # heocr 0.1.2 from PyPI: the gated 0.1.0 plus its fixes (tag v0.1.2, ac1ad20).
   "heocr==0.1.2",
-  "pywebview==6.2.1",
 ]
 
 [project.optional-dependencies]
 test = ["pytest>=8"]
+# The desktop window, for running the app from a checkout (python -m heocr_desktop). Not in
+# [project].dependencies, because Briefcase adds those to every app, the Android one included.
+desktop = ["pywebview==6.2.1"]
 
 [project.urls]
 Homepage = "https://heocr.github.io"
@@ -106,7 +108,7 @@ requires = [
   "Pillow==13.0.0",  # built for Android by scripts/build_pillow_android.py (Pillow has no Android wheels)
   "defusedxml==0.7.1",
 ]
-requirement_installer_args = ["--find-links", "build/android-wheels"]
+requirement_installer_args = ["--find-links", "./build/android-wheels"]  # "./": Briefcase makes it absolute
 test_sources = ["android/tests"]
 test_requires = ["pytest"]
 permission.camera = "HeOCR reads the text in photos you take. Photos stay on this phone."
