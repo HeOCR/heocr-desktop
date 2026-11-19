@@ -11,16 +11,15 @@ requires-python = ">=3.12"
 license = "Apache-2.0"
 license-files = ["LICENSE", "NOTICE", "THIRD_PARTY_LICENSES.md"]
 authors = [{ name = "HeOCR maintainers" }]
-dependencies = [
-  # heocr 0.1.2 from PyPI: the gated 0.1.0 plus its fixes (tag v0.1.2, ac1ad20).
-  "heocr==0.1.2",
-]
+# Each app pins its own heocr in its Briefcase requires below (desktop: 0.1.2, Android: 0.2.0rc1).
+# Nothing here, because Briefcase adds [project].dependencies to every app.
+dependencies = []
 
 [project.optional-dependencies]
 test = ["pytest>=8"]
-# The desktop window, for running the app from a checkout (python -m heocr_desktop). Not in
-# [project].dependencies, because Briefcase adds those to every app, the Android one included.
-desktop = ["pywebview==6.2.1"]
+# The desktop app from a checkout (python -m heocr_desktop) and its unit tests.
+# heocr 0.1.2 from PyPI: the gated 0.1.0 plus its fixes (tag v0.1.2, ac1ad20).
+desktop = ["heocr==0.1.2", "pywebview==6.2.1"]
 
 [project.urls]
 Homepage = "https://heocr.github.io"
@@ -103,7 +102,9 @@ phone itself. It has no internet permission: nothing you read ever leaves the ph
 sources = ["src/heocr_mobile", "src/heocr_desktop"]
 icon = "icons/heocr"
 requires = [
-  "heocr==0.1.2",
+  # heocr 0.2.0rc1: HeOCR's own models in the package, heocr_modern_v1 by default (D6), as the desktop
+  # app will read once 0.2.0 ships.
+  "heocr==0.2.0rc1",
   "pypdfium2==5.15.2",
   "Pillow==13.0.0",  # built for Android by scripts/build_pillow_android.py (Pillow has no Android wheels)
   "defusedxml==0.7.1",
@@ -116,7 +117,30 @@ permission.camera = "HeOCR reads the text in photos you take. Photos stay on thi
 [tool.briefcase.app.heocr_mobile.android]
 requires = ["toga-android==0.5.7"]
 android_abis = ["arm64-v8a"]
-build_gradle_dependencies = ["com.google.android.material:material:1.12.0"]
+# Only what the template already brings (AppCompat). Toga needs Material only for OptionContainer, which
+# the app does not use; leaving it out takes about 4 MB off the APK.
+build_gradle_dependencies = []
+# One activity: a document shared while the app is open reaches it (scripts/android_patch_activity.py
+# hands the new intent to Python).
+android_manifest_activity_attrs_extra_content = 'android:launchMode="singleTask"'
+# The share sheet ("Share" → HeOCR) and "Open with": PDF, DOCX and images.
+android_manifest_activity_extra_content = """
+<intent-filter>
+    <action android:name="android.intent.action.SEND" />
+    <category android:name="android.intent.category.DEFAULT" />
+    <data android:mimeType="application/pdf" />
+    <data android:mimeType="application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
+    <data android:mimeType="image/*" />
+</intent-filter>
+<intent-filter>
+    <action android:name="android.intent.action.VIEW" />
+    <category android:name="android.intent.category.DEFAULT" />
+    <data android:scheme="content" />
+    <data android:mimeType="application/pdf" />
+    <data android:mimeType="application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
+    <data android:mimeType="image/*" />
+</intent-filter>
+"""
 # No network at all: Briefcase adds these two by default; false leaves them out of the manifest,
 # so Android itself refuses every socket the app opens.
 permission."android.permission.INTERNET" = false

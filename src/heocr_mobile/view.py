@@ -18,6 +18,35 @@ td, th { border: 1px solid #ccc; padding: 2px 6px; }
 .note { color: #555; font-size: 0.9em; }
 """
 
+_MODEL = re.compile(r"^tesseract:(.+)\.traineddata$")
+
+
+def ocr_models(doc) -> set[str]:
+    """The Tesseract models a reading used (``heb``, ``eng``, ``heocr_modern_v1``), from its record."""
+    return {m.group(1) for key in getattr(doc, "components", {}) if (m := _MODEL.match(key))}
+
+
+def _html(body: str, direction: str) -> str:
+    return (
+        f'<!doctype html><html dir="{direction}"><head><meta charset="utf-8">'
+        '<meta name="viewport" content="width=device-width, initial-scale=1">'
+        "<meta http-equiv=\"Content-Security-Policy\" content=\"default-src 'none'; style-src 'unsafe-inline'\">"
+        f"<style>{CSS}</style></head><body>{body}</body></html>"
+    )
+
+
+def welcome(strings: dict[str, str], lang: str) -> str:
+    """The page before any reading: what to do, and the offline promise (it wraps, unlike a label)."""
+    direction = "rtl" if lang == "he" else "ltr"
+    return _html(f'<p>{escape(strings["welcome"])}</p><p class="note">{escape(strings["offline"])}</p>', direction)
+
+
+def message(strings: dict[str, str], lang: str, text: str) -> str:
+    """A message in place of a reading (the file could not be read, needs a converter, had no text)."""
+    direction = "rtl" if lang == "he" else "ltr"
+    return _html(f'<p>{escape(text)}</p><p class="note">{escape(strings["welcome"])}</p>', direction)
+
+
 _PLACEHOLDER = re.compile(r'(<(\w+)[^>]*?data-i18n="(\w+)"(?: data-n="(\d+)")?[^>]*>)(</\2>)')
 
 
@@ -33,10 +62,6 @@ def page(doc, strings: dict[str, str], notes: list[str]) -> str:
 
     body = _PLACEHOLDER.sub(fill, body)
     direction = render.document_direction(doc.text)
-    extra = "".join(f'<p class="note">{escape(n)}</p>' for n in notes)
-    return (
-        f'<!doctype html><html dir="{direction}"><head><meta charset="utf-8">'
-        '<meta name="viewport" content="width=device-width, initial-scale=1">'
-        "<meta http-equiv=\"Content-Security-Policy\" content=\"default-src 'none'; style-src 'unsafe-inline'\">"
-        f"<style>{CSS}</style></head><body>{extra}{body}</body></html>"
-    )
+    # dir="auto": a note in the UI's language keeps its own direction inside a page of the other one.
+    extra = "".join(f'<p class="note" dir="auto">{escape(n)}</p>' for n in notes)
+    return _html(extra + body, direction)

@@ -6,7 +6,8 @@ heocr itself is used as released. Nothing here changes how it reads a document:
   one found on the system, so every user gets the same reading.
 - **Conversion** (LibreOffice, for DOC/RTF/ODT/XLS/ODS/PPT/ODP) is off: the app ships no
   copyleft tool and starts no program it did not bring. Those files get a clear message.
-- **Models** are never downloaded: the app runs stock Tesseract ``heb``, heocr's default.
+- **Models** are heocr's default and are never downloaded: stock Tesseract ``heb`` in heocr 0.1,
+  HeOCR's own model shipped inside the heocr package from 0.2 (``heocr_modern_v1``).
 - **Progress** comes from wrapping heocr's per-page step. The wrapper calls the original with
   the same arguments, so the reading is byte for byte what ``heocr.extract`` gives.
 """
@@ -244,7 +245,8 @@ def convert(
     try:
         if report:
             report(Progress(stage="reading"))
-        options = dict(ocr=tess is not None, tesseract=str(tess) if tess else None, convert=False, ocr_model=None)
+        # No ocr_model: heocr's default applies (see the module docstring), as the release gate measured it.
+        options = dict(ocr=tess is not None, tesseract=str(tess) if tess else None, convert=False)
         notes: list[str] = []
         doc = heocr.extract(str(path), **options)
     finally:
