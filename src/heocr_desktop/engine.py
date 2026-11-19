@@ -111,8 +111,26 @@ def hide_child_consoles() -> None:
 # -- bundled Tesseract ---------------------------------------------------------------------
 
 
+_CONFIGURED: dict[str, Path] = {}
+
+
+def configure(tesseract: str | os.PathLike[str] | None = None, tessdata: str | os.PathLike[str] | None = None) -> None:
+    """Use a Tesseract and models from somewhere other than ``resources/``.
+
+    For the Android app (``heocr_mobile``): Android runs an app's executables only from its
+    native-library folder, so Tesseract ships there and its models in the app's own files.
+    The desktop app never calls this.
+    """
+    if tesseract is not None:
+        _CONFIGURED["tesseract"] = Path(tesseract)
+    if tessdata is not None:
+        _CONFIGURED["tessdata"] = Path(tessdata)
+
+
 def tesseract_path() -> Path | None:
     """The Tesseract shipped in the app, or ``None`` in a development checkout without one."""
+    if "tesseract" in _CONFIGURED:
+        return _CONFIGURED["tesseract"]
     name = "tesseract.exe" if sys.platform == "win32" else "tesseract"
     candidate = RESOURCES / "tesseract" / name
     if candidate.is_file():
@@ -123,6 +141,8 @@ def tesseract_path() -> Path | None:
 
 
 def tessdata_path() -> Path | None:
+    if "tessdata" in _CONFIGURED:
+        return _CONFIGURED["tessdata"]
     folder = RESOURCES / "tessdata"
     if (folder / "heb.traineddata").is_file():
         return folder

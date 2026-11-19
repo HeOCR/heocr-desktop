@@ -4,6 +4,7 @@
     python scripts/build_tesseract.py --target macos-arm64 --out build/tess/macos-arm64
     python scripts/build_tesseract.py --target macos-x86_64 --out build/tess/macos-x86_64
     python scripts/build_tesseract.py --target windows-x64 --out build/tess/windows-x64
+    python scripts/build_tesseract.py --target android-arm64 --out build/tess/android-arm64   # on Linux, with $ANDROID_NDK_HOME
 
 What it does, all from pinned sources (tesseract/pins.json, tesseract/vcpkg.json):
 
@@ -15,6 +16,11 @@ What it does, all from pinned sources (tesseract/pins.json, tesseract/vcpkg.json
 3. The output folder gets ``tesseract`` (``tesseract.exe``), Tesseract's ``configs`` (heocr
    needs ``configs/tsv``), and every component's licence text under ``licenses/``.
 4. It checks the executable links only to the operating system's own libraries.
+
+For Android the executable is cross-built with the NDK (API 24, arm64-v8a, static C++ runtime). The
+output also gets ``deps/`` (the static image libraries and their headers), which the Android build
+of Pillow links against (``scripts/build_pillow_android.py``), so both read images with the same
+libraries.
 
 This runs in CI (``.github/workflows/tesseract.yml``); a local run needs CMake, Ninja, git
 and a compiler. It takes a few minutes of full CPU: on the maintainer's Mac it goes through the
@@ -44,10 +50,12 @@ TARGETS = {
     "macos-arm64": {"triplet": "arm64-osx-heocr", "arch": "arm64"},
     "macos-x86_64": {"triplet": "x64-osx-heocr", "arch": "x86_64"},
     "windows-x64": {"triplet": "x64-windows-heocr", "arch": "x64"},
+    "android-arm64": {"triplet": "arm64-android-heocr", "arch": "arm64-v8a", "api": 24},
 }
 
 # Shared libraries the executable may load: the OS's own, nothing bundled.
 MAC_ALLOWED = re.compile(r"^(/usr/lib/|/System/Library/)")
+ANDROID_ALLOWED = {"libc.so", "libm.so", "libdl.so", "liblog.so"}
 WIN_ALLOWED = {
     "kernel32.dll", "user32.dll", "advapi32.dll", "ws2_32.dll", "shell32.dll", "ole32.dll",
     "oleaut32.dll", "gdi32.dll", "comdlg32.dll", "shlwapi.dll", "bcrypt.dll", "crypt32.dll",
@@ -79,6 +87,13 @@ def fetch(url: str, dest: Path, digest: str) -> Path:
     return dest
 
 
+def ndk_revision(ndk: Path) -> str:
+    """The NDK's Pkg.Revision, recorded so an Android build says which NDK made it."""
+    props = (ndk / "source.properties").read_text("utf-8")
+    match = re.search(r"Pkg\.Revision\s*=\s*(\S+)", props)
+    return match.group(1) if match else "unknown"
+
+
 def vcpkg_root(work: Path) -> Path:
     pin = PINS["vcpkg"]
     root = work / "vcpkg"
@@ -105,6 +120,10 @@ def main() -> None:
     out = args.out.resolve()
     work.mkdir(parents=True, exist_ok=True)
     windows = args.target.startswith("windows")
+    android = args.target.startswith("android")
+    ndk = Path(os.environ.get("ANDROID_NDK_HOME", "")) if android else None
+    if android and not (ndk / "build" / "cmake" / "android.toolchain.cmake").is_file():
+        sys.exit("android targets need ANDROID_NDK_HOME pointing at an Android NDK")
 
     # 1. Leptonica and image libraries.
     root = vcpkg_root(work)
@@ -156,6 +175,13 @@ def main() -> None:
     ]
     if windows:
         configure += ["-DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded", "-DCMAKE_POLICY_DEFAULT_CMP0091=NEW"]
+    elif android:
+        configure += [
+            f"-DVCPKG_CHAINLOAD_TOOLCHAIN_FILE={ndk / 'build' / 'cmake' / 'android.toolchain.cmake'}",
+            f"-DANDROID_ABI={target['arch']}",
+            f"-DANDROID_PLATFORM=android-{target['api']}",
+            "-DANDROID_STL=c++_static",
+        ]
     else:
         configure += [f"-DCMAKE_OSX_ARCHITECTURES={target['arch']}", "-DCMAKE_OSX_DEPLOYMENT_TARGET=13.0"]
         if target["arch"] == "x86_64" and platform.machine() == "arm64":
@@ -174,7 +200,10 @@ def main() -> None:
     exe_name = "tesseract.exe" if windows else "tesseract"
     exe = next(p for p in build.rglob(exe_name) if p.is_file() and p.parent.name != "CMakeFiles")
     shutil.copy2(exe, out / exe_name)
-    if not windows:
+    if android:
+        strip = next((ndk / "toolchains" / "llvm" / "prebuilt").glob("*/bin/llvm-strip"))
+        run([strip, "--strip-unneeded", out / exe_name])
+    elif not windows:
         run(["strip", "-x", out / exe_name])
     shutil.copytree(src / "tessdata" / "configs", out / "configs")
     shutil.copy2(src / "LICENSE", out / "licenses" / "tesseract-LICENSE.txt")
@@ -184,9 +213,21 @@ def main() -> None:
             continue  # build helpers, not in the binary
         shutil.copy2(copyright_file, out / "licenses" / f"{port}-LICENSE.txt")
     ports = sorted(p.name for p in (prefix / "share").iterdir() if p.is_dir() and not p.name.startswith("vcpkg-"))
+    if android:
+        # The same static image libraries, for the Android build of Pillow.
+        for part in ("include", "lib"):
+            shutil.copytree(prefix / part, out / "deps" / part, ignore=shutil.ignore_patterns("cmake", "pkgconfig"))
 
     # 4. Check what it links to, and that it runs.
-    if windows:
+    if android:
+        readelf = next((ndk / "toolchains" / "llvm" / "prebuilt").glob("*/bin/llvm-readelf"))
+        listing = subprocess.run([readelf, "--dynamic", out / exe_name], capture_output=True, text=True, check=True).stdout
+        deps = sorted(set(re.findall(r"\(NEEDED\)\s+Shared library: \[([^\]]+)\]", listing)))
+        extra = [d for d in deps if d not in ANDROID_ALLOWED]
+        if extra:
+            sys.exit(f"tesseract links to non-system libraries: {extra}")
+        print("links to:", deps)
+    elif windows:
         dumpbin = shutil.which("dumpbin")
         if dumpbin:
             listing = subprocess.run([dumpbin, "/dependents", out / exe_name], capture_output=True, text=True, check=True).stdout
@@ -202,7 +243,7 @@ def main() -> None:
         if extra:
             sys.exit(f"tesseract links to non-system libraries: {extra}")
         print("links to:", deps)
-    can_run = windows == (os.name == "nt") and (windows or target["arch"] == platform.machine() or platform.machine() == "arm64")
+    can_run = not android and windows == (os.name == "nt") and (windows or target["arch"] == platform.machine() or platform.machine() == "arm64")
     version = ""
     if can_run:
         result = subprocess.run([out / exe_name, "--version"], capture_output=True, text=True, check=True)
@@ -221,6 +262,7 @@ def main() -> None:
                 "vcpkg_ports": ports,
                 "version_output": version,
                 "executable_sha256": sha256(out / exe_name),
+                **({"android_ndk": ndk_revision(ndk), "android_api": target["api"]} if android else {}),
             },
             indent=2,
         )
