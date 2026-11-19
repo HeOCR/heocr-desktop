@@ -6,8 +6,8 @@ This text also appears, shortened, on the [download page](https://heocr.github.i
 
 Free code signing provided by [SignPath.io](https://about.signpath.io), certificate by [SignPath Foundation](https://signpath.org).
 
-- **What is signed:** only the HeOCR desktop installer (`HeOCR-<version>.msi`) and the app's own executables, built from this repository's tagged source by the **Release** workflow on GitHub Actions. Nothing built on a personal computer is signed for Windows.
-- **What is not signed with this certificate:** third-party binaries we did not build (for example Python's own DLLs); they keep their publishers' signatures or none.
+- **What is signed:** only the HeOCR desktop installer (`HeOCR-<version>-windows-x64.msi`) and the app's entry point `HeOCR.exe` in it, built from this repository's tagged source by the **Release** workflow on GitHub Actions. Nothing built on a personal computer is signed for Windows.
+- **What is not signed with this certificate:** every upstream binary inside the installer, unmodified: for example Python's DLLs, the Microsoft C runtime and WebView2 SDK DLLs, PDFium, and `tesseract.exe` (upstream Tesseract, built by our CI from its pinned source). They keep their publishers' signatures or none.
 - **Every signing request is approved by hand**, by an approver below, after checking that the build came from a tagged commit on `main` that passed CI.
 
 ## macOS
