@@ -181,3 +181,52 @@ def write_to(uri, data: bytes) -> None:
         stream.write(jarray(jbyte)(data))
     finally:
         stream.close()
+
+
+# -- the screen: system bars, text size, the browser (design/android/SPEC.md, sections 3.4 to 3.8) -----
+
+BAR_LIGHT, BAR_NIGHT = "#ffffff", "#141414"  # the page background (--bg) in each theme
+
+
+def night(activity) -> bool:
+    """True when the phone is in its dark theme (the app's DayNight theme follows it)."""
+    Configuration = _jclass("android.content.res.Configuration")
+    mode = activity.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK
+    return mode == Configuration.UI_MODE_NIGHT_YES
+
+
+def style_system_bars(activity) -> None:
+    """Status and navigation bars in the page's background, with icons that read on it."""
+    dark = night(activity)
+    window = activity.getWindow()
+    colour = _jclass("android.graphics.Color").parseColor(BAR_NIGHT if dark else BAR_LIGHT)
+    window.setStatusBarColor(colour)
+    window.setNavigationBarColor(colour)
+    controller = _jclass("androidx.core.view.WindowCompat").getInsetsController(window, window.getDecorView())
+    controller.setAppearanceLightStatusBars(not dark)
+    controller.setAppearanceLightNavigationBars(not dark)
+
+
+def follow_font_scale(webview, activity) -> int:
+    """The page's text follows the phone's font size setting (the layout holds at 200%)."""
+    scale = activity.getResources().getConfiguration().fontScale
+    zoom = max(50, min(300, round(scale * 100)))
+    webview.getSettings().setTextZoom(zoom)
+    return zoom
+
+
+def open_in_browser(activity, url: str) -> bool:
+    """Open a website link in the phone's browser, never inside the app; False when there is none."""
+    Intent = _jclass("android.content.Intent")
+    intent = Intent(Intent.ACTION_VIEW, _jclass("android.net.Uri").parse(url))
+    try:
+        activity.startActivity(intent)
+    except Exception:  # noqa: BLE001 - no browser on the phone
+        return False
+    return True
+
+
+def phone() -> dict:
+    """The Android version and phone model, for "Copy technical details" (never anything personal)."""
+    Build = _jclass("android.os.Build")
+    return {"android": str(Build.VERSION.RELEASE), "sdk": int(Build.VERSION.SDK_INT), "model": str(Build.MODEL)}

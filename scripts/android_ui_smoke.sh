@@ -28,30 +28,29 @@ fail() { echo "$1"; "$ADB" logcat -d > $OUT/logcat.txt; grep -E "AndroidRuntime|
 sleep 45
 alive || fail "the app is not running after start"
 "$ADB" exec-out screencap -p > $OUT/1-start.png
-# Find "Try a sample" from the UI tree; uiautomator is flaky on emulators, so fall back to where the
-# button sits on a 1080x1920 screen (the first of three equal buttons' middle).
-POS=""
-for _ in 1 2 3; do
-  "$ADB" shell uiautomator dump /data/local/tmp/ui.xml || true
-  if "$ADB" pull /data/local/tmp/ui.xml $OUT/ui.xml >/dev/null 2>&1; then
-    POS=$(python3 - $OUT/ui.xml <<'PY'
+tap_text() {  # tap_text <regex for text or content-desc>; 0 when tapped
+  "$ADB" shell uiautomator dump /data/local/tmp/ui.xml >/dev/null 2>&1 || true
+  "$ADB" pull /data/local/tmp/ui.xml $OUT/ui.xml >/dev/null 2>&1 || return 1
+  local pos
+  pos=$(python3 - $OUT/ui.xml "$1" <<'PY'
 import re, sys
-xml = open(sys.argv[1], encoding="utf-8").read()
-m = re.search(r'text="try a sample"[^>]*?bounds="\[(\d+),(\d+)\]\[(\d+),(\d+)\]"', xml, re.I)
-print(f"{(int(m[1]) + int(m[3])) // 2} {(int(m[2]) + int(m[4])) // 2}" if m else "")
+xml, want = open(sys.argv[1], encoding="utf-8").read(), sys.argv[2]
+for node in re.finditer(r"<node [^>]*>", xml):
+  n = node.group(0)
+  label = " ".join(x for x in re.findall(r'(?:text|content-desc)="([^"]*)"', n) if x).strip()
+  m = re.search(r'bounds="\[(\d+),(\d+)\]\[(\d+),(\d+)\]"', n)
+  if m and re.search(want, label, re.I):
+      print(f"{(int(m[1]) + int(m[3])) // 2} {(int(m[2]) + int(m[4])) // 2}")
+      break
 PY
 )
-    [ -n "$POS" ] && break
-  fi
-  sleep 3
-done
-if [ -z "$POS" ]; then
-  SIZE=$("$ADB" shell wm size | grep -o '[0-9]*x[0-9]*' | tail -1)
-  W=${SIZE%x*}; H=${SIZE#*x}
-  POS="$((W * 3 / 4)) $((H * 579 / 1920))"  # row 3, right: "Try a sample"
-  echo "uiautomator gave no tree; tapping the button's usual place: $POS"
-fi
-"$ADB" shell input tap $POS
+  [ -n "$pos" ] && "$ADB" shell input tap $pos
+}
+# The page is a WebView: uiautomator sees its links with their labels. It is flaky on emulators, so retry.
+tap_retry() { for _ in 1 2 3 4; do tap_text "$1" && return 0; sleep 3; done; return 1; }
+seen() { "$ADB" shell uiautomator dump /data/local/tmp/ui.xml >/dev/null 2>&1 || true; "$ADB" pull /data/local/tmp/ui.xml $OUT/ui.xml >/dev/null 2>&1 || return 1; grep -qiE "$1" $OUT/ui.xml; }
+logged() { for _ in $(seq 1 10); do "$ADB" logcat -d | grep -q "$1" && return 0; sleep 1; done; return 1; }
+tap_retry "^try a sample$" || fail "no 'Try a sample' button on the home screen"
 for _ in $(seq 1 30); do
   sleep 5
   alive || fail "the app stopped while reading the sample"
@@ -109,25 +108,7 @@ if [ -f "$FIXTURES/itext-style.pdf" ]; then
   "$ADB" push "$FIXTURES/itext-style.pdf" "/sdcard/Download/$PICK" >/dev/null
   "$ADB" shell content call --uri content://media --method scan_volume --arg external_primary >/dev/null 2>&1 || true
   "$ADB" logcat -c
-  tap_text() {  # tap_text <regex for text or content-desc>; 0 when tapped
-    "$ADB" shell uiautomator dump /data/local/tmp/ui.xml >/dev/null 2>&1 || true
-    "$ADB" pull /data/local/tmp/ui.xml $OUT/picker.xml >/dev/null 2>&1 || return 1
-    local pos
-    pos=$(python3 - $OUT/picker.xml "$1" <<'PY'
-import re, sys
-xml, want = open(sys.argv[1], encoding="utf-8").read(), sys.argv[2]
-for node in re.finditer(r"<node [^>]*>", xml):
-    n = node.group(0)
-    label = " ".join(x for x in re.findall(r'(?:text|content-desc)="([^"]*)"', n) if x).strip()
-    m = re.search(r'bounds="\[(\d+),(\d+)\]\[(\d+),(\d+)\]"', n)
-    if m and re.search(want, label, re.I):
-        print(f"{(int(m[1]) + int(m[3])) // 2} {(int(m[2]) + int(m[4])) // 2}")
-        break
-PY
-)
-    [ -n "$pos" ] && "$ADB" shell input tap $pos
-  }
-  tap_text "^open a file$" || fail "no 'Open a file' button"
+  tap_retry "^open a file$" || fail "no 'Open a file' button"
   sleep 6
   "$ADB" exec-out screencap -p > $OUT/5-picker.png
   # The file's own row (exact name), not its "Preview the file …" icon.
@@ -151,4 +132,46 @@ PY
   case "$LINE" in *": ok "*"'text_layer': 2"*) ;; *) fail "the picked file did not read as ok from its text layer";; esac
   "$ADB" exec-out screencap -p > $OUT/6-picked.png
 fi
-echo "UI smoke passed: started, read the sample, read shared PDFs (*/* and application/pdf), opened one with the picker, still running"
+# The design's screens (design/android/SPEC.md): every control is a link the app intercepts.
+# Copy: the toast is put into the page from outside (evaluate_javascript under the page's policy).
+tap_retry "^copy$" || fail "no Copy button on the result"
+logged "HeOCR copied" || fail "Copy did nothing"
+sleep 1
+seen "text copied" || fail "the copied toast did not show (evaluate_javascript)"
+"$ADB" exec-out screencap -p > $OUT/7-copied.png
+# More: the sheet opens in place; Back closes it, and Back again goes Home.
+sleep 4
+tap_retry "^more actions$" || fail "no More button"
+logged "HeOCR action more" || fail "More did nothing"
+sleep 1
+seen "copy technical details" || fail "the sheet did not open"
+"$ADB" exec-out screencap -p > $OUT/8-sheet.png
+"$ADB" logcat -c
+"$ADB" shell input keyevent 4
+sleep 2
+alive || fail "Back closed the app with the sheet open"
+"$ADB" logcat -d | grep -q "HeOCR screen home" && fail "Back left the result instead of closing the sheet"
+"$ADB" shell input keyevent 4
+logged "HeOCR screen home" || fail "Back on the result did not go Home"
+# About, and Copy technical details from it.
+tap_retry "^about$" || fail "no About button"
+logged "HeOCR screen about" || fail "About did not open"
+"$ADB" exec-out screencap -p > $OUT/9-about.png
+tap_retry "^copy technical details" || fail "no Copy technical details row"
+logged "HeOCR diagnostics copied" || fail "Copy technical details did nothing"
+"$ADB" logcat -c
+"$ADB" shell input keyevent 4
+logged "HeOCR screen home" || fail "Back on About did not go Home"
+alive || fail "the app stopped on Back"
+# Night and 200% text: the page follows the phone (SPEC 3.6, 3.7).
+"$ADB" shell cmd uimode night yes >/dev/null
+"$ADB" shell settings put system font_scale 2.0
+"$ADB" shell am force-stop "$PKG"
+"$ADB" logcat -c
+"$ADB" shell am start -n "$PKG/org.beeware.android.MainActivity" >/dev/null
+logged "HeOCR screen: night=True text_zoom=200" || { sleep 20; logged "HeOCR screen: night=True text_zoom=200" || fail "the app did not follow night mode and the font scale"; }
+sleep 5
+"$ADB" exec-out screencap -p > $OUT/10-home-night-200.png
+"$ADB" shell cmd uimode night no >/dev/null
+"$ADB" shell settings put system font_scale 1.0
+echo "UI smoke passed: started, read the sample, read shared PDFs (*/* and application/pdf), opened one with the picker, copied, the sheet and Back, About, diagnostics, night and 200% text"
