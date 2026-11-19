@@ -41,6 +41,12 @@ def welcome(strings: dict[str, str], lang: str) -> str:
     return _html(f'<p>{escape(strings["welcome"])}</p><p class="note">{escape(strings["offline"])}</p>', direction)
 
 
+def message(strings: dict[str, str], lang: str, text: str) -> str:
+    """A message in place of a reading (the file could not be read, needs a converter, had no text)."""
+    direction = "rtl" if lang == "he" else "ltr"
+    return _html(f'<p>{escape(text)}</p><p class="note">{escape(strings["welcome"])}</p>', direction)
+
+
 _PLACEHOLDER = re.compile(r'(<(\w+)[^>]*?data-i18n="(\w+)"(?: data-n="(\d+)")?[^>]*>)(</\2>)')
 
 

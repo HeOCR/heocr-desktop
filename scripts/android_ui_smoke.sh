@@ -63,8 +63,12 @@ FIXTURE="${FIXTURE:-tests/fixtures/garden.pdf}"
 "$ADB" shell chmod 644 /data/local/tmp/garden.pdf
 "$ADB" shell run-as "$PKG" mkdir -p cache/shared
 "$ADB" shell run-as "$PKG" cp /data/local/tmp/garden.pdf cache/shared/garden.pdf
+# The FileProvider's authority, as installed (Briefcase derives it from the bundle identifier).
+AUTH=$("$ADB" shell dumpsys package "$PKG" | grep -o '[A-Za-z0-9_.-]*\.fileprovider' | head -1)
+[ -n "$AUTH" ] || fail "no FileProvider authority for $PKG"
+echo "FileProvider: $AUTH"
 "$ADB" shell am start -a android.intent.action.SEND -t application/pdf \
-  --eu android.intent.extra.STREAM "content://$PKG.fileprovider/shared/garden.pdf" \
+  --eu android.intent.extra.STREAM "content://$AUTH/shared/garden.pdf" \
   --grant-read-uri-permission -n "$PKG/org.beeware.android.MainActivity"
 for _ in $(seq 1 24); do
   sleep 5

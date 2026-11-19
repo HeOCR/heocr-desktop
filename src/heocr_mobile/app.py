@@ -96,10 +96,17 @@ class HeOCR(toga.App):
         try:
             name = device.display_name(uri)
             path = device.copy_to(uri, Path(self.paths.cache) / "incoming")
-        except Exception:  # noqa: BLE001 - shown to the user
-            self.status.text = self.t["unreadable"]
+        except Exception as exc:  # noqa: BLE001 - shown to the user; details stay on the phone
+            print(f"HeOCR incoming document: error {type(exc).__name__}", flush=True)
+            self.message("unreadable")
             return
         await self.read(path, name)
+
+    def message(self, key: str):
+        """A longer message goes in the page, where it wraps; the status line keeps short text only."""
+        self.text = ""
+        self.status.text = ""
+        self.webview.set_content("about:blank", view.message(self.t, self.lang, self.t.get(key, self.t["error"])))
 
     # -- reading ---------------------------------------------------------------------------
 
@@ -121,7 +128,7 @@ class HeOCR(toga.App):
             result = await loop.run_in_executor(None, engine.convert, path, report)
         except Exception as exc:  # noqa: BLE001 - shown to the user; details stay on the phone
             print(f"HeOCR read {name}: error {type(exc).__name__}", flush=True)
-            self.status.text = self.t["error"]
+            self.message("error")
             return
         finally:
             self.busy = False
@@ -129,9 +136,7 @@ class HeOCR(toga.App):
         models = sorted({str(m) for m in view.ocr_models(result.doc)}) if result.doc is not None else []
         print(f"HeOCR read {name}: {result.kind} routes={result.routes} models={models} seconds={result.seconds:.1f}", flush=True)
         if result.kind != "ok":
-            self.text = ""
-            self.status.text = self.t.get(result.kind, self.t["error"])
-            self.webview.set_content("about:blank", view.welcome(self.t, self.lang))
+            self.message(result.kind)
             return
         self.text = result.doc.text
         notes = [self.t["ocr_note"]] if "ocr" in result.routes or "ocr" in result.sources else []
