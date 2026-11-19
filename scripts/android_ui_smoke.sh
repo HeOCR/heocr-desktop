@@ -54,7 +54,7 @@ for _ in $(seq 1 30); do
 done
 "$ADB" exec-out screencap -p > $OUT/2-sample.png
 "$ADB" logcat -d > $OUT/logcat.txt
-LINE=$(grep -o "HeOCR read sample.png: .*" $OUT/logcat.txt | tail -1)
+LINE=$(grep -o "HeOCR read sample.png: .*" $OUT/logcat.txt | tail -1 || true)
 [ -n "$LINE" ] || fail "the sample was not read within 150 seconds"
 echo "$LINE"
 case "$LINE" in *": ok "*) ;; *) fail "the sample did not read as ok";; esac
@@ -82,8 +82,8 @@ share() {  # share <local file> <name on the device> <mime> <expected route text
     if "$ADB" logcat -d | grep -q "HeOCR read $2"; then break; fi
   done
   "$ADB" logcat -d >> $OUT/logcat.txt
-  LINE=$("$ADB" logcat -d | grep -o "HeOCR read $2: .*" | tail -1)
-  COPY=$("$ADB" logcat -d | grep -o "HeOCR incoming $2: .*" | tail -1)
+  LINE=$("$ADB" logcat -d | grep -o "HeOCR read $2: .*" | tail -1 || true)
+  COPY=$("$ADB" logcat -d | grep -o "HeOCR incoming $2: .*" | tail -1 || true)
   echo "$COPY"; echo "$LINE"
   [ -n "$LINE" ] || fail "$2 shared as $3 was not read within 120 seconds"
   case "$LINE" in *": ok "*"$4"*) ;; *) fail "$2 shared as $3 did not read as ok with $4";; esac
@@ -125,13 +125,14 @@ PY
   tap_text "^open a file$" || fail "no 'Open a file' button"
   sleep 6
   "$ADB" exec-out screencap -p > $OUT/5-picker.png
-  if ! tap_text "$PICK"; then
+  # The file's own row (exact name), not its "Preview the file …" icon.
+  if ! tap_text "^${PICK//./\\.}$"; then
     # Not among the recent files: open the picker's list of places, then Downloads.
     tap_text "show roots|navigation" || true
     sleep 2
     tap_text "^downloads?$" || true
     sleep 3
-    tap_text "$PICK" || fail "the picker did not show $PICK"
+    tap_text "^${PICK//./\\.}$" || fail "the picker did not show $PICK"
   fi
   for _ in $(seq 1 24); do
     sleep 5
@@ -139,7 +140,7 @@ PY
     if "$ADB" logcat -d | grep -q "HeOCR read $PICK"; then break; fi
   done
   "$ADB" logcat -d >> $OUT/logcat.txt
-  LINE=$("$ADB" logcat -d | grep -o "HeOCR read $PICK: .*" | tail -1)
+  LINE=$("$ADB" logcat -d | grep -o "HeOCR read $PICK: .*" | tail -1 || true)
   echo "$LINE"
   [ -n "$LINE" ] || { "$ADB" logcat -d | grep -E "HeOCR|python.std" | tail -20; fail "the picked file was not read"; }
   case "$LINE" in *": ok "*"'text_layer': 2"*) ;; *) fail "the picked file did not read as ok from its text layer";; esac
