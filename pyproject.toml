@@ -12,8 +12,8 @@ license = "Apache-2.0"
 license-files = ["LICENSE", "NOTICE", "THIRD_PARTY_LICENSES.md"]
 authors = [{ name = "HeOCR maintainers" }]
 dependencies = [
-  # heocr 0.1.2: the gated 0.1.0 plus its fixes (HeOCR/heocr release/0.1.2, ac1ad20). Becomes heocr==0.1.2 once on PyPI.
-  "heocr @ git+https://github.com/HeOCR/heocr@ac1ad2063f0f66208f5949295e17ae1aa0e97783",
+  # heocr 0.1.2 from PyPI: the gated 0.1.0 plus its fixes (tag v0.1.2, ac1ad20).
+  "heocr==0.1.2",
   "pywebview==6.2.1",
 ]
 
@@ -54,7 +54,7 @@ sources = ["src/heocr_desktop"]
 icon = "icons/heocr"
 # Pinned to the versions heocr's release gate ran with, so the app reads PDFs exactly as measured.
 requires = [
-  "heocr @ git+https://github.com/HeOCR/heocr@ac1ad2063f0f66208f5949295e17ae1aa0e97783",
+  "heocr==0.1.2",
   "pypdfium2==5.15.2",
   "Pillow==13.0.0",
   "defusedxml==0.7.1",
