@@ -146,7 +146,8 @@ def create_document_intent(name: str, mime: str):
     intent = Intent(Intent.ACTION_CREATE_DOCUMENT)
     intent.addCategory(Intent.CATEGORY_OPENABLE)
     intent.setType(mime)
-    intent.putExtra(Intent.EXTRA_TITLE, name)
+    # A typed Java String: Chaquopy cannot always choose an Intent.putExtra overload for a Python value.
+    intent.putExtra(Intent.EXTRA_TITLE, _jclass("java.lang.String")(name))
     return intent
 
 
