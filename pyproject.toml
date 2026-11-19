@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "heocr-desktop"
-version = "0.1.0rc1"
+version = "0.1.0"
 description = "HeOCR desktop app: drop in a PDF, Word file or image and get its Hebrew text out. Fully offline."
 readme = "README.md"
 requires-python = ">=3.12"
@@ -12,8 +12,8 @@ license = "Apache-2.0"
 license-files = ["LICENSE", "NOTICE", "THIRD_PARTY_LICENSES.md"]
 authors = [{ name = "HeOCR maintainers" }]
 dependencies = [
-  # heocr 0.1.0rc1, the release candidate (HeOCR/heocr 57e58de). Switches to heocr==0.1.0 after the gate.
-  "heocr @ git+https://github.com/HeOCR/heocr@57e58deb3a230a86b07e9fdf110223cac9fbf471",
+  # heocr 0.1.2: the gated 0.1.0 plus its fixes (HeOCR/heocr release/0.1.2, ac1ad20). Becomes heocr==0.1.2 once on PyPI.
+  "heocr @ git+https://github.com/HeOCR/heocr@ac1ad2063f0f66208f5949295e17ae1aa0e97783",
   "pywebview==6.2.1",
 ]
 
@@ -39,7 +39,7 @@ testpaths = ["tests"]
 [tool.briefcase]
 project_name = "HeOCR"
 bundle = "io.github.heocr"
-version = "0.1.0rc1"
+version = "0.1.0"
 url = "https://heocr.github.io"
 license = "Apache-2.0"
 author = "HeOCR maintainers"
@@ -54,7 +54,7 @@ sources = ["src/heocr_desktop"]
 icon = "icons/heocr"
 # Pinned to the versions heocr's release gate ran with, so the app reads PDFs exactly as measured.
 requires = [
-  "heocr @ git+https://github.com/HeOCR/heocr@57e58deb3a230a86b07e9fdf110223cac9fbf471",
+  "heocr @ git+https://github.com/HeOCR/heocr@ac1ad2063f0f66208f5949295e17ae1aa0e97783",
   "pypdfium2==5.15.2",
   "Pillow==13.0.0",
   "defusedxml==0.7.1",

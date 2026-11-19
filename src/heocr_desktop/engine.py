@@ -207,14 +207,6 @@ def summarize(doc) -> tuple[dict[str, int], dict[str, int]]:
     return routes, sources
 
 
-def _number_reading_path_error(exc: Exception) -> bool:
-    """heocr 0.1.0rc1 rejects its own record when a second reading of a number starts with "/" (for
-    example "/2."): its provenance guard against file-system paths also covers OCR readings. Only that
-    error is retried, without the number re-check. Approved by the lead until heocr 0.1.1; found by
-    pipeline."""
-    return type(exc).__name__ == "ContractError" and "number_readings" in str(exc) and "filesystem path" in str(exc)
-
-
 def convert(
     path: str | os.PathLike[str],
     report: Callable[[Progress], None] | None = None,
@@ -234,13 +226,7 @@ def convert(
             report(Progress(stage="reading"))
         options = dict(ocr=tess is not None, tesseract=str(tess) if tess else None, convert=False, ocr_model=None)
         notes: list[str] = []
-        try:
-            doc = heocr.extract(str(path), **options)
-        except Exception as exc:  # noqa: BLE001 - only the one known rc1 error is retried
-            if not _number_reading_path_error(exc):
-                raise
-            doc = heocr.extract(str(path), check_numbers=False, **options)
-            notes.append("numbers_not_rechecked")
+        doc = heocr.extract(str(path), **options)
     finally:
         _hook_state.report = None
         _hook_state.cancel = None

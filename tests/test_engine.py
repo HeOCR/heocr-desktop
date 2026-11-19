@@ -86,28 +86,7 @@ def test_scans_go_through_ocr(name):
     assert "הדקלים" in result.doc.text
 
 
-def test_rc1_number_path_error_is_retried_without_number_checks(monkeypatch):
-    import heocr
-
-    class ContractError(Exception):
-        pass
-
-    real = heocr.extract
-    calls = []
-
-    def flaky(path, **kwargs):
-        calls.append(kwargs.get("check_numbers", "default"))
-        if len(calls) == 1:
-            raise ContractError("block b3 number_readings[0]: looks like a filesystem path: '/2.'")
-        return real(path, **kwargs)
-
-    monkeypatch.setattr(heocr, "extract", flaky)
-    result = engine.convert(FIX / "garden.pdf")
-    assert calls == ["default", False]
-    assert result.notes == ["numbers_not_rechecked"] and result.kind == "ok"
-
-
-def test_other_errors_are_not_retried(monkeypatch):
+def test_errors_are_not_retried(monkeypatch):
     import heocr
 
     def broken(path, **kwargs):
