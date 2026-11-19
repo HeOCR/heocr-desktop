@@ -87,6 +87,8 @@ def main(dirs: list[str]) -> None:
     for folder in sorted((ROOT / "third_party").iterdir()):
         if android and folder.name == "webview2":
             continue
+        if not android and folder.name == "fonts":  # the design's typefaces ship in the Android app only
+            continue
         for text in sorted(folder.glob("*.txt")):
             shutil.copy2(text, resources / "licenses" / f"{folder.name}-{text.name}")
     info = [json.loads((b / "BUILD_INFO.json").read_text("utf-8")) for b in builds]

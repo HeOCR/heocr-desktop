@@ -39,6 +39,7 @@ Builds:
       - python scripts/assemble_resources.py --android build/tess/android-arm64
       - briefcase create android -a heocr_mobile --no-input
       - python scripts/android_patch_activity.py
+      - python scripts/android_design_res.py
       - briefcase build android -a heocr_mobile --no-input
       - cd build/heocr_mobile/android/gradle
       - ./gradlew assembleRelease --console plain

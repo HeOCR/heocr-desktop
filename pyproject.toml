@@ -30,6 +30,7 @@ where = ["src"]
 
 [tool.setuptools.package-data]
 heocr_desktop = ["ui/*", "resources/**/*"]
+heocr_mobile = ["result.css"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -116,7 +117,10 @@ permission.camera = "HeOCR reads the text in photos you take. Photos stay on thi
 
 [tool.briefcase.app.heocr_mobile.android]
 requires = ["toga-android==0.5.7"]
-icon = "icons/android/heocr"  # scripts/android_icons.py
+# The design's launcher (white ground, the owner's choice) and splash, under the names Briefcase reads:
+# design/android/launcher/briefcase/ and splash/briefcase/. scripts/android_design_res.py adds the rest.
+icon = "icons/android/heocr"
+splash_background_color = "#FFFFFF"
 android_abis = ["arm64-v8a"]
 # Only what the template already brings (AppCompat). Toga needs Material only for OptionContainer, which
 # the app does not use; leaving it out takes about 4 MB off the APK.

@@ -3,20 +3,16 @@
 from __future__ import annotations
 
 import re
+from pathlib import Path
 from html import escape
 
 from heocr_desktop import render
 
-CSS = """
-body { font-family: sans-serif; margin: 12px; line-height: 1.5; color: #111; background: #fff; }
-.block { margin: 0 0 0.6em; }
-.page-break { margin: 1.2em 0 0.4em; color: #666; font-size: 0.85em; border-top: 1px solid #ddd; padding-top: 0.3em; }
-h2.section { font-size: 1em; color: #444; }
-table { border-collapse: collapse; margin: 0.6em 0; }
-td, th { border: 1px solid #ccc; padding: 2px 6px; }
-.figure { color: #666; font-style: italic; }
-.note { color: #555; font-size: 0.9em; }
-"""
+# The design's result stylesheet (design/android/css/result-standalone.css): brand tokens for light and
+# night, the two typefaces embedded as data URIs, and the rules for heocr's result markup under ``.doc``.
+CSS = (Path(__file__).resolve().parent / "result.css").read_text("utf-8")
+# Nothing loads: the fonts are inside the stylesheet (font-src data:), and there is no script.
+CSP = "default-src 'none'; style-src 'unsafe-inline'; font-src data:"
 
 _MODEL = re.compile(r"^tesseract:(.+)\.traineddata$")
 
@@ -30,8 +26,8 @@ def _html(body: str, direction: str) -> str:
     return (
         f'<!doctype html><html dir="{direction}"><head><meta charset="utf-8">'
         '<meta name="viewport" content="width=device-width, initial-scale=1">'
-        "<meta http-equiv=\"Content-Security-Policy\" content=\"default-src 'none'; style-src 'unsafe-inline'\">"
-        f"<style>{CSS}</style></head><body>{body}</body></html>"
+        f'<meta http-equiv="Content-Security-Policy" content="{CSP}">'
+        f'<style>{CSS}</style></head><body class="doc">{body}</body></html>'
     )
 
 
