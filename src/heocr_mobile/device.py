@@ -138,3 +138,26 @@ def copy_to(uri, folder: Path) -> Path:
     finally:
         stream.close()
     return target
+
+
+def create_document_intent(name: str, mime: str):
+    """The system "save as" screen (Storage Access Framework), suggesting a file name."""
+    Intent = _jclass("android.content.Intent")
+    intent = Intent(Intent.ACTION_CREATE_DOCUMENT)
+    intent.addCategory(Intent.CATEGORY_OPENABLE)
+    intent.setType(mime)
+    intent.putExtra(Intent.EXTRA_TITLE, name)
+    return intent
+
+
+def write_to(uri, data: bytes) -> None:
+    """Write a saved file's bytes to the place the user chose."""
+    from java import jarray, jbyte
+
+    stream = _android_context().getContentResolver().openOutputStream(uri, "wt")
+    if stream is None:
+        raise OSError("the file could not be written")
+    try:
+        stream.write(jarray(jbyte)(data))
+    finally:
+        stream.close()
