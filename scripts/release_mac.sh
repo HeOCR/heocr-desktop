@@ -25,12 +25,16 @@ PY="${PYTHON:-python3}"
 "$PY" scripts/assemble_resources.py "$1" "$2"
 
 APP="build/heocr_desktop/macos/app/HeOCR.app"
-if [ -d "$APP" ]; then
-  briefcase update macOS --update-requirements --update-resources --no-input
-else
-  briefcase create macOS --no-input
+VERSION=$(sed -n 's/^version = "\(.*\)"/\1/p' pyproject.toml | head -1)
+# Always a fresh app: `briefcase update` keeps the Info.plist written at create time, so a
+# version bump would not reach CFBundleShortVersionString. The old build goes to the Trash.
+if [ -d build/heocr_desktop/macos ]; then
+  trash build/heocr_desktop/macos
 fi
+briefcase create macOS --no-input
 briefcase build macOS --no-input
+PLIST_VERSION=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" "$APP/Contents/Info.plist")
+[ "$PLIST_VERSION" = "$VERSION" ] || { echo "Info.plist says $PLIST_VERSION, pyproject.toml says $VERSION"; exit 1; }
 
 # Sign the app bundle (Briefcase signs nested binaries inside-out, with --options runtime).
 briefcase package macOS --identity "$IDENTITY" --no-notarize --no-input
@@ -42,7 +46,6 @@ lipo -info "$TESS"
 
 "$PY" scripts/smoke_app.py macos
 
-VERSION=$(sed -n 's/^version = "\(.*\)"/\1/p' pyproject.toml | head -1)
 BUILT=$(ls -t dist/*.dmg | grep -v -- '-macos.dmg' | head -1)
 DMG="dist/HeOCR-${VERSION}-macos.dmg"   # the name the download page links to
 WORK="build/notarize"
