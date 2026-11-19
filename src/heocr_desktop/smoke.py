@@ -6,15 +6,28 @@ to them, and exit 0 only if each fixture meets its expectation. No window opens.
 
 Expectations come from ``expect.json`` in the folder: ``{"file": {"kind": "ok", "route": "ocr",
 "contains": ["..."]}}``. The fixtures hold invented text only.
+
+Every reading also records the Tesseract models it used and the document's flags. A document flagged
+``bundled_model_unavailable`` (heocr's own model missing, stock Tesseract read instead) always fails.
+``HEOCR_SMOKE_MODEL=heocr_modern_v1`` also requires that model in every OCR reading.
 """
 
 from __future__ import annotations
 
 import json
+import os
+import re
 import sys
 from pathlib import Path
 
 from heocr_desktop import engine
+
+_MODEL = re.compile(r"^tesseract:(.+)\.traineddata$")
+
+
+def models(doc) -> list[str]:
+    """The Tesseract models a reading used, from its record (``heocr_modern_v1``, ``heb``, ``eng``)."""
+    return sorted({m.group(1) for key in getattr(doc, "components", {}) or {} if (m := _MODEL.match(key))})
 
 
 def run(folder: str) -> int:
@@ -28,14 +41,22 @@ def run(folder: str) -> int:
         "tessdata": str(engine.tessdata_path()),
         "files": {},
     }
+    want_model = os.environ.get("HEOCR_SMOKE_MODEL")
+    report["want_model"] = want_model
     failures = 0
     for name, want in sorted(expect.items()):
         entry: dict = {"want": want}
         try:
             result = engine.convert(base / name)
             text = result.doc.text if result.doc is not None else ""
-            entry.update(kind=result.kind, routes=result.routes, sources=result.sources, unread=result.unread, chars=len(text), seconds=round(result.seconds, 2))
+            used = models(result.doc) if result.doc is not None else []
+            flags = list(getattr(result.doc, "flags", []) or []) if result.doc is not None else []
+            entry.update(kind=result.kind, routes=result.routes, sources=result.sources, unread=result.unread, chars=len(text), seconds=round(result.seconds, 2), models=used, flags=flags)
             problems = []
+            if "bundled_model_unavailable" in flags:
+                problems.append("bundled_model_unavailable")
+            if want_model and "ocr" in result.routes and want_model not in used:
+                problems.append(f"read without {want_model}: {used}")
             if result.kind != want.get("kind", "ok"):
                 problems.append(f"kind {result.kind}")
             route = want.get("route")
