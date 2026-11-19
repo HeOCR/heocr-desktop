@@ -90,6 +90,8 @@ class HeOCR(toga.App):
     def show(self, page: str, screen: str):
         self.screen = screen
         self.sheet = False
+        # The reading can be pinch-zoomed (a document to read closely); the app's screens cannot.
+        device.allow_zoom(self.webview._impl.native, screen in ("result", "licences"))
         self.webview.set_content("about:blank", page)
         print(f"HeOCR screen {screen}", flush=True)
 

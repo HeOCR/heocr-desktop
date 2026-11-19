@@ -214,15 +214,22 @@ def configure_webview(webview, activity) -> int:
     settings = webview.getSettings()
     settings.setUseWideViewPort(True)
     settings.setLoadWithOverviewMode(False)
-    settings.setSupportZoom(False)
-    settings.setBuiltInZoomControls(False)
-    settings.setDisplayZoomControls(False)
+    allow_zoom(webview, False)
     settings.setLayoutAlgorithm(_jclass("android.webkit.WebSettings$LayoutAlgorithm").NORMAL)
     webview.setInitialScale(0)
     scale = activity.getResources().getConfiguration().fontScale
     zoom = max(50, min(300, round(scale * 100)))
     settings.setTextZoom(zoom)
     return zoom
+
+
+def allow_zoom(webview, allowed: bool) -> None:
+    """Pinch zoom on the reading itself (a document to read closely), not on the app's screens.
+    The phone's font size setting scales the text everywhere either way."""
+    settings = webview.getSettings()
+    settings.setSupportZoom(allowed)
+    settings.setBuiltInZoomControls(allowed)
+    settings.setDisplayZoomControls(False)
 
 
 def open_in_browser(activity, url: str) -> bool:
