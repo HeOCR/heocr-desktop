@@ -97,9 +97,15 @@ jobs:
           manifest=build/heocr_mobile/android/gradle/app/src/main/AndroidManifest.xml
           grep -n "uses-permission" "$manifest" || true
           if grep -q "android.permission.INTERNET\|ACCESS_NETWORK_STATE" "$manifest"; then echo "network permission in the manifest"; exit 1; fi
+      - name: Maven Central from this runner (diagnostic)
+        run: |
+          for u in https://repo.maven.apache.org/maven2/com/chaquo/python/gradle/17.2.0/gradle-17.2.0.pom https://dl.google.com/dl/android/maven2/com/android/tools/build/gradle/9.3.1/gradle-9.3.1.pom; do
+            curl -sS -o /dev/null -w "%{http_code} %{url_effective}\n" -A "Gradle/9.5.0" "$u" || true
+          done
+          ls ~/.gradle 2>/dev/null; cat ~/.gradle/gradle.properties 2>/dev/null || true; ls ~/.gradle/init.d 2>/dev/null || true
       - name: On-device tests in the emulator (x86_64 image, arm64 app through Android's ARM translation)
         run: >
-          briefcase run android -a heocr_mobile --test --no-input
+          briefcase run android -a heocr_mobile --test --no-input -v
           -d '{"avd":"heocrPhone","system_image":"system-images;android-34;google_apis;x86_64"}'
           --Xemulator=-no-window --Xemulator=-no-snapshot --Xemulator=-no-audio --Xemulator=-no-boot-anim
       - name: Emulator facts (on failure)
