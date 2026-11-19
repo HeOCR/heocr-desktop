@@ -73,6 +73,19 @@ jobs:
           name: heocr-macos-adhoc-dmg
           path: dist/*.dmg
           retention-days: 14
+      # The built app with Briefcase's bundle folder, as a tarball (keeps symlinks and modes), for
+      # scripts/sign_ci_app.sh: the maintainer's Mac signs and notarizes it without building anything.
+      - name: The built app, for signing elsewhere
+        run: |
+          tar -czf heocr-macos-app.tgz -C build/heocr_desktop/macos app
+          shasum -a 256 heocr-macos-app.tgz
+      - uses: actions/upload-artifact@v4
+        with:
+          name: heocr-macos-app-unsigned
+          path: |
+            heocr-macos-app.tgz
+            build/smoke-report-*.json
+          retention-days: 14
 
   windows:
     needs: test
