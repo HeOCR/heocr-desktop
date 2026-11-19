@@ -218,9 +218,14 @@ def configure_webview(webview, activity) -> int:
     settings.setLayoutAlgorithm(_jclass("android.webkit.WebSettings$LayoutAlgorithm").NORMAL)
     webview.setInitialScale(0)
     scale = activity.getResources().getConfiguration().fontScale
-    zoom = max(50, min(300, round(scale * 100)))
-    settings.setTextZoom(zoom)
-    return zoom
+    wanted = max(50, min(300, round(scale * 100)))
+    default = settings.getTextZoom()
+    # Newer System WebViews already start at the phone's font scale; setting it again on top would
+    # double it (300% and more at a 200% setting). Set it only when the WebView left it at 100.
+    if default == 100 and wanted != 100:
+        settings.setTextZoom(wanted)
+    print(f"HeOCR text zoom: font_scale={scale:.2f} webview_default={default} now={settings.getTextZoom()}", flush=True)
+    return int(settings.getTextZoom())
 
 
 def allow_zoom(webview, allowed: bool) -> None:
