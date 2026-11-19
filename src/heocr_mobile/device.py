@@ -220,10 +220,10 @@ def configure_webview(webview, activity) -> int:
     scale = activity.getResources().getConfiguration().fontScale
     wanted = max(50, min(300, round(scale * 100)))
     default = settings.getTextZoom()
-    # Newer System WebViews already start at the phone's font scale; setting it again on top would
-    # double it (300% and more at a 200% setting). Set it only when the WebView left it at 100.
-    if default == 100 and wanted != 100:
-        settings.setTextZoom(wanted)
+    # Always set it: left at its default, a recent System WebView also zooms the whole page by the font
+    # scale (Android 14 emulator, 200%: icons and layout doubled, text larger still). Set explicitly, the
+    # text alone scales. Android 15 at 200% still draws the text too large: issue #23.
+    settings.setTextZoom(wanted)
     print(f"HeOCR text zoom: font_scale={scale:.2f} webview_default={default} now={settings.getTextZoom()}", flush=True)
     return int(settings.getTextZoom())
 
