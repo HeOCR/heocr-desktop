@@ -91,7 +91,7 @@ jobs:
           sudo udevadm trigger --name-match=kvm
       - run: python -m pip install briefcase==0.4.7
       - name: Create the app
-        run: briefcase create android heocr_mobile --no-input
+        run: briefcase create android -a heocr_mobile --no-input
       - name: The manifest asks for no network
         run: |
           manifest=build/heocr_mobile/android/gradle/app/src/main/AndroidManifest.xml
@@ -99,7 +99,7 @@ jobs:
           if grep -q "android.permission.INTERNET\|ACCESS_NETWORK_STATE" "$manifest"; then echo "network permission in the manifest"; exit 1; fi
       - name: On-device tests in the emulator (x86_64 image, arm64 app through Android's ARM translation)
         run: >
-          briefcase run android heocr_mobile --test --no-input
+          briefcase run android -a heocr_mobile --test --no-input
           -d '{"avd":"heocrPhone","system_image":"system-images;android-34;google_apis;x86_64"}'
           --Xemulator=-no-window --Xemulator=-no-snapshot --Xemulator=-no-audio --Xemulator=-no-boot-anim
       - name: Emulator facts (on failure)
@@ -112,7 +112,7 @@ jobs:
           $adb logcat -d -t 400 || true
       - name: Build the sideloadable APK (debug-signed, not for a store)
         run: |
-          briefcase build android heocr_mobile -u --no-input
+          briefcase build android -a heocr_mobile -u --no-input
           apk=$(ls build/heocr_mobile/android/gradle/app/build/outputs/apk/debug/*.apk | head -1)
           mkdir -p dist && cp "$apk" dist/HeOCR-android-arm64-debug.apk
           ls -l dist/HeOCR-android-arm64-debug.apk

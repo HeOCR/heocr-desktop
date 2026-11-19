@@ -181,6 +181,9 @@ def main() -> None:
             f"-DANDROID_ABI={target['arch']}",
             f"-DANDROID_PLATFORM=android-{target['api']}",
             "-DANDROID_STL=c++_static",
+            # Tesseract asks Leptonica whether it reads TIFF by running a test program, which a
+            # cross build cannot do. vcpkg's Leptonica is built with libtiff: answer "yes" (0).
+            "-DLEPT_TIFF_RESULT=0",
         ]
     else:
         configure += [f"-DCMAKE_OSX_ARCHITECTURES={target['arch']}", "-DCMAKE_OSX_DEPLOYMENT_TARGET=13.0"]
