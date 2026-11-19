@@ -59,6 +59,26 @@ tap_retry() {
 }
 seen() { "$ADB" shell uiautomator dump /data/local/tmp/ui.xml >/dev/null 2>&1 || true; "$ADB" pull /data/local/tmp/ui.xml $OUT/ui.xml >/dev/null 2>&1 || return 1; grep -qiE "$1" $OUT/ui.xml; }
 logged() { for _ in $(seq 1 10); do "$ADB" logcat -d | grep -q "$1" && return 0; sleep 1; done; return 1; }
+# Home at phone scale (design SPEC 6): both buttons on screen and inside its width, before any scroll.
+# A page loaded before the WebView had its size draws zoomed, and they fall off the right edge.
+home_fits() {
+  "$ADB" shell uiautomator dump /data/local/tmp/ui.xml >/dev/null 2>&1 || true
+  "$ADB" pull /data/local/tmp/ui.xml $OUT/ui-home.xml >/dev/null 2>&1 || return 1
+  python3 - $OUT/ui-home.xml "$("$ADB" shell wm size | grep -o '[0-9]*x[0-9]*' | tail -1)" <<'PY'
+import re, sys
+xml, width = open(sys.argv[1], encoding="utf-8").read(), int(sys.argv[2].split("x")[0])
+found = {}
+for n in re.findall(r"<node [^>]*>", xml):
+    label = " ".join(x for x in re.findall(r'(?:text|content-desc)="([^"]*)"', n) if x).strip().lower()
+    m = re.search(r'bounds="\[(\d+),(\d+)\]\[(\d+),(\d+)\]"', n)
+    if m and label in ("open a file", "try a sample"):
+        found[label] = tuple(map(int, m.groups()))
+ok = len(found) == 2 and all(b[2] > b[0] and b[3] > b[1] and b[2] <= width for b in found.values())
+print("home buttons:", found, "screen width", width, "fit" if ok else "DO NOT FIT")
+sys.exit(0 if ok else 1)
+PY
+}
+home_fits || { sleep 5; home_fits; } || fail "Home is not at phone scale: its buttons are off screen (zoomed page)"
 tap_retry "^try a sample$" || fail "no 'Try a sample' button on the home screen"
 for _ in $(seq 1 30); do
   sleep 5

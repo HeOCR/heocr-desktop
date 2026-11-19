@@ -110,11 +110,21 @@ class HeOCR(toga.App):
         if self.page and self.screen != "reading":  # the reading screen is drawn again at each page
             asyncio.get_running_loop().call_soon(self.redraw)
 
-    def redraw(self):
-        if self.page:
-            print(f"HeOCR redraw {self.screen} at {self.size}", flush=True)
-            self.sheet = False  # a new load closes the sheet
-            self.webview.set_content("about:blank", self.page)
+    def redraw(self, tries: int = 0):
+        """Load the page again once the WebView itself has its width: Toga sizes the container in the
+        layout pass, but the WebView measures on a later frame, and a page loaded before that keeps a
+        zoomed viewport."""
+        if not self.page:
+            return
+        native = self.webview._impl.native
+        width = native.getWidth()
+        expected = self.size[0] if self.size else 0
+        if (width == 0 or (expected and width < expected * 0.9)) and tries < 30:
+            asyncio.get_running_loop().call_later(0.1, self.redraw, tries + 1)
+            return
+        print(f"HeOCR redraw {self.screen} at {self.size} webview_width={width} after={tries}", flush=True)
+        self.sheet = False  # a new load closes the sheet
+        self.webview.set_content("about:blank", self.page)
 
     def js(self, code: str):
         """Change the page in place (a toast, the sheet, the elapsed time): the page itself has no script."""
