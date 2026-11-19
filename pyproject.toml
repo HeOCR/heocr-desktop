@@ -116,6 +116,7 @@ permission.camera = "HeOCR reads the text in photos you take. Photos stay on thi
 
 [tool.briefcase.app.heocr_mobile.android]
 requires = ["toga-android==0.5.7"]
+icon = "icons/android/heocr"  # scripts/android_icons.py
 android_abis = ["arm64-v8a"]
 # Only what the template already brings (AppCompat). Toga needs Material only for OptionContainer, which
 # the app does not use; leaving it out takes about 4 MB off the APK.

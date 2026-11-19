@@ -1,0 +1,1 @@
+First Android version: open, share or photograph a document and get its Hebrew text, read on the phone with HeOCR's own modern-print model. No internet permission.
