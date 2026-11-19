@@ -1,5 +1,6 @@
 {
   "_note": "Strings used in the mockups. Keys listed in _already_reviewed reuse wording that is already in heocr_mobile/app.py or heocr_desktop/i18n.py; every other Hebrew string is new and needs the maintainer's review. Values may contain inline markup (strong, span.num, bdi).",
+  "_reviewed": "2026-11-19: every Hebrew string here reviewed and approved as written by the maintainer (through the lead).",
   "_already_reviewed": [
     "tagline",
     "capture",

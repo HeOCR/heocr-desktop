@@ -26,7 +26,7 @@ Nothing in this folder is app code, and nothing here loads anything from the net
 | `mockups/png/412x915/`, `mockups/png/360x800/` | Renders of every screen at both sizes, `light/` and `night/`, `he/` and `en/`, at 2× pixel density. |
 | `mockups/png/full-length/` | The whole result page and the whole About page. |
 | `mockups/png/font-scale-200/` | Six screens per language at 200% text size. |
-| `strings/strings.json` | Every string in the mockups, Hebrew and English, with the keys that reuse already-reviewed wording marked. |
+| `strings/strings.json` | Every string in the mockups, Hebrew and English, with the keys that reuse already-reviewed wording marked. **Reviewed 2026-11-19:** the maintainer approved every Hebrew string as written. |
 | `store/` | Store graphics staged in the fastlane layout, with notes. See [`store/README.md`](store/README.md). |
 | `tools/` | The scripts that produced the mockups, icons, launcher, splash and store files. Reference only. |
 

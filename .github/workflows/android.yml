@@ -123,6 +123,7 @@ jobs:
         run: |
           briefcase create android -a heocr_mobile --no-input
           python scripts/android_patch_activity.py
+          python scripts/android_design_res.py
       - name: The manifest asks for no network
         run: |
           manifest=build/heocr_mobile/android/gradle/app/src/main/AndroidManifest.xml
