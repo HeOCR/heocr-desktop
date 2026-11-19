@@ -117,6 +117,8 @@ if [ -f "$FIXTURES/itext-style.pdf" ]; then
   "$ADB" push "$FIXTURES/itext-style.pdf" "/sdcard/Download/$PICK" >/dev/null
   "$ADB" shell content call --uri content://media --method scan_volume --arg external_primary >/dev/null 2>&1 || true
   "$ADB" logcat -c
+  "$ADB" shell input keyevent 4  # from the last reading back to Home, where "Open a file" is
+  sleep 2
   tap_retry "^open a file$" || fail "no 'Open a file' button"
   sleep 6
   "$ADB" exec-out screencap -p > $OUT/5-picker.png

@@ -69,6 +69,7 @@ class HeOCR(toga.App):
         self.sheet = False
         self.result_page = ""
         self.toast_id = 0
+        self.laid_out = False  # the first page loads before the WebView has its size
         self.webview = toga.WebView(style=Pack(flex=1), on_navigation_starting=self.navigate)
         self.main_window = toga.MainWindow(title=self.formal_name, on_gain_focus=self.on_focus)
         self.main_window.content = self.webview
@@ -202,6 +203,11 @@ class HeOCR(toga.App):
     def on_focus(self, window, **kwargs):
         """A document shared to HeOCR, or opened with it: at launch, or while the app was open."""
         activity = self._impl.native
+        if not self.laid_out:
+            # The WebView has its size now: draw Home again, so the viewport tag applies to it.
+            self.laid_out = True
+            if self.screen == "home":
+                self.go_home_now()
         uri = device.incoming_uri(activity.getIntent())
         if uri is None:
             return
