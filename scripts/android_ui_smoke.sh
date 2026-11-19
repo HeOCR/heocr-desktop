@@ -4,7 +4,7 @@
 #   scripts/android_ui_smoke.sh dist/HeOCR-android-arm64-debug.apk
 set -euo pipefail
 APK="$1"
-SDK=~/.cache/briefcase/tools/android_sdk
+SDK="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-$HOME/.cache/briefcase/tools/android_sdk}}"  # Briefcase uses the runner's SDK when there is one
 ADB="$SDK/platform-tools/adb"
 PKG=io.github.heocr.heocr_mobile
 mkdir -p dist/ui-smoke

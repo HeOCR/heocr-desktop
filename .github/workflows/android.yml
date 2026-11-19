@@ -123,7 +123,7 @@ jobs:
       - name: Emulator facts (on failure)
         if: failure()
         run: |
-          adb=~/.cache/briefcase/tools/android_sdk/platform-tools/adb
+          adb="${ANDROID_HOME:-$HOME/.cache/briefcase/tools/android_sdk}/platform-tools/adb"
           $adb devices || true
           $adb shell getprop ro.product.cpu.abilist || true
           $adb shell getprop ro.dalvik.vm.native.bridge || true
