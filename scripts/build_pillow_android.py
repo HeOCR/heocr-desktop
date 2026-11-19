@@ -40,6 +40,35 @@ def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+# Static libraries that need another one Pillow does not name: libtiff (compressed with lzma) and
+# libwebp (which calls libsharpyuv). cibuildwheel sets LDFLAGS itself for Android, so extra -l flags
+# do not reach the linker; instead each gets a copy with its dependency's objects folded in.
+FOLD = {"libtiff.a": ["liblzma.a"], "libwebp.a": ["libsharpyuv.a"]}
+
+
+def llvm_ar() -> Path:
+    ndk = Path(os.environ.get("ANDROID_NDK_HOME") or os.environ.get("ANDROID_NDK_LATEST_HOME") or "")
+    tools = sorted((ndk / "toolchains" / "llvm" / "prebuilt").glob("*/bin/llvm-ar"))
+    if not tools:
+        sys.exit("llvm-ar not found: set ANDROID_NDK_HOME")
+    return tools[0]
+
+
+def pillow_deps(deps: Path, work: Path) -> Path:
+    """A copy of deps/ in which libtiff.a and libwebp.a carry what they depend on."""
+    out = work / "deps"
+    if out.exists():
+        shutil.rmtree(out)
+    shutil.copytree(deps, out)
+    ar = llvm_ar()
+    for lib, extra in FOLD.items():
+        script = [f"create {out / 'lib' / lib}.merged", f"addlib {deps / 'lib' / lib}"]
+        script += [f"addlib {deps / 'lib' / e}" for e in extra] + ["save", "end"]
+        subprocess.run([str(ar), "-M"], input="\n".join(script) + "\n", text=True, check=True)
+        (out / "lib" / f"{lib}.merged").replace(out / "lib" / lib)
+    return out
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--deps", required=True, type=Path)
@@ -59,16 +88,15 @@ def main() -> None:
         sys.exit("sha256 mismatch for the Pillow sdist")
 
     subprocess.run([sys.executable, "-m", "pip", "install", "-q", f"cibuildwheel=={CIBUILDWHEEL}"], check=True)
+    deps = pillow_deps(deps, work)
     roots = " ".join(f"{name}={deps}" for name in ("ZLIB_ROOT", "JPEG_ROOT", "TIFF_ROOT", "WEBP_ROOT", "JPEG2K_ROOT"))
-    # libtiff (static) needs liblzma; libwebp needs libsharpyuv. The NDK's lld resolves static
-    # archives regardless of order, so naming them once is enough.
     env = dict(
         os.environ,
         CIBW_BUILD=BUILD,
         CIBW_ARCHS="arm64_v8a",
         CIBW_BUILD_VERBOSITY="1",
         CIBW_CONFIG_SETTINGS=" ".join(["platform-guessing=disable", *(f"{f}=enable" for f in ON), *(f"{f}=disable" for f in OFF)]),
-        CIBW_ENVIRONMENT=f'{roots} LDFLAGS="-L{deps}/lib -llzma -lsharpyuv" CFLAGS="-I{deps}/include"',
+        CIBW_ENVIRONMENT=roots,
         # Pillow's own [tool.cibuildwheel] builds its dependencies with a script that is not in the
         # sdist, and tests with numpy; here the dependencies come from deps/ and tests run on the
         # app (android/tests). Environment variables take precedence over pyproject.toml.
