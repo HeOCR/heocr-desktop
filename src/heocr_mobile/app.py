@@ -19,8 +19,16 @@ from heocr_mobile import device, view
 
 # Mobile-only strings, in the desktop's format. New ones go to the maintainer for a native read.
 MOBILE_STRINGS = {
-    "en": {"take_photo": "Take a photo", "sample": "Try a sample"},
-    "he": {"take_photo": "צילום", "sample": "דוגמה"},
+    "en": {
+        "take_photo": "Take a photo",
+        "sample": "Try a sample",
+        "offline": "Works fully offline: nothing you read leaves this phone.",
+    },
+    "he": {
+        "take_photo": "צילום",
+        "sample": "דוגמה",
+        "offline": "עובד במלואו בלי אינטרנט: שום דבר שנקרא לא יוצא מהטלפון.",
+    },
 }
 
 
@@ -74,6 +82,8 @@ class HeOCR(toga.App):
         except Exception:  # noqa: BLE001 - shown to the user; details stay on the phone
             self.status.text = self.t["error"]
             return
+        # One line in the device log per reading (the file's name, never its text), for CI and bug reports.
+        print(f"HeOCR read {path.name}: {result.kind} routes={result.routes} seconds={result.seconds:.1f}", flush=True)
         if result.kind != "ok":
             self.text = ""
             self.status.text = self.t.get(result.kind, self.t["error"])
