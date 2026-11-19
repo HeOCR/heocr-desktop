@@ -14,11 +14,13 @@ authors = [{ name = "HeOCR maintainers" }]
 dependencies = [
   # heocr 0.1.2 from PyPI: the gated 0.1.0 plus its fixes (tag v0.1.2, ac1ad20).
   "heocr==0.1.2",
-  "pywebview==6.2.1",
 ]
 
 [project.optional-dependencies]
 test = ["pytest>=8"]
+# The desktop window, for running the app from a checkout (python -m heocr_desktop). Not in
+# [project].dependencies, because Briefcase adds those to every app, the Android one included.
+desktop = ["pywebview==6.2.1"]
 
 [project.urls]
 Homepage = "https://heocr.github.io"
@@ -88,3 +90,56 @@ use_full_install_path = false
 
 [tool.briefcase.app.heocr_desktop.linux]
 requires = []
+
+# ---------------------------------------------------------------------------------------------
+# Briefcase: the Android app (docs/mobile-design.md). M0: built and tested in CI only.
+# Same engine, renderer and strings as the desktop app (src/heocr_desktop), same heocr and pins.
+# ---------------------------------------------------------------------------------------------
+[tool.briefcase.app.heocr_mobile]
+formal_name = "HeOCR"
+description = "Hebrew text out of photos and documents, fully offline"
+long_description = """HeOCR reads Hebrew text out of photos, PDFs, Word files and images, on the \
+phone itself. It has no internet permission: nothing you read ever leaves the phone."""
+sources = ["src/heocr_mobile", "src/heocr_desktop"]
+icon = "icons/heocr"
+requires = [
+  "heocr==0.1.2",
+  "pypdfium2==5.15.2",
+  "Pillow==13.0.0",  # built for Android by scripts/build_pillow_android.py (Pillow has no Android wheels)
+  "defusedxml==0.7.1",
+]
+requirement_installer_args = ["--find-links", "./build/android-wheels"]  # "./": Briefcase makes it absolute
+test_sources = ["android/tests"]
+test_requires = ["pytest"]
+permission.camera = "HeOCR reads the text in photos you take. Photos stay on this phone."
+
+[tool.briefcase.app.heocr_mobile.android]
+requires = ["toga-android==0.5.7"]
+android_abis = ["arm64-v8a"]
+build_gradle_dependencies = ["com.google.android.material:material:1.12.0"]
+# No network at all: Briefcase adds these two by default; false leaves them out of the manifest,
+# so Android itself refuses every socket the app opens.
+permission."android.permission.INTERNET" = false
+permission."android.permission.ACCESS_NETWORK_STATE" = false
+# - extractPackages: Tesseract needs its models (heocr_mobile/resources) as real files.
+# - jniLibs: Tesseract as libtesseract_exec.so (scripts/assemble_resources.py --android), kept
+#   extracted at install time, the one place Android lets an app run an executable from.
+build_gradle_extra_content = """
+android {
+    defaultConfig {
+        python {
+            extractPackages "heocr_mobile", "heocr"
+        }
+    }
+    packagingOptions {
+        jniLibs {
+            useLegacyPackaging = true
+        }
+    }
+    sourceSets {
+        main {
+            jniLibs.srcDirs += ["../../../../android/jniLibs"]
+        }
+    }
+}
+"""

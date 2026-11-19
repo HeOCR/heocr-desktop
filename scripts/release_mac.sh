@@ -31,13 +31,13 @@ VERSION=$(sed -n 's/^version = "\(.*\)"/\1/p' pyproject.toml | head -1)
 if [ -d build/heocr_desktop/macos ]; then
   trash build/heocr_desktop/macos
 fi
-briefcase create macOS --no-input
-briefcase build macOS --no-input
+briefcase create macOS -a heocr_desktop --no-input
+briefcase build macOS -a heocr_desktop --no-input
 PLIST_VERSION=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" "$APP/Contents/Info.plist")
 [ "$PLIST_VERSION" = "$VERSION" ] || { echo "Info.plist says $PLIST_VERSION, pyproject.toml says $VERSION"; exit 1; }
 
 # Sign the app bundle (Briefcase signs nested binaries inside-out, with --options runtime).
-briefcase package macOS --identity "$IDENTITY" --no-notarize --no-input
+briefcase package macOS -a heocr_desktop --identity "$IDENTITY" --no-notarize --no-input
 codesign --verify --deep --strict --verbose=2 "$APP"
 codesign -d --entitlements - --xml "$APP" >/dev/null
 TESS="$APP/Contents/Resources/app/heocr_desktop/resources/tesseract/tesseract"

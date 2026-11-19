@@ -59,7 +59,7 @@ Every bundled component is permissive; none is copyleft. The full list, with eac
 Requires Python 3.12, and for Tesseract CMake, Ninja and a C++ compiler (Xcode command line tools, or MSVC on Windows).
 
 ```sh
-python -m pip install -e ".[test]" briefcase==0.4.7
+python -m pip install -e ".[test,desktop]" briefcase==0.4.7
 python -m pytest                                     # unit tests; OCR tests need a Tesseract (below)
 
 python scripts/build_tesseract.py --target macos-arm64  --out build/tess/macos-arm64

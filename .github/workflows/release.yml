@@ -38,10 +38,10 @@ jobs:
           python -m pip install briefcase==0.4.7
           python scripts/prebuild_wheels.py
           python scripts/assemble_resources.py build/tess/windows-x64
-          briefcase create windows --no-input
-          briefcase build windows --no-input
+          briefcase create windows -a heocr_desktop --no-input
+          briefcase build windows -a heocr_desktop --no-input
           python scripts/smoke_app.py windows
-          briefcase package windows --adhoc-sign --no-input
+          briefcase package windows -a heocr_desktop --adhoc-sign --no-input
       - id: unsigned
         uses: actions/upload-artifact@v4
         with:

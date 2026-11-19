@@ -95,3 +95,11 @@ def test_errors_are_not_retried(monkeypatch):
     monkeypatch.setattr(heocr, "extract", broken)
     with pytest.raises(ValueError):
         engine.convert(FIX / "garden.pdf")
+
+
+def test_configure_points_the_engine_elsewhere(monkeypatch, tmp_path):
+    monkeypatch.setattr(engine, "_CONFIGURED", {})
+    exe, data = tmp_path / "libtesseract_exec.so", tmp_path / "tessdata"
+    engine.configure(tesseract=exe, tessdata=data)
+    assert engine.tesseract_path() == exe
+    assert engine.tessdata_path() == data

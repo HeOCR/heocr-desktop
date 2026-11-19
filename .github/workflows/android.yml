@@ -1,0 +1,151 @@
+# The Android app (docs/mobile-design.md, M0), on GitHub Actions only: Tesseract and Pillow for
+# arm64-v8a, the Briefcase app, its on-device tests in the Android emulator, and a debug-signed
+# APK as an artifact for sideloading. Nothing is published or signed for a store here.
+name: Android
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: android-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tesseract:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - uses: ./.github/actions/tesseract
+        with:
+          target: android-arm64
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tesseract-android-arm64
+          path: build/tess/android-arm64
+
+  pillow:
+    needs: tesseract
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - uses: actions/download-artifact@v4
+        with:
+          name: tesseract-android-arm64
+          path: build/tess/android-arm64
+      - name: Cache the Pillow wheel
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: build/android-wheels
+          key: pillow-android-${{ hashFiles('scripts/build_pillow_android.py', 'tesseract/**', 'scripts/build_tesseract.py') }}
+      - name: Build Pillow 13.0.0 for Android
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: python scripts/build_pillow_android.py --deps build/tess/android-arm64/deps --out build/android-wheels
+      - run: cat build/android-wheels/BUILD_INFO-pillow.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pillow-android-arm64
+          path: build/android-wheels
+
+  app:
+    needs: [tesseract, pillow]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: actions/download-artifact@v4
+        with:
+          name: tesseract-android-arm64
+          path: build/tess/android-arm64
+      - uses: actions/download-artifact@v4
+        with:
+          name: pillow-android-arm64
+          path: build/android-wheels
+      - name: Bundle Tesseract, its models and the test fixtures
+        run: |
+          python scripts/assemble_resources.py --android build/tess/android-arm64
+          cp -R tests/fixtures android/tests/fixtures
+      - name: KVM for the emulator
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - run: python -m pip install briefcase==0.4.7
+      - name: Create the app
+        run: briefcase create android -a heocr_mobile --no-input
+      - name: The manifest asks for no network
+        run: |
+          manifest=build/heocr_mobile/android/gradle/app/src/main/AndroidManifest.xml
+          grep -n "uses-permission" "$manifest" || true
+          if grep -q "android.permission.INTERNET\|ACCESS_NETWORK_STATE" "$manifest"; then echo "network permission in the manifest"; exit 1; fi
+      - name: Maven Central from this runner (diagnostic)
+        run: |
+          for u in https://repo.maven.apache.org/maven2/com/chaquo/python/gradle/17.2.0/gradle-17.2.0.pom https://dl.google.com/dl/android/maven2/com/android/tools/build/gradle/9.3.1/gradle-9.3.1.pom; do
+            curl -sS -o /dev/null -w "%{http_code} %{url_effective}\n" -A "Gradle/9.5.0" "$u" || true
+          done
+          echo "runner: $ImageOS $ImageVersion"; java -version 2>&1 | head -1
+          cat ~/.gradle/gradle.properties 2>/dev/null || echo "no ~/.gradle/gradle.properties"
+          ls ~/.gradle/init.d 2>/dev/null || echo "no ~/.gradle/init.d"
+          g=build/heocr_mobile/android/gradle
+          cat $g/gradle.properties 2>/dev/null || true
+          grep -n -A6 "repositories\|pluginManagement" $g/build.gradle $g/settings.gradle 2>/dev/null || true
+      - name: On-device tests in the emulator (x86_64 image, arm64 app through Android's ARM translation)
+        run: >
+          briefcase run android -a heocr_mobile --test -r --no-input -v
+          -d '{"avd":"heocrPhone","system_image":"system-images;android-34;google_apis;x86_64"}'
+          --Xemulator=-no-window --Xemulator=-no-snapshot --Xemulator=-no-audio --Xemulator=-no-boot-anim
+      - name: Gradle's own account of the dependency failure (on failure)
+        if: failure()
+        run: |
+          cd build/heocr_mobile/android/gradle
+          ./gradlew assembleDebug --refresh-dependencies --info --stacktrace > gradle-info.log 2>&1 || true
+          grep -n -iE "resource missing|status code|could not (get|head|resolve|find)|offline|received|proxy|cached|response|java.home|JVM" gradle-info.log | head -80
+          tail -40 gradle-info.log
+      - name: Emulator facts (on failure)
+        if: failure()
+        run: |
+          adb="${ANDROID_HOME:-$HOME/.cache/briefcase/tools/android_sdk}/platform-tools/adb"
+          $adb devices || true
+          $adb shell getprop ro.product.cpu.abilist || true
+          $adb shell getprop ro.dalvik.vm.native.bridge || true
+          $adb logcat -d -t 400 || true
+      - name: Build the sideloadable APK (debug-signed, not for a store)
+        run: |
+          briefcase build android -a heocr_mobile -u -r --no-input
+          apk=$(ls build/heocr_mobile/android/gradle/app/build/outputs/apk/debug/*.apk | head -1)
+          mkdir -p dist && cp "$apk" dist/HeOCR-android-arm64-debug.apk
+          ls -l dist/HeOCR-android-arm64-debug.apk
+          sha256sum dist/HeOCR-android-arm64-debug.apk
+          unzip -l dist/HeOCR-android-arm64-debug.apk | tail -1
+      - name: The APK's own screen in the emulator (start, "Try a sample", still running)
+        run: scripts/android_ui_smoke.sh dist/HeOCR-android-arm64-debug.apk
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: heocr-android-ui-smoke
+          path: dist/ui-smoke
+          retention-days: 14
+      - uses: actions/upload-artifact@v4
+        with:
+          name: heocr-android-arm64-debug-apk
+          path: dist/HeOCR-android-arm64-debug.apk
+          retention-days: 14
