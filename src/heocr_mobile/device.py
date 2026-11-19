@@ -78,13 +78,20 @@ def _jclass(name: str):
     return jclass(name)
 
 
+def _strings(values):
+    """A Java String[]: Chaquopy cannot choose an Intent.putExtra overload for a Python list."""
+    from java import jarray
+
+    return jarray(_jclass("java.lang.String"))(list(values))
+
+
 def open_document_intent():
     """The system picker (Storage Access Framework), for PDF, DOCX and images."""
     Intent = _jclass("android.content.Intent")
     intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
     intent.addCategory(Intent.CATEGORY_OPENABLE)
     intent.setType("*/*")
-    intent.putExtra(Intent.EXTRA_MIME_TYPES, list(MIME_TYPES))
+    intent.putExtra(Intent.EXTRA_MIME_TYPES, _strings(MIME_TYPES))
     return intent
 
 
@@ -101,21 +108,33 @@ def incoming_uri(intent):
     return None
 
 
+def _column(uri, column: str):
+    """One column of a content URI's metadata row (name, size), or None when the provider has none."""
+    cursor = _android_context().getContentResolver().query(uri, _strings([column]), None, None, None)
+    if cursor is None:
+        return None
+    try:
+        if not cursor.moveToFirst() or cursor.isNull(0):
+            return None
+        return cursor.getString(0) if column == "_display_name" else cursor.getLong(0)
+    finally:
+        cursor.close()
+
+
 def display_name(uri) -> str:
     """The document's name as its app shows it, for the status line; never used as a path."""
-    OpenableColumns = _jclass("android.provider.OpenableColumns")
-    cursor = _android_context().getContentResolver().query(uri, [OpenableColumns.DISPLAY_NAME], None, None, None)
-    try:
-        if cursor is not None and cursor.moveToFirst():
-            return str(cursor.getString(0))
-    finally:
-        if cursor is not None:
-            cursor.close()
-    return "document"
+    name = _column(uri, str(_jclass("android.provider.OpenableColumns").DISPLAY_NAME))
+    return str(name) if name else "document"
 
 
-def copy_to(uri, folder: Path) -> Path:
-    """Copy a content URI into the app's own cache, so heocr reads a plain file."""
+def declared_size(uri) -> int | None:
+    """The size the providing app declares for a document, to check the copy against; None if unknown."""
+    size = _column(uri, str(_jclass("android.provider.OpenableColumns").SIZE))
+    return int(size) if size is not None else None
+
+
+def copy_to(uri, folder: Path) -> tuple[Path, int]:
+    """Copy a content URI into the app's own cache, so heocr reads a plain file; (path, bytes copied)."""
     from java import jarray, jbyte
 
     folder.mkdir(parents=True, exist_ok=True)
@@ -137,7 +156,7 @@ def copy_to(uri, folder: Path) -> Path:
                 out.write(bytes(buffer)[:n])
     finally:
         stream.close()
-    return target
+    return target, size
 
 
 def create_document_intent(name: str, mime: str):
