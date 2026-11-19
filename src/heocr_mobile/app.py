@@ -73,15 +73,16 @@ class HeOCR(toga.App):
         self.main_window = toga.MainWindow(title=self.formal_name, on_gain_focus=self.on_focus)
         self.main_window.content = self.webview
         back.handler = self.on_back
+        activity = self._impl.native
+        # Before the first page: the WebView's scale and text size (SPEC 3.7).
+        zoom = device.configure_webview(self.webview._impl.native, activity)
         self.go_home_now()
         self.main_window.show()
-        activity = self._impl.native
         # The design draws its own app bar (SPEC 6.1): hide the Material one, colour the system bars.
         bar = activity.getSupportActionBar()
         if bar is not None:
             bar.hide()
         device.style_system_bars(activity)
-        zoom = device.follow_font_scale(self.webview._impl.native, activity)
         print(f"HeOCR screen: night={device.night(activity)} text_zoom={zoom}", flush=True)
 
     # -- the page and its links --------------------------------------------------------------

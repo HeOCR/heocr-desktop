@@ -207,11 +207,21 @@ def style_system_bars(activity) -> None:
     controller.setAppearanceLightNavigationBars(not dark)
 
 
-def follow_font_scale(webview, activity) -> int:
-    """The page's text follows the phone's font size setting (the layout holds at 200%)."""
+def configure_webview(webview, activity) -> int:
+    """A phone page, not a zoomable web page: the viewport tag holds (``width=device-width``, scale 1),
+    no pinch zoom (Toga turns it on) and no text boosting, and the text follows the phone's font size
+    setting (the layout holds at 200%). Returns the text zoom in percent."""
+    settings = webview.getSettings()
+    settings.setUseWideViewPort(True)
+    settings.setLoadWithOverviewMode(False)
+    settings.setSupportZoom(False)
+    settings.setBuiltInZoomControls(False)
+    settings.setDisplayZoomControls(False)
+    settings.setLayoutAlgorithm(_jclass("android.webkit.WebSettings$LayoutAlgorithm").NORMAL)
+    webview.setInitialScale(0)
     scale = activity.getResources().getConfiguration().fontScale
     zoom = max(50, min(300, round(scale * 100)))
-    webview.getSettings().setTextZoom(zoom)
+    settings.setTextZoom(zoom)
     return zoom
 
 

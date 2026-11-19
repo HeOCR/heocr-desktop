@@ -39,7 +39,8 @@ for node in re.finditer(r"<node [^>]*>", xml):
   n = node.group(0)
   label = " ".join(x for x in re.findall(r'(?:text|content-desc)="([^"]*)"', n) if x).strip()
   m = re.search(r'bounds="\[(\d+),(\d+)\]\[(\d+),(\d+)\]"', n)
-  if m and re.search(want, label, re.I):
+  # A node off screen (a link below the fold) has empty bounds: not tappable until scrolled to.
+  if m and re.search(want, label, re.I) and int(m[3]) > int(m[1]) and int(m[4]) > int(m[2]):
       print(f"{(int(m[1]) + int(m[3])) // 2} {(int(m[2]) + int(m[4])) // 2}")
       break
 PY
@@ -47,7 +48,15 @@ PY
   [ -n "$pos" ] && "$ADB" shell input tap $pos
 }
 # The page is a WebView: uiautomator sees its links with their labels. It is flaky on emulators, so retry.
-tap_retry() { for _ in 1 2 3 4; do tap_text "$1" && return 0; sleep 3; done; return 1; }
+# Between tries, scroll the page up a little: the control may be below the fold.
+tap_retry() {
+  for i in 1 2 3 4 5; do
+    tap_text "$1" && return 0
+    [ $i -ge 2 ] && "$ADB" shell input swipe 540 1500 540 900 300
+    sleep 2
+  done
+  return 1
+}
 seen() { "$ADB" shell uiautomator dump /data/local/tmp/ui.xml >/dev/null 2>&1 || true; "$ADB" pull /data/local/tmp/ui.xml $OUT/ui.xml >/dev/null 2>&1 || return 1; grep -qiE "$1" $OUT/ui.xml; }
 logged() { for _ in $(seq 1 10); do "$ADB" logcat -d | grep -q "$1" && return 0; sleep 1; done; return 1; }
 tap_retry "^try a sample$" || fail "no 'Try a sample' button on the home screen"
