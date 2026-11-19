@@ -1,0 +1,17 @@
+HeOCR gets the Hebrew text out of a photo, a PDF, a Word document (DOCX) or an image, with its headings, paragraphs and tables, right to left.
+
+<b>Fully offline.</b> HeOCR has no internet permission at all, so Android itself stops it from connecting anywhere. Nothing you read leaves your phone: no account, no ads, no analytics, no tracking.
+
+<b>How to use it</b>
+<ul>
+<li>Open a file from your phone, or share one to HeOCR from another app.</li>
+<li>Or take a photo of a page.</li>
+<li>Copy the text, with a note when it was read by OCR.</li>
+</ul>
+
+<b>What reads it</b>
+HeOCR runs heocr, the open pipeline of the HeOCR project for Hebrew documents, on the phone itself. PDFs with a text layer are read from it; scans and photos are read by Tesseract OCR with HeOCR's own Hebrew model, the same reading the HeOCR desktop app gives.
+
+OCR text is a reading, not a verified transcript: check names and numbers.
+
+Free and open source (Apache-2.0): https://github.com/HeOCR/heocr-desktop
