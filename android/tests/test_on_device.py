@@ -12,7 +12,7 @@ from pathlib import Path
 import pytest
 
 from heocr_desktop import engine, smoke
-from heocr_mobile import device
+from heocr_mobile import device, view
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
 
@@ -51,3 +51,11 @@ def test_fixtures_read_as_on_the_desktop():
     report = json.loads((FIXTURES / "smoke-report.json").read_text("utf-8"))
     print(json.dumps(report, ensure_ascii=False, indent=2))
     assert code == 0 and report["ok"], report
+
+
+def test_reads_with_heocrs_bundled_modern_model():
+    # heocr 0.2's default: HeOCR's own modern-print model, from inside the heocr package, not stock heb.
+    result = engine.convert(FIXTURES / "garden-scan.png")
+    assert result.kind == "ok"
+    assert "heocr_modern_v1" in view.ocr_models(result.doc), sorted(result.doc.components)
+    assert "bundled_model_unavailable" not in result.doc.flags

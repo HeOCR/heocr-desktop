@@ -91,12 +91,16 @@ jobs:
           sudo udevadm trigger --name-match=kvm
       - run: python -m pip install briefcase==0.4.7
       - name: Create the app
-        run: briefcase create android -a heocr_mobile --no-input
+        run: |
+          briefcase create android -a heocr_mobile --no-input
+          python scripts/android_patch_activity.py
       - name: The manifest asks for no network
         run: |
           manifest=build/heocr_mobile/android/gradle/app/src/main/AndroidManifest.xml
           grep -n "uses-permission" "$manifest" || true
           if grep -q "android.permission.INTERNET\|ACCESS_NETWORK_STATE" "$manifest"; then echo "network permission in the manifest"; exit 1; fi
+          grep -q 'android:launchMode="singleTask"' "$manifest" || { echo "activity is not singleTask"; exit 1; }
+          for action in SEND VIEW; do grep -q "android.intent.action.$action" "$manifest" || { echo "no $action intent filter"; exit 1; }; done
       - name: Maven Central from this runner (diagnostic)
         run: |
           for u in https://repo.maven.apache.org/maven2/com/chaquo/python/gradle/17.2.0/gradle-17.2.0.pom https://dl.google.com/dl/android/maven2/com/android/tools/build/gradle/9.3.1/gradle-9.3.1.pom; do

@@ -1,7 +1,7 @@
 # Agent instructions
 
 ## Setup and validation
-- Install: `pip install -e ".[test]" briefcase==0.4.7`
+- Install: `pip install -e ".[test,desktop]" briefcase==0.4.7`
 - Test: `python -m pytest` (the OCR tests run when a Tesseract is bundled or `HEOCR_DESKTOP_DEV_TESSERACT` / `HEOCR_DESKTOP_DEV_TESSDATA` point at one).
 - Tesseract: `python scripts/build_tesseract.py --target <macos-arm64|macos-x86_64|windows-x64> --out build/tess/<target>`, or the **Tesseract** workflow's artifacts; then `python scripts/prebuild_wheels.py` and `python scripts/assemble_resources.py build/tess/<target> [...]`.
 - Packaged app: `briefcase create/build macOS|windows`, then `python scripts/smoke_app.py macos|windows`. CI does this on every PR, and also installs the MSI and smoke-tests the installed app.

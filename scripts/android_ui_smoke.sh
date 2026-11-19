@@ -1,6 +1,6 @@
 #!/bin/bash
-# Start the plain (non-test) APK in the CI emulator, press "Try a sample", and check the app is
-# still alive after reading it; save a screenshot and the app's log lines.
+# Start the plain (non-test) APK in the CI emulator, press "Try a sample", then share a PDF to it from
+# "another app" (adb), and check each reading and that the app is still alive; keep screenshots and log.
 #   scripts/android_ui_smoke.sh dist/HeOCR-android-arm64-debug.apk
 set -euo pipefail
 APK="$1"
@@ -39,7 +39,7 @@ done
 if [ -z "$POS" ]; then
   SIZE=$("$ADB" shell wm size | grep -o '[0-9]*x[0-9]*' | tail -1)
   W=${SIZE%x*}; H=${SIZE#*x}
-  POS="$((W / 2)) $((H * 283 / 1920))"
+  POS="$((W / 4)) $((H * 395 / 1920))"  # row 2, left: "Try a sample"
   echo "uiautomator gave no tree; tapping the button's usual place: $POS"
 fi
 "$ADB" shell input tap $POS
@@ -55,4 +55,26 @@ LINE=$(grep -o "HeOCR read sample.png: .*" dist/ui-smoke/logcat.txt | tail -1)
 echo "$LINE"
 case "$LINE" in *": ok "*) ;; *) fail "the sample did not read as ok";; esac
 alive || fail "the app stopped after reading the sample"
-echo "UI smoke passed: started, read the sample, still running"
+
+# A share from another app, while HeOCR is open: put a fixture PDF where the app's own FileProvider
+# serves it (cache/shared/), then send it with ACTION_SEND to the running activity.
+FIXTURE="${FIXTURE:-tests/fixtures/garden.pdf}"
+"$ADB" push "$FIXTURE" /data/local/tmp/garden.pdf >/dev/null
+"$ADB" shell chmod 644 /data/local/tmp/garden.pdf
+"$ADB" shell run-as "$PKG" mkdir -p cache/shared
+"$ADB" shell run-as "$PKG" cp /data/local/tmp/garden.pdf cache/shared/garden.pdf
+"$ADB" shell am start -a android.intent.action.SEND -t application/pdf \
+  --eu android.intent.extra.STREAM "content://$PKG.fileprovider/shared/garden.pdf" \
+  --grant-read-uri-permission -n "$PKG/org.beeware.android.MainActivity"
+for _ in $(seq 1 24); do
+  sleep 5
+  alive || fail "the app stopped after a share"
+  if "$ADB" logcat -d | grep -q "HeOCR read garden.pdf"; then break; fi
+done
+"$ADB" exec-out screencap -p > dist/ui-smoke/3-shared.png
+"$ADB" logcat -d > dist/ui-smoke/logcat.txt
+SHARED=$(grep -o "HeOCR read garden.pdf: .*" dist/ui-smoke/logcat.txt | tail -1)
+[ -n "$SHARED" ] || fail "the shared PDF was not read within 120 seconds"
+echo "$SHARED"
+case "$SHARED" in *": ok "*"text_layer"*) ;; *) fail "the shared PDF did not read as ok from its text layer";; esac
+echo "UI smoke passed: started, read the sample, read a shared PDF, still running"
