@@ -61,8 +61,12 @@ jobs:
           briefcase create macOS -a heocr_desktop --no-input
           briefcase build macOS -a heocr_desktop --no-input
       - name: Smoke-test the packaged app (one fixture per type), arm64
+        env:
+          HEOCR_SMOKE_MODEL: heocr_modern_v1  # heocr 0.2's own model, never the stock fallback
         run: python scripts/smoke_app.py macos
       - name: Smoke-test the packaged app, x86_64 under Rosetta (Intel coverage)
+        env:
+          HEOCR_SMOKE_MODEL: heocr_modern_v1
         run: |
           softwareupdate --install-rosetta --agree-to-license >/dev/null 2>&1 || true
           python scripts/smoke_app.py macos-x86_64
@@ -72,6 +76,20 @@ jobs:
         with:
           name: heocr-macos-adhoc-dmg
           path: dist/*.dmg
+          retention-days: 14
+      # The built app with Briefcase's bundle folder, as a tarball (keeps symlinks and modes): the
+      # maintainer's Mac signs it with the Developer ID (briefcase package --identity) and notarizes it,
+      # without building anything locally. The smoke reports go with it.
+      - name: The built app, for signing elsewhere
+        run: |
+          tar -czf heocr-macos-app.tgz -C build/heocr_desktop/macos app
+          shasum -a 256 heocr-macos-app.tgz
+      - uses: actions/upload-artifact@v4
+        with:
+          name: heocr-macos-app-unsigned
+          path: |
+            heocr-macos-app.tgz
+            build/smoke-report-*.json
           retention-days: 14
 
   windows:
