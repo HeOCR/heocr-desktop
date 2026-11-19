@@ -136,13 +136,14 @@ class Api:
             "html": render.document_html(doc) if r.kind == "ok" else "",
             "text": doc.text if r.kind == "ok" else "",
             "markdown": doc.markdown if r.kind == "ok" else "",
+            "formats": list(exports.formats()),
         }
 
     def save(self, kind: str) -> str | None:
         import webview
 
         r = self._result
-        if r is None or r.doc is None or kind not in exports.FORMATS:
+        if r is None or r.doc is None or kind not in exports.formats():
             return None
         stem = self._source.stem if self._source else "heocr"
         target = self._window.create_file_dialog(

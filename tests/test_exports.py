@@ -24,3 +24,14 @@ def test_md_and_json_are_plain_utf8():
 def test_unknown_format_is_refused():
     with pytest.raises(ValueError):
         exports.export(DOC, "pdf")
+
+
+def test_word_comes_first_only_when_heocr_can_write_it(monkeypatch):
+    import heocr
+
+    monkeypatch.delattr(heocr.Document, "to_docx", raising=False)
+    assert exports.formats() == ("txt", "md", "json")
+    monkeypatch.setattr(heocr.Document, "to_docx", lambda self: b"PK\x03\x04", raising=False)
+    assert exports.formats()[0] == "docx"
+    doc = SimpleNamespace(to_docx=lambda: b"PK\x03\x04")
+    assert exports.export(doc, "docx") == b"PK\x03\x04"

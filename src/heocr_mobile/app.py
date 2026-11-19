@@ -54,8 +54,12 @@ class HeOCR(toga.App):
         self.webview = toga.WebView(style=Pack(flex=1))
         rows = [
             toga.Box(children=[_button(self.t["open"], self.open_file), _button(self.t["take_photo"], self.take_photo)], style=Pack(direction=ROW)),
-            toga.Box(children=[_button(self.t["copy"], self.copy), _button(self.t["save_txt"], self.save_txt)], style=Pack(direction=ROW)),
-            toga.Box(children=[_button(self.t["sample"], self.read_sample)], style=Pack(direction=ROW)),
+            # Save: Word first when heocr can write it, then text (exports.formats()).
+            toga.Box(
+                children=[_button(self.t[f"save_{kind}"], self.saver(kind)) for kind in exports.formats() if kind in ("docx", "txt")],
+                style=Pack(direction=ROW),
+            ),
+            toga.Box(children=[_button(self.t["copy"], self.copy), _button(self.t["sample"], self.read_sample)], style=Pack(direction=ROW)),
         ]
         self.main_window = toga.MainWindow(title=self.formal_name, on_gain_focus=self.on_focus)
         self.main_window.content = toga.Box(children=[*rows, self.status, self.webview], style=Pack(direction=COLUMN))
@@ -150,19 +154,25 @@ class HeOCR(toga.App):
         self.status.text = f"{name} · " + self.t["seconds"].format(s=round(result.seconds, 1))
         self.webview.set_content("about:blank", view.page(result.doc, self.t, notes))
 
-    async def save_txt(self, widget):
-        """Save the text as a .txt file where the user chooses (UTF-8 with a BOM, as on the desktop)."""
+    def saver(self, kind: str):
+        async def handler(widget):
+            await self.save(kind)
+
+        return handler
+
+    async def save(self, kind: str):
+        """Save the reading where the user chooses: Word (.docx) or text (.txt), the same bytes as the desktop."""
         if self.doc is None:
             return
         done = asyncio.get_running_loop().create_future()
-        intent = device.create_document_intent(f"{self.name}.txt", exports.MIME["txt"])
+        intent = device.create_document_intent(f"{self.name}.{kind}", exports.MIME[kind])
         self._impl.start_activity(intent, on_complete=lambda code, data: done.set_result(data))
         data = await done
         uri = data.getData() if data is not None else None
         if uri is None:
             return
         try:
-            device.write_to(uri, exports.export(self.doc, "txt"))
+            device.write_to(uri, exports.export(self.doc, kind))
         except Exception as exc:  # noqa: BLE001 - shown to the user
             print(f"HeOCR save: error {type(exc).__name__}", flush=True)
             self.message("error")

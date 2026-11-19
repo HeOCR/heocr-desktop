@@ -39,7 +39,7 @@ done
 if [ -z "$POS" ]; then
   SIZE=$("$ADB" shell wm size | grep -o '[0-9]*x[0-9]*' | tail -1)
   W=${SIZE%x*}; H=${SIZE#*x}
-  POS="$((W / 2)) $((H * 579 / 1920))"  # row 3, alone: "Try a sample"
+  POS="$((W * 3 / 4)) $((H * 579 / 1920))"  # row 3, right: "Try a sample"
   echo "uiautomator gave no tree; tapping the button's usual place: $POS"
 fi
 "$ADB" shell input tap $POS
