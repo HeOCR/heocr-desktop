@@ -18,6 +18,7 @@ from heocr_desktop import engine, i18n
 from heocr_mobile import device, view
 
 # Mobile-only strings, in the desktop's format. New ones go to the maintainer for a native read.
+# Hebrew reviewed by the maintainer on 2026-11-19: all five strings below.
 MOBILE_STRINGS = {
     "en": {
         "open": "Open a file",
