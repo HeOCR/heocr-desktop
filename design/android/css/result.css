@@ -1,0 +1,65 @@
+/* HeOCR Android: the document (result view).
+   Styles the HTML that heocr_desktop/render.py and heocr_mobile/view.py produce today, unchanged:
+     p.block, p.block.list-item, span.label, sup.note-id, h1..h6.block, .ocr,
+     div.table-wrap > table > td.cell(.flagged), p.figure, div.page-break, h2.section, p.note
+   Needs tokens.css and fonts.css. Wrap the document in <article class="doc"> (or put class="doc" on <body>).
+   Uses logical properties only, so a right-to-left document mirrors with no extra rules. */
+
+.doc {
+  color: var(--text);
+  background: var(--bg);
+  font: 400 17px/1.7 var(--font-body);
+  overflow-wrap: anywhere;
+  font-variant-numeric: tabular-nums;
+}
+body.doc { margin: 0; padding: 16px 16px 28px; }
+.doc .block { margin: 0 0 14px; }
+.doc p.block:last-child { margin-bottom: 0; }
+
+/* headings: the document's own, set in the body face so Hebrew and Latin match */
+.doc h1.block, .doc h2.block, .doc h3.block, .doc h4.block, .doc h5.block, .doc h6.block {
+  font-family: var(--font-body); font-weight: 700; line-height: 1.3; margin: 26px 0 10px; text-wrap: balance;
+}
+.doc h1.block { font-size: 24px; margin-top: 4px; }
+.doc h2.block { font-size: 20px; }
+.doc h3.block { font-size: 18px; }
+.doc h4.block, .doc h5.block, .doc h6.block { font-size: 17px; }
+
+/* list items keep the label the document had ("1.", "א.", a bullet) */
+.doc .list-item { padding-inline-start: 6px; margin-bottom: 8px; }
+.doc .label { font-weight: 700; color: var(--muted); margin-inline-end: 2px; unicode-bidi: isolate; }
+.doc .note-id { font: 700 11px/1 var(--font-mono); color: var(--accent); }
+
+/* tables: real tables; a wide one scrolls sideways inside its own box, never the page */
+.doc .table-wrap { overflow-x: auto; margin: 16px 0 18px; border: 1px solid var(--line-strong); border-radius: var(--radius); }
+/* the scroll box takes the table's own direction, so a table that runs against the document
+   (an English table in a Hebrew document, or the other way round) still starts at its first column */
+.doc .table-wrap:has(> table[dir="rtl"]) { direction: rtl; }
+.doc .table-wrap:has(> table[dir="ltr"]) { direction: ltr; }
+.doc table { border-collapse: collapse; min-width: 100%; font-size: 15.5px; line-height: 1.45; }
+.doc td, .doc th { padding: 9px 12px; text-align: start; vertical-align: top; white-space: nowrap;
+  border-block-end: 1px solid var(--line); border-inline-end: 1px solid var(--line); }
+.doc tr:last-child > td { border-block-end: 0; }
+.doc td:last-child, .doc th:last-child { border-inline-end: 0; }
+.doc tr:first-child > td { background: var(--surface); font-weight: 700; border-block-end-color: var(--line-strong); }
+.doc td.flagged { background: var(--tag); }
+
+/* a picture that was not read */
+.doc .figure { margin: 16px 0; padding: 12px; border: 1px dashed var(--line-strong); border-radius: var(--radius);
+  color: var(--muted); font-size: 14px; font-style: normal; text-align: center; }
+
+/* page separator: a hairline with the page label on its start side */
+.doc .page-break { display: flex; align-items: center; gap: 10px; margin: 30px 0 16px; padding: 0; border: 0;
+  color: var(--muted); font: 500 12px/1.4 var(--font-mono); white-space: nowrap; }
+.doc .page-break::after { content: ""; flex: 1; height: 1px; background: var(--line-strong); }
+.doc .page-break:first-child { margin-top: 0; }
+
+/* headers, footers and notes: their own sections at the end, quieter than the body */
+.doc h2.section { margin: 34px 0 10px; padding-top: 14px; border-top: 1px solid var(--line-strong);
+  font: 700 13px/1.4 var(--font-body); color: var(--muted); }
+.doc h2.section ~ .block { font-size: 15px; line-height: 1.6; color: var(--muted); margin-bottom: 8px; }
+.doc h2.section ~ h2.section { margin-top: 22px; }
+
+/* notes from the app, shown above the document (the OCR note today) */
+.doc .note { margin: 0 0 16px; padding: 1px 12px; border-inline-start: 2px solid var(--line-strong);
+  color: var(--muted); font-size: 13.5px; line-height: 1.5; }

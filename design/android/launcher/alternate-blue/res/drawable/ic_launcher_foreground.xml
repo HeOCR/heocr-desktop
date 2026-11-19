@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- HeOCR launcher icon, foreground layer. 108 dp canvas; the mark stays inside the 66 dp safe circle. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp"
+    android:viewportWidth="108" android:viewportHeight="108">
+    <path android:fillColor="#FFFFFF" android:pathData="M35.625,35.625H72.375V72.375H35.625Z M38.375,38.375V69.625H69.625V38.375Z M33.5,33.5H40.5V40.5H33.5Z M67.5,33.5H74.5V40.5H67.5Z M33.5,67.5H40.5V74.5H33.5Z M67.5,67.5H74.5V74.5H67.5Z" />
+    <path android:fillColor="#FFFFFF" android:pathData="M46,45.5H64.5V62.5H59.5V50.5H46Z M43.5,54.5H48.5V62.5H43.5Z" />
+</vector>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- HeOCR splash icon, night. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="288dp" android:height="288dp"
+    android:viewportWidth="288" android:viewportHeight="288">
+    <path android:fillColor="#8FA3FF" android:pathData="M99,99H189V189H99Z M104,104V184H184V104Z M94,94H109V109H94Z M179,94H194V109H179Z M94,179H109V194H94Z M179,179H194V194H179Z" />
+    <path android:fillColor="#ECEBE8" android:pathData="M124,123.375H169.625V165.25H158.375V134.625H124Z M118.375,145.25H129.625V165.25H118.375Z" />
+</vector>
