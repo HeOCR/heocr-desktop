@@ -102,12 +102,24 @@ jobs:
           for u in https://repo.maven.apache.org/maven2/com/chaquo/python/gradle/17.2.0/gradle-17.2.0.pom https://dl.google.com/dl/android/maven2/com/android/tools/build/gradle/9.3.1/gradle-9.3.1.pom; do
             curl -sS -o /dev/null -w "%{http_code} %{url_effective}\n" -A "Gradle/9.5.0" "$u" || true
           done
-          ls ~/.gradle 2>/dev/null; cat ~/.gradle/gradle.properties 2>/dev/null || true; ls ~/.gradle/init.d 2>/dev/null || true
+          echo "runner: $ImageOS $ImageVersion"; java -version 2>&1 | head -1
+          cat ~/.gradle/gradle.properties 2>/dev/null || echo "no ~/.gradle/gradle.properties"
+          ls ~/.gradle/init.d 2>/dev/null || echo "no ~/.gradle/init.d"
+          g=build/heocr_mobile/android/gradle
+          cat $g/gradle.properties 2>/dev/null || true
+          grep -n -A6 "repositories\|pluginManagement" $g/build.gradle $g/settings.gradle 2>/dev/null || true
       - name: On-device tests in the emulator (x86_64 image, arm64 app through Android's ARM translation)
         run: >
           briefcase run android -a heocr_mobile --test --no-input -v
           -d '{"avd":"heocrPhone","system_image":"system-images;android-34;google_apis;x86_64"}'
           --Xemulator=-no-window --Xemulator=-no-snapshot --Xemulator=-no-audio --Xemulator=-no-boot-anim
+      - name: Gradle's own account of the dependency failure (on failure)
+        if: failure()
+        run: |
+          cd build/heocr_mobile/android/gradle
+          ./gradlew assembleDebug --refresh-dependencies --info --stacktrace > gradle-info.log 2>&1 || true
+          grep -n -iE "resource missing|status code|could not (get|head|resolve|find)|offline|received|proxy|cached|response|java.home|JVM" gradle-info.log | head -80
+          tail -40 gradle-info.log
       - name: Emulator facts (on failure)
         if: failure()
         run: |
