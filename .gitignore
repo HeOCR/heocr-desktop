@@ -11,3 +11,4 @@ tests/fixtures/smoke-report.json
 wheels/
 vendor/
 .pytest_cache/
+*.egg-info/

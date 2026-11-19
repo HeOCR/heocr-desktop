@@ -6,7 +6,7 @@
 
 It is a window around [heocr](https://github.com/HeOCR/heocr), HeOCR's open pipeline for Hebrew documents, with Tesseract OCR and its Hebrew model built in.
 
-> Status: preview, built on heocr 0.1.0rc1 (the release candidate in heocr's release gate). Not released yet.
+> Status: 0.1.0, built on heocr 0.1.2 (the gated 0.1.0 plus its fixes). Not released yet.
 
 ## What it does
 
@@ -40,7 +40,7 @@ HeOCR does not transfer any information to other networked systems. Concretely:
 
 | Part | Version | Licence |
 |---|---|---|
-| [heocr](https://github.com/HeOCR/heocr) | 0.1.0rc1 (`57e58de`); 0.1.0 after the gate | Apache-2.0 |
+| [heocr](https://github.com/HeOCR/heocr) | 0.1.2 (`ac1ad20`) | Apache-2.0 |
 | [Tesseract OCR](https://github.com/tesseract-ocr/tesseract) | 5.5.3, built from source in CI by `scripts/build_tesseract.py`: static, without network code (no libcurl, no libarchive) | Apache-2.0 |
 | Leptonica and image libraries | 1.87.0, via vcpkg `2026.10.16` | BSD-style, see the list |
 | OCR models | `heb` from [tessdata_best](https://github.com/tesseract-ocr/tessdata_best) 4.1.0 (`e12c65a`) and `eng` from [tessdata_fast](https://github.com/tesseract-ocr/tessdata_fast) 4.1.0 (for heocr's second reading of numbers): exactly the files heocr's release gate ran with, pinned by sha256 in `tesseract/pins.json` | Apache-2.0 |
