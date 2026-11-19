@@ -8,14 +8,16 @@ Tesseract and models. Documents come from the system picker, from another app's 
 from __future__ import annotations
 
 import asyncio
+import functools
+import traceback
 from pathlib import Path
 
 import toga
 from toga.style import Pack
 from toga.style.pack import COLUMN, ROW
 
-from heocr_desktop import engine, exports, i18n
-from heocr_mobile import device, view
+from heocr_desktop import diagnostics, engine, exports, i18n
+from heocr_mobile import __version__, device, view
 
 # Mobile-only strings, in the desktop's format. New ones go to the maintainer for a native read.
 # Hebrew reviewed by the maintainer on 2026-11-19: all five strings below.
@@ -26,6 +28,9 @@ MOBILE_STRINGS = {
         "sample": "Try a sample",
         "offline": "Works fully offline: nothing you read leaves this phone.",
         "welcome": "Open a PDF, a Word file (DOCX) or an image, share one to HeOCR from another app, or take a photo.",
+        "diagnostics": "Copy diagnostics",
+        "diagnostics_copied": "Diagnostics copied: how the last file was read, without its text.",
+        "incomplete": "The file arrived incomplete from the app that shared it. Try again, or open it with \u201cOpen a file\u201d.",
     },
     "he": {
         "open": "פתיחת קובץ",
@@ -33,8 +38,27 @@ MOBILE_STRINGS = {
         "sample": "דוגמה",
         "offline": "עובד במלואו בלי אינטרנט: שום דבר שנקרא לא יוצא מהטלפון.",
         "welcome": "פתחו קובץ PDF, קובץ וורד (DOCX) או תמונה, שתפו קובץ ל־HeOCR מאפליקציה אחרת, או צלמו.",
+        "diagnostics": "העתקת פרטי אבחון",
+        "diagnostics_copied": "פרטי האבחון הועתקו: איך נקרא הקובץ האחרון, בלי הטקסט שלו.",
+        "incomplete": "הקובץ הגיע חלקי מהאפליקציה ששיתפה אותו. נסו שוב, או פתחו אותו ב„פתיחת קובץ”.",
     },
 }
+
+
+def guarded(handler):
+    """A button's handler that cannot fail silently: Toga drops exceptions from async handlers, so
+    log the error's type and where it happened (never document text), and show the error message."""
+
+    @functools.wraps(handler)
+    async def run(self, *args, **kwargs):
+        try:
+            return await handler(self, *args, **kwargs)
+        except Exception as exc:  # noqa: BLE001
+            where = traceback.extract_tb(exc.__traceback__)[-1]
+            print(f"HeOCR {handler.__name__}: error {type(exc).__name__} at {Path(where.filename).name}:{where.lineno}", flush=True)
+            self.message("error")
+
+    return run
 
 
 def _button(label, handler):
@@ -50,6 +74,7 @@ class HeOCR(toga.App):
         self.doc = None
         self.name = "heocr"
         self.busy = False
+        self.last = None  # (engine result, input bytes, declared bytes) of the last reading, for diagnostics
         self.status = toga.Label("", style=Pack(margin=(4, 8)))
         self.webview = toga.WebView(style=Pack(flex=1))
         rows = [
@@ -64,6 +89,8 @@ class HeOCR(toga.App):
         self.main_window = toga.MainWindow(title=self.formal_name, on_gain_focus=self.on_focus)
         self.main_window.content = toga.Box(children=[*rows, self.status, self.webview], style=Pack(direction=COLUMN))
         self.webview.set_content("about:blank", view.welcome(self.t, self.lang))
+        # In the app's menu (⋮), not on the screen: for a bug report, how the last file was read.
+        self.commands.add(toga.Command(self.copy_diagnostics, text=self.t["diagnostics"]))
         self.main_window.show()
 
     # -- where documents come from ---------------------------------------------------------
@@ -78,6 +105,7 @@ class HeOCR(toga.App):
         activity.setIntent(device._jclass("android.content.Intent")())
         asyncio.get_running_loop().create_task(self.read_uri(uri))
 
+    @guarded
     async def open_file(self, widget):
         done = asyncio.get_running_loop().create_future()
         self._impl.start_activity(device.open_document_intent(), on_complete=lambda code, data: done.set_result(data))
@@ -86,6 +114,7 @@ class HeOCR(toga.App):
         if uri is not None:
             await self.read_uri(uri)
 
+    @guarded
     async def take_photo(self, widget):
         if not self.camera.has_permission:
             await self.camera.request_permission()
@@ -97,18 +126,26 @@ class HeOCR(toga.App):
         photo.save(path)
         await self.read(path, "photo.jpg")
 
+    @guarded
     async def read_sample(self, widget):
         await self.read(device.RESOURCES / "sample" / "sample.png", "sample.png")
 
+    @guarded
     async def read_uri(self, uri):
         try:
             name = device.display_name(uri)
-            path = device.copy_to(uri, Path(self.paths.cache) / "incoming")
+            declared = device.declared_size(uri)
+            path, copied = device.copy_to(uri, Path(self.paths.cache) / "incoming")
         except Exception as exc:  # noqa: BLE001 - shown to the user; details stay on the phone
             print(f"HeOCR incoming document: error {type(exc).__name__}", flush=True)
             self.message("unreadable")
             return
-        await self.read(path, name)
+        # Sizes only, never content: a short copy would read as a broken file.
+        print(f"HeOCR incoming {name}: copied={copied} declared={declared}", flush=True)
+        if declared is not None and declared > 0 and copied != declared:
+            self.message("incomplete")
+            return
+        await self.read(path, name, copied, declared)
 
     def message(self, key: str):
         """A longer message goes in the page, where it wraps; the status line keeps short text only."""
@@ -119,7 +156,7 @@ class HeOCR(toga.App):
 
     # -- reading ---------------------------------------------------------------------------
 
-    async def read(self, path: Path, name: str):
+    async def read(self, path: Path, name: str, copied: int | None = None, declared: int | None = None):
         if self.busy:
             return
         self.busy = True
@@ -141,6 +178,7 @@ class HeOCR(toga.App):
             return
         finally:
             self.busy = False
+        self.last = (result, copied if copied is not None else path.stat().st_size, declared)
         # One line in the device log per reading (the file's name, never its text), for CI and bug reports.
         models = sorted({str(m) for m in view.ocr_models(result.doc)}) if result.doc is not None else []
         print(f"HeOCR read {name}: {result.kind} routes={result.routes} models={models} seconds={result.seconds:.1f}", flush=True)
@@ -160,6 +198,7 @@ class HeOCR(toga.App):
 
         return handler
 
+    @guarded
     async def save(self, kind: str):
         """Save the reading where the user chooses: Word (.docx) or text (.txt), the same bytes as the desktop."""
         if self.doc is None:
@@ -179,6 +218,18 @@ class HeOCR(toga.App):
             return
         self.status.text = self.t["saved"]
 
+    @guarded
+    async def copy_diagnostics(self, command, **kwargs):
+        """Copy how the last file was read (structure only, no text), for a safe bug report."""
+        if self.last is None:
+            return
+        result, copied, declared = self.last
+        report = diagnostics.report(result, app="heocr_mobile", app_version=__version__, input_bytes=copied, declared_bytes=declared)
+        device.copy_text(diagnostics.text(report))
+        self.status.text = ""
+        self.webview.set_content("about:blank", view.message(self.t, self.lang, self.t["diagnostics_copied"]))
+
+    @guarded
     async def copy(self, widget):
         if self.text:
             device.copy_text(self.text)
