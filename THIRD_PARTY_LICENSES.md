@@ -9,7 +9,7 @@ HeOCR desktop is Apache-2.0. This is every component its macOS app and Windows i
 
 | Component | Version | Licence | Notes |
 |---|---|---|---|
-| heocr | 0.1.2 (`ac1ad20`) | Apache-2.0 | Its NOTICE ships in its `dist-info`. heocr's own audit of its dependencies: [THIRD_PARTY_LICENSES.md](https://github.com/HeOCR/heocr/blob/main/THIRD_PARTY_LICENSES.md) |
+| heocr | 0.1.2 from PyPI (tag `v0.1.2`, `ac1ad20`) | Apache-2.0 | Its NOTICE ships in its `dist-info`. heocr's own audit of its dependencies: [THIRD_PARTY_LICENSES.md](https://github.com/HeOCR/heocr/blob/main/THIRD_PARTY_LICENSES.md) |
 | pypdfium2 | 5.15.2 | Apache-2.0 or BSD-3-Clause | Bundles PDFium (BSD-3-Clause) with Abseil, Highway, AGG, Dragonbox, fast_float, FreeType (FTL), HarfBuzz (MIT), ICU (Unicode-3.0), Little CMS (MIT), libjpeg-turbo, OpenJPEG, libpng, libtiff, simdutf, zlib, Brotli, libyuv and LLVM libc pieces, all permissive; listed in heocr's audit |
 | Pillow | 13.0.0 | MIT-CMU (HPND) | Bundles libjpeg-turbo, libtiff, libwebp, OpenJPEG, libpng, zlib-ng, FreeType (FTL), HarfBuzz, Little CMS, libavif, Brotli, liblzma (0BSD), libxcb/libXau (MIT); listed in heocr's audit |
 | defusedxml | 0.7.1 | PSF-2.0 | |
