@@ -28,8 +28,8 @@ Builds:
       - apt-get -o quiet=0 install -y python3 python3-venv python3-pip openjdk-21-jdk-headless build-essential cmake ninja-build git curl zip unzip pkg-config
     ndk: r27c
     build:
-      # Experimental CI-inspired recipe, not proven on the F-Droid buildserver. See the audit.
-      # Downloads and binary provenance require review; this is not an all-source build.
+      # Tested in the official CI container with the SDK setup documented in the audit.
+      # Downloads and binary provenance still require production review.
       - python3 -m venv /tmp/venv
       - . /tmp/venv/bin/activate
       - export PIP_CONFIG_FILE=/dev/null PIP_INDEX_URL=https://pypi.org/simple PIP_EXTRA_INDEX_URL= PIP_VERBOSE=1
