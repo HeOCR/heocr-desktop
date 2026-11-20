@@ -9,7 +9,7 @@ HeOCR desktop is Apache-2.0. This is every component its macOS app and Windows i
 
 | Component | Version | Licence | Notes |
 |---|---|---|---|
-| heocr | 0.2.1 from PyPI (tag `v0.2.1`, `fd2ef3e`; 0.2.0's code) | Apache-2.0 | Its NOTICE ships in its `dist-info`. heocr's own audit of its dependencies: [THIRD_PARTY_LICENSES.md](https://github.com/HeOCR/heocr/blob/main/THIRD_PARTY_LICENSES.md) |
+| heocr | Git commit `fd2ef3e405f6042abe7cfc27fc21830e49cf349b` (tag `v0.2.1`) | Apache-2.0 | Its NOTICE ships in its `dist-info`. heocr's own audit of its dependencies: [THIRD_PARTY_LICENSES.md](https://github.com/HeOCR/heocr/blob/main/THIRD_PARTY_LICENSES.md) |
 | pypdfium2 | 5.15.2 | Apache-2.0 or BSD-3-Clause | Bundles PDFium (BSD-3-Clause) with Abseil, Highway, AGG, Dragonbox, fast_float, FreeType (FTL), HarfBuzz (MIT), ICU (Unicode-3.0), Little CMS (MIT), libjpeg-turbo, OpenJPEG, libpng, libtiff, simdutf, zlib, Brotli, libyuv and LLVM libc pieces, all permissive; listed in heocr's audit |
 | Pillow | 13.0.0 | MIT-CMU (HPND) | Bundles libjpeg-turbo, libtiff, libwebp, OpenJPEG, libpng, zlib-ng, FreeType (FTL), HarfBuzz, Little CMS, libavif, Brotli, liblzma (0BSD), libxcb/libXau (MIT); listed in heocr's audit |
 | defusedxml | 0.7.1 | PSF-2.0 | |
@@ -72,7 +72,7 @@ On macOS the app removes the parts of Python it never uses: Tcl/Tk, curses (ncur
 ## Not bundled, on purpose
 
 - **LibreOffice** (MPL-2.0), which heocr can use for DOC, RTF, ODT, XLS, ODS, PPT and ODP. The app turns conversion off and says so for those files.
-- **HeOCR's trained models**, which heocr can download on request. The app never downloads anything; it runs stock Tesseract `heb`, heocr's default.
+- **HeOCR's trained models**, which heocr can download on request. The app never downloads anything; it runs the stock Tesseract `heb` model selected explicitly.
 
 ## Acknowledgements the licences ask for
 
@@ -96,7 +96,6 @@ The Android app (`heocr_mobile`) bundles the same pipeline and OCR components (w
 
 | Component | Version | Licence | Notes |
 |---|---|---|---|
-| HeOCR models `heocr_modern_v1`, `heocr_oldprint_v1` | 2026-11 (inside heocr 0.2.1, in both apps) | Apache-2.0 | Zenodo 10.5281/zenodo.24372349 and 10.5281/zenodo.24372352; their NOTICE files ship in heocr's `models_data/` |
 | Chaquopy runtime | 17.2.0 | MIT | Python on Android, from Maven Central (Briefcase's Android template) |
 | Toga (toga-core, toga-android) | 0.5.7 | BSD-3-Clause | The native shell |
 | cpu_features (ndk_compat) | 0.11.0 | Apache-2.0 | Static, inside the Android Tesseract (its CPU detection) |

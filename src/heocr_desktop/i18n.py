@@ -69,8 +69,6 @@ STRINGS: dict[str, dict[str, str]] = {
         "section_notes": "Speaker notes",
         "section_navigation": "Navigation",
         "about_body": "HeOCR reads Hebrew text out of PDFs, Word files and images, with the open-source heocr pipeline and Tesseract OCR. It runs entirely on this computer and never connects to the internet. Free and open source under the Apache License 2.0.",
-        # Reviewed by the maintainer on 2026-11-20 (the "for now" version).
-        "niqqud": "HeOCR's own models write no niqqud: pointed text comes out unpointed, for now.",
         "about_components": "Included components and their licences",
         "about_models": "OCR models",
         "about_site": "heocr.github.io",
@@ -143,7 +141,6 @@ STRINGS: dict[str, dict[str, str]] = {
         "section_notes": "הערות דובר",
         "section_navigation": "ניווט",
         "about_body": "HeOCR קורא טקסט עברי מקובצי PDF, וורד ותמונות, בעזרת צינור העיבוד הפתוח heocr ו-Tesseract OCR. הוא פועל כולו על המחשב הזה ולעולם לא מתחבר לאינטרנט. חינמי וקוד פתוח, ברישיון Apache 2.0.",
-        "niqqud": "המודלים של HeOCR לא כותבים ניקוד: בינתיים טקסט מנוקד יוצא בלי ניקוד.",
         "about_components": "רכיבים כלולים והרישיונות שלהם",
         "about_models": "מודלי OCR",
         "about_site": "heocr.github.io",

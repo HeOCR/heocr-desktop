@@ -53,11 +53,11 @@ def test_fixtures_read_as_on_the_desktop():
     assert code == 0 and report["ok"], report
 
 
-def test_reads_with_heocrs_bundled_modern_model():
-    # heocr 0.2's default: HeOCR's own modern-print model, from inside the heocr package, not stock heb.
+def test_reads_with_bundled_stock_hebrew():
     result = engine.convert(FIXTURES / "garden-scan.png")
     assert result.kind == "ok"
-    assert "heocr_modern_v1" in view.ocr_models(result.doc), sorted(result.doc.components)
+    used = view.ocr_models(result.doc)
+    assert "heb" in used and used <= {"heb", "eng"}, used
     assert "bundled_model_unavailable" not in result.doc.flags
 
 

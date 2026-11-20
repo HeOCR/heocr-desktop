@@ -36,7 +36,7 @@ Builds:
       - export ANDROID_NDK_HOME=$$NDK$$
       - python scripts/build_tesseract.py --target android-arm64 --out build/tess/android-arm64
       - python scripts/build_pillow_android.py --deps build/tess/android-arm64/deps --out build/android-wheels
-      # Stage the six exact PyPI release wheels beside the locally built Pillow wheel.
+      # Stage the five runtime wheels and the heocr build backend beside the Pillow wheel.
       - >-
         python -m pip download --no-index --no-cache-dir --no-deps --require-hashes
         --platform android_23_arm64_v8a --python-version 3.13

@@ -6,7 +6,7 @@
 
 It is a window around [heocr](https://github.com/HeOCR/heocr), HeOCR's open pipeline for Hebrew documents, with Tesseract OCR and its Hebrew model built in.
 
-> Status: built on heocr 0.2.1 (0.2.0's code), which reads with HeOCR's own model, `heocr_modern_v1`, by default. It writes no niqqud: pointed text comes out unpointed.
+> Status: built from pinned heocr Git source. OCR uses the stock Tesseract Hebrew model.
 
 ## What it does
 
@@ -40,7 +40,7 @@ HeOCR does not transfer any information to other networked systems. Concretely:
 
 | Part | Version | Licence |
 |---|---|---|
-| [heocr](https://github.com/HeOCR/heocr) | 0.2.1 from PyPI (tag `v0.2.1`, `fd2ef3e`; 0.2.0's code, which left PyPI), with HeOCR's own models `heocr_modern_v1` (the default) and `heocr_oldprint_v1` inside | Apache-2.0 |
+| [heocr](https://github.com/HeOCR/heocr) | Git commit `fd2ef3e405f6042abe7cfc27fc21830e49cf349b` (tag `v0.2.1`) | Apache-2.0 |
 | [Tesseract OCR](https://github.com/tesseract-ocr/tesseract) | 5.5.3, built from source in CI by `scripts/build_tesseract.py`: static, without network code (no libcurl, no libarchive) | Apache-2.0 |
 | Leptonica and image libraries | 1.87.0, via vcpkg `2026.10.16` | BSD-style, see the list |
 | OCR models | `heb` from [tessdata_best](https://github.com/tesseract-ocr/tessdata_best) 4.1.0 (`e12c65a`) and `eng` from [tessdata_fast](https://github.com/tesseract-ocr/tessdata_fast) 4.1.0 (for heocr's second reading of numbers): exactly the files heocr's release gate ran with, pinned by sha256 in `tesseract/pins.json` | Apache-2.0 |

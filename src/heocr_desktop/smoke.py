@@ -9,7 +9,7 @@ Expectations come from ``expect.json`` in the folder: ``{"file": {"kind": "ok", 
 
 Every reading also records the Tesseract models it used and the document's flags. A document flagged
 ``bundled_model_unavailable`` (heocr's own model missing, stock Tesseract read instead) always fails.
-``HEOCR_SMOKE_MODEL=heocr_modern_v1`` also requires that model in every OCR reading.
+OCR must use the shipped stock ``heb`` model. ``eng`` may also be used for number checks.
 """
 
 from __future__ import annotations
@@ -26,7 +26,7 @@ _MODEL = re.compile(r"^tesseract:(.+)\.traineddata$")
 
 
 def models(doc) -> list[str]:
-    """The Tesseract models a reading used, from its record (``heocr_modern_v1``, ``heb``, ``eng``)."""
+    """The Tesseract models a reading used, from its record (``heb``, ``eng``)."""
     return sorted({m.group(1) for key in getattr(doc, "components", {}) or {} if (m := _MODEL.match(key))})
 
 
@@ -41,7 +41,7 @@ def run(folder: str) -> int:
         "tessdata": str(engine.tessdata_path()),
         "files": {},
     }
-    want_model = os.environ.get("HEOCR_SMOKE_MODEL")
+    want_model = os.environ.get("HEOCR_SMOKE_MODEL", "heb")
     report["want_model"] = want_model
     failures = 0
     for name, want in sorted(expect.items()):
@@ -55,7 +55,9 @@ def run(folder: str) -> int:
             problems = []
             if "bundled_model_unavailable" in flags:
                 problems.append("bundled_model_unavailable")
-            if want_model and "ocr" in result.routes and want_model not in used:
+            if unexpected := set(used) - {"heb", "eng"}:
+                problems.append(f"unexpected OCR model: {sorted(unexpected)}")
+            if "ocr" in result.routes and want_model not in used:
                 problems.append(f"read without {want_model}: {used}")
             if result.kind != want.get("kind", "ok"):
                 problems.append(f"kind {result.kind}")

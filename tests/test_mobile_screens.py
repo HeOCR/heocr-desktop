@@ -110,8 +110,8 @@ def test_strings_are_the_reviewed_design_strings():
 
 
 def test_ocr_models_come_from_the_record():
-    d = SimpleNamespace(components={"tesseract:heocr_modern_v1.traineddata": "sha256:x", "tesseract:eng.traineddata": "sha256:y", "Pillow": "13.0.0"})
-    assert view.ocr_models(d) == {"heocr_modern_v1", "eng"}
+    d = SimpleNamespace(components={"tesseract:heb.traineddata": "sha256:x", "tesseract:eng.traineddata": "sha256:y", "Pillow": "13.0.0"})
+    assert view.ocr_models(d) == {"heb", "eng"}
 
 
 def test_app_screens_never_zoom_and_the_reading_can(monkeypatch):
@@ -130,12 +130,3 @@ def test_result_bar_shares_and_toasts_can_carry_an_action(monkeypatch):
     saved = screens.toast(t["saved"], "<bdi>a.txt</bdi>", action=(t["open_it"], "open-saved"))
     assert 'href="heocr:open-saved"' in saved and t["open_it"] in saved and 'role="status"' in saved
     assert "<a " not in screens.toast(t["copied"])
-
-
-@pytest.mark.parametrize("lang", ["he", "en"])
-def test_about_says_niqqud_comes_out_unpointed(lang):
-    from heocr_desktop import i18n as desktop
-
-    t = screens.strings(lang)
-    assert t["niqqud"] in screens.about(t, lang, {"app": "0.2.0", "heocr": "0.2.0", "tesseract": "5.5.3"})
-    assert desktop.STRINGS[lang]["niqqud"] == t["niqqud"]  # the same reviewed sentence in both apps

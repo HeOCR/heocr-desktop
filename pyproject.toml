@@ -11,15 +11,14 @@ requires-python = ">=3.12"
 license = "Apache-2.0"
 license-files = ["LICENSE", "NOTICE", "THIRD_PARTY_LICENSES.md"]
 authors = [{ name = "HeOCR maintainers" }]
-# Each app pins its own heocr in its Briefcase requires below (both 0.2.1).
+# Each app pins its own heocr in its Briefcase requires below.
 # Nothing here, because Briefcase adds [project].dependencies to every app.
 dependencies = []
 
 [project.optional-dependencies]
 test = ["pytest>=8"]
 # The desktop app from a checkout (python -m heocr_desktop) and its unit tests.
-# heocr 0.2.1 from PyPI (0.2.0's code; 0.2.0 was withdrawn from PyPI): HeOCR's own models in the package, heocr_modern_v1 by default.
-desktop = ["heocr==0.2.1", "pywebview==6.2.1"]
+desktop = ["heocr @ git+https://github.com/HeOCR/heocr.git@fd2ef3e405f6042abe7cfc27fc21830e49cf349b", "pywebview==6.2.1"]
 
 [project.urls]
 Homepage = "https://heocr.github.io"
@@ -54,10 +53,8 @@ into the window and get its text, headings and tables, ready to copy or save as 
 Markdown or JSON. It runs entirely on your computer: no network, no telemetry."""
 sources = ["src/heocr_desktop"]
 icon = "icons/heocr"
-# heocr 0.2.1 (0.2.0's code, with a docs-only release; 0.2.0 was withdrawn from PyPI): HeOCR's own models in the package, heocr_modern_v1 by default, the
-# model the owner chose to keep as the default (it writes no niqqud: pointed text comes out unpointed).
 requires = [
-  "heocr==0.2.1",
+  "heocr @ git+https://github.com/HeOCR/heocr.git@fd2ef3e405f6042abe7cfc27fc21830e49cf349b",
   "pypdfium2==5.15.2",
   "Pillow==13.0.0",
   "defusedxml==0.7.1",
@@ -104,8 +101,7 @@ phone itself. It has no internet permission: nothing you read ever leaves the ph
 sources = ["src/heocr_mobile", "src/heocr_desktop"]
 icon = "icons/heocr"
 requires = [
-  # heocr 0.2.1, as the desktop app: HeOCR's own models in the package, heocr_modern_v1 by default.
-  "heocr==0.2.1",
+  "heocr @ git+https://github.com/HeOCR/heocr.git@fd2ef3e405f6042abe7cfc27fc21830e49cf349b",
   "pypdfium2==5.15.2",
   "Pillow==13.0.0",  # built for Android by scripts/build_pillow_android.py (Pillow has no Android wheels)
   "defusedxml==0.7.1",

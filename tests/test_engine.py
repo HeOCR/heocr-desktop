@@ -69,7 +69,7 @@ def test_cancel_stops_before_the_first_page():
 def test_progress_hook_does_not_change_the_reading():
     import heocr
 
-    plain = heocr.extract(str(FIX / "garden.pdf"), ocr=False, convert=False).to_dict()
+    plain = heocr.extract(str(FIX / "garden.pdf"), ocr=False, convert=False, ocr_model=None).to_dict()
     hooked = engine.convert(FIX / "garden.pdf").doc.to_dict()
     plain["producer"].pop("components"), hooked["producer"].pop("components")
     for d in (plain, hooked):
@@ -84,6 +84,8 @@ def test_scans_go_through_ocr(name):
     assert result.kind == "ok"
     assert result.routes.get("ocr") == 1
     assert "הדקלים" in result.doc.text
+    assert result.doc.options["ocr"].get("model") is None
+    assert "tesseract:heb.traineddata" in result.doc.components
 
 
 def test_errors_are_not_retried(monkeypatch):
