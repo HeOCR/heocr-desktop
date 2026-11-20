@@ -69,10 +69,8 @@ class HeOCR(toga.App):
         self.sheet = False
         self.result_page = ""
         self.toast_id = 0
-        self.page = ""  # the page on screen, drawn again when the window's size changes
-        self.size = None
         self.webview = toga.WebView(style=Pack(flex=1), on_navigation_starting=self.navigate, on_webview_load=self.loaded)
-        self.main_window = toga.MainWindow(title=self.formal_name, on_gain_focus=self.on_focus, on_resize=self.on_resize)
+        self.main_window = toga.MainWindow(title=self.formal_name, on_gain_focus=self.on_focus)
         self.main_window.content = self.webview
         back.handler = self.on_back
         activity = self._impl.native
@@ -94,7 +92,6 @@ class HeOCR(toga.App):
         self.sheet = False
         # The reading can be pinch-zoomed (a document to read closely); the app's screens cannot.
         device.allow_zoom(self.webview._impl.native, screen in ("result", "licences"))
-        self.page = page
         self.webview.set_content("about:blank", page)
         print(f"HeOCR screen {screen}", flush=True)
 
@@ -105,34 +102,6 @@ class HeOCR(toga.App):
             print(f"HeOCR loaded {self.screen}: scale={native.getScale():.3f} width={native.getWidth()}", flush=True)
         except Exception:  # noqa: BLE001 - diagnostics only
             pass
-
-    def on_resize(self, window, **kwargs):
-        """Draw the page again when the window's size changes: the first page loads before the WebView
-        has its final size (the action bar is hidden after it), and the viewport tag applies only at
-        load. Also after a rotation. Layout passes that change nothing are ignored."""
-        content = self._impl.native.findViewById(device._jclass("android.R$id").content)
-        size = (content.getWidth(), content.getHeight()) if content is not None else None
-        if not size or 0 in size or size == self.size:
-            return
-        self.size = size
-        if self.page and self.screen != "reading":  # the reading screen is drawn again at each page
-            asyncio.get_running_loop().call_soon(self.redraw)
-
-    def redraw(self, tries: int = 0):
-        """Load the page again once the WebView itself has its width: Toga sizes the container in the
-        layout pass, but the WebView measures on a later frame, and a page loaded before that keeps a
-        zoomed viewport."""
-        if not self.page:
-            return
-        native = self.webview._impl.native
-        width = native.getWidth()
-        expected = self.size[0] if self.size else 0
-        if (width == 0 or (expected and width < expected * 0.9)) and tries < 30:
-            asyncio.get_running_loop().call_later(0.1, self.redraw, tries + 1)
-            return
-        print(f"HeOCR redraw {self.screen} at {self.size} webview_width={width} after={tries}", flush=True)
-        self.sheet = False  # a new load closes the sheet
-        self.webview.set_content("about:blank", self.page)
 
     def js(self, code: str):
         """Change the page in place (a toast, the sheet, the elapsed time): the page itself has no script."""

@@ -86,6 +86,14 @@ print("home buttons:", found, "screen width", width, "fit" if ok else "DO NOT FI
 sys.exit(0 if ok else 1)
 PY
 }
+# The page's scale, as the app logs it on each load, must be the screen density: no page zoom.
+scale_ok() {  # scale_ok <what>
+  local want got
+  want=$("$ADB" shell wm density | grep -o '[0-9]*' | tail -1)
+  got=$("$ADB" logcat -d | grep -o "HeOCR loaded home: scale=[0-9.]*" | tail -1 | grep -o '[0-9.]*$' || true)
+  python3 -c "import sys; w=int('$want')/160; g=float('${got:-0}'); print(f'page scale on $1: {g} (density {w})'); sys.exit(0 if abs(g-w) < 0.05 else 1)"
+}
+scale_ok "first start" || fail "Home loaded zoomed on the first start"
 home_fits || { sleep 5; home_fits; } || fail "Home is not at phone scale: its buttons are off screen (zoomed page)"
 tap_retry "^try a sample$" || fail "no 'Try a sample' button on the home screen"
 for _ in $(seq 1 30); do
@@ -211,6 +219,7 @@ alive || fail "the app stopped on Back"
 logged "HeOCR screen: night=True text_zoom=200" || { sleep 20; logged "HeOCR screen: night=True text_zoom=200" || fail "the app did not follow night mode and the font scale"; }
 sleep 5
 "$ADB" exec-out screencap -p > $OUT/10-home-night-200.png
+scale_ok "relaunch at 200% text" || fail "Home loaded zoomed at 200% text"
 # The reading itself at 200% text, for the screenshot (pinch zoom needs two fingers; not injected here).
 # Reported, not failed: on Android 15 the text at 200% is still too large (issue #23), so the button
 # can fall off the screen. The screenshots show it.
