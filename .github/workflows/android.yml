@@ -150,6 +150,17 @@ jobs:
           g=build/heocr_mobile/android/gradle
           cat $g/gradle.properties 2>/dev/null || true
           grep -n -A6 "repositories\|pluginManagement" $g/build.gradle $g/settings.gradle 2>/dev/null || true
+      # Maven Central now and then refuses a download (the Chaquopy Gradle plugin, twice in a day), which
+      # fails the build before anything runs. Resolve Gradle's plugins and dependencies first, with retries;
+      # the builds below then find them in the cache.
+      - name: Gradle's plugins and dependencies, with retries
+        run: |
+          cd build/heocr_mobile/android/gradle
+          for i in 1 2 3; do
+            ./gradlew --no-daemon help > /dev/null && exit 0
+            echo "Gradle could not resolve its plugins (try $i); retrying"; sleep $((20 * i))
+          done
+          exit 1
       - name: On-device tests in the emulator (x86_64 image, arm64 app through Android's ARM translation)
         run: >
           briefcase run android -a heocr_mobile --test -r --no-input -v

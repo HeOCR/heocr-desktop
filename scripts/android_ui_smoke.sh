@@ -123,14 +123,26 @@ alive || fail "the app stopped after reading the sample"
 AUTH=$("$ADB" shell dumpsys package "$PKG" | grep -o '[A-Za-z0-9_.-]*\.fileprovider' | head -1)
 [ -n "$AUTH" ] || fail "no FileProvider authority for $PKG"
 echo "FileProvider: $AUTH"
+# adb exits 255 when it loses the emulator for a moment (seen right after a push): retry those.
+adbr() {
+  local i rc
+  for i in 1 2 3; do
+    "$ADB" "$@" && return 0
+    rc=$?
+    [ "$rc" = 255 ] || return "$rc"
+    echo "adb $1: lost the device (try $i); retrying"; sleep 3
+    "$ADB" wait-for-device
+  done
+  return 255
+}
 share() {  # share <local file> <name on the device> <mime> <expected route text>
-  "$ADB" push "$1" "/data/local/tmp/$2" >/dev/null
-  "$ADB" shell chmod 644 "/data/local/tmp/$2"
-  "$ADB" shell run-as "$PKG" mkdir -p cache/shared
-  "$ADB" shell run-as "$PKG" cp "/data/local/tmp/$2" "cache/shared/$2"
-  "$ADB" logcat -c
+  adbr push "$1" "/data/local/tmp/$2" >/dev/null
+  adbr shell chmod 644 "/data/local/tmp/$2"
+  adbr shell run-as "$PKG" mkdir -p cache/shared
+  adbr shell run-as "$PKG" cp "/data/local/tmp/$2" "cache/shared/$2"
+  adbr logcat -c
   # adb shell hands the line to the device's shell: quote the type, or */* is expanded as a glob there.
-  "$ADB" shell am start -a android.intent.action.SEND -t "'$3'" \
+  adbr shell am start -a android.intent.action.SEND -t "'$3'" \
     --eu android.intent.extra.STREAM "content://$AUTH/shared/$2" \
     --grant-read-uri-permission -n "$PKG/org.beeware.android.MainActivity" >/dev/null
   for _ in $(seq 1 24); do
