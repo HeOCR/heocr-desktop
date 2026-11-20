@@ -15,6 +15,7 @@ from pathlib import Path
 
 STRINGS: dict[str, dict[str, str]] = {
     "en": {
+        "copy_all": "Copy all text",
         "index": "Pages",
         "title": "HeOCR",
         "tagline": "Hebrew text out of any document",
@@ -90,6 +91,7 @@ STRINGS: dict[str, dict[str, str]] = {
         "licence": "Licence",
     },
     "he": {
+        "copy_all": "העתקת כל הטקסט",
         "index": "עמודים",
         "title": "HeOCR",
         "tagline": "טקסט עברי מכל מסמך",

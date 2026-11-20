@@ -36,6 +36,7 @@
     });
     if (working) showProgress(progress);
     if (messageKey) $("message-text").textContent = t(messageKey);
+    setShortcutTitles();
     $("about-version").textContent = t("version", { v: BOOT.version, h: BOOT.heocr, t: BOOT.tesseract });
     if (current) {
       showChips(current);
@@ -216,6 +217,7 @@
   }
 
   function message(key) {
+    current = null;
     messageKey = key;
     $("message-name").textContent = $("work-name").textContent;
     $("message-text").textContent = t(key);
@@ -302,68 +304,220 @@
     }
   }
 
+  function availableFormats() {
+    return Array.from($("save-menu").querySelectorAll("[data-save]:not([hidden])"));
+  }
+
   function setSaveMenu(open, returnFocus) {
     document.body.classList.toggle("menu-open", open);
     $("save").setAttribute("aria-expanded", String(open));
     if (open) {
-      var first = $("save-menu").querySelector("button:not([hidden])");
+      var first = availableFormats()[0];
       if (first) first.focus();
     } else if (returnFocus) {
       $("save").focus();
     }
   }
 
+  function closeFile() {
+    if (working || (!current && !messageKey)) return;
+    current = null;
+    messageKey = null;
+    show("start");
+    $("open").focus();
+  }
+
+  function openFile() {
+    if (!working && api()) api().open_file();
+  }
+
+  function saveFile(format) {
+    if (!current || !api()) return;
+    var result = current;
+    api().save(format).then(function (name) {
+      if (name && current === result) toast(t("saved") + ": " + name);
+    });
+  }
+
+  function copyAll() {
+    if (current) copyText(view === "markdown" ? current.markdown : current.text);
+  }
+
+  function selectAll() {
+    var selection = window.getSelection();
+    var range = document.createRange();
+    var doc = $("doc-" + view);
+    $("reader").focus({ preventScroll: true });
+    range.selectNodeContents(doc);
+    selection.removeAllRanges();
+    selection.addRange(range);
+  }
+
+  function openAbout() {
+    var dialog = $("about");
+    if (dialog.open) return;
+    var pre = $("third-party");
+    if (!pre.textContent && api()) api().third_party().then(function (s) { pre.textContent = s; });
+    dialog.showModal();
+    document.body.classList.add("about-open");
+  }
+
+  // Native menus and keyboard shortcuts share the web view's screen guards.
+  var actions = {
+    open: openFile,
+    close: closeFile,
+    save: function () {
+      var first = availableFormats()[0];
+      if (current && first) {
+        setSaveMenu(false);
+        saveFile(first.dataset.save);
+      }
+    },
+    saveAs: function () { if (current) setSaveMenu(true); },
+    copy: function () {
+      var selected = window.getSelection().toString();
+      if (selected) copyText(selected);
+    },
+    copyAll: copyAll,
+    selectAll: function () { if (current) selectAll(); },
+    formatted: function () { if (current) setView("formatted"); },
+    text: function () { if (current) setView("text"); },
+    markdown: function () { if (current) setView("markdown"); },
+    language: function () { $("lang").click(); },
+    about: openAbout
+  };
+
+  window.heocr.action = function (name) {
+    if (!$("about").open && Object.prototype.hasOwnProperty.call(actions, name)) actions[name]();
+  };
+
+  var mac = BOOT.platform === "darwin";
+  function setShortcutTitles() {
+    var mod = mac ? "⌘" : "Ctrl+";
+    var shift = mac ? "⇧" : "Shift+";
+    function title(id, key, shortcut) {
+      $(id).title = t(key) + " (" + shortcut + ")";
+    }
+    title("open", "open", mod + "O");
+    title("again", "open", mod + "O");
+    title("copy", "copy_all", (mac ? shift + mod : mod + shift) + "C");
+    title("save", "save", mod + "S");
+    title("cancel", "cancel", "Esc");
+    title("about-close", "close", "Esc");
+    document.querySelectorAll("[data-view]").forEach(function (button, i) {
+      button.title = button.textContent + " (" + mod + (i + 1) + ")";
+    });
+  }
+
+  function keyboard(event) {
+    if (event.isComposing || $("about").open) return;
+    var menuOpen = document.body.classList.contains("menu-open");
+    if (event.key === "Escape") {
+      if (menuOpen) setSaveMenu(false, true);
+      else if (working && api()) api().cancel();
+      else return;
+      event.preventDefault();
+      return;
+    }
+    if (event.key === "ArrowDown" && event.target === $("save") && !menuOpen) {
+      event.preventDefault();
+      setSaveMenu(true);
+      return;
+    }
+    if (menuOpen && $("save-menu").contains(event.target)) {
+      var buttons = availableFormats();
+      var index = buttons.indexOf(event.target);
+      var next = {
+        ArrowDown: (index + 1) % buttons.length,
+        ArrowUp: (index + buttons.length - 1) % buttons.length,
+        Home: 0,
+        End: buttons.length - 1
+      }[event.key];
+      if (next !== undefined) {
+        event.preventDefault();
+        buttons[next].focus();
+        return;
+      }
+      if (event.key === "Tab") setSaveMenu(false, true);
+    }
+    var modifier = mac ? event.metaKey && !event.ctrlKey : event.ctrlKey && !event.metaKey;
+    if (!modifier || event.altKey) return;
+    var key = event.key.toLowerCase();
+    var shortcut = event.shiftKey ? { s: "saveAs", c: "copyAll" }[key] :
+      { o: "open", s: "save", w: "close", a: "selectAll", "1": "formatted", "2": "text", "3": "markdown" }[key];
+    // The web view handles the system copy shortcut and keeps the selection's logical order.
+    if (shortcut) {
+      event.preventDefault();
+      if (!event.repeat) window.heocr.action(shortcut);
+    }
+  }
+
   function bind() {
     $("reader").addEventListener("scroll", updateIndexCurrent, { passive: true });
-    $("open").addEventListener("click", function () { if (!working && api()) api().open_file(); });
-    $("again").addEventListener("click", function () { show("start"); });
-    $("message-again").addEventListener("click", function () {
-      if (!working && api()) api().open_file();
-    });
+    $("open").addEventListener("click", openFile);
+    $("again").addEventListener("click", openFile);
+    $("message-again").addEventListener("click", openFile);
     $("cancel").addEventListener("click", function () { if (api()) api().cancel(); });
-    $("copy").addEventListener("click", function () {
-      if (!current) return;
-      copyText(view === "markdown" ? current.markdown : current.text);
-    });
+    $("copy").addEventListener("click", copyAll);
     $("save").addEventListener("click", function () {
       setSaveMenu($("save").getAttribute("aria-expanded") !== "true");
     });
     document.addEventListener("click", function (event) {
       if (!event.target.closest(".menuwrap")) setSaveMenu(false);
     });
-    $("save-menu").addEventListener("keydown", function (event) {
-      if (event.key === "Escape") setSaveMenu(false, true);
+    document.addEventListener("focusin", function (event) {
+      if (!event.target.closest(".menuwrap")) setSaveMenu(false);
     });
+    document.addEventListener("keydown", keyboard);
     document.querySelectorAll("[data-save]").forEach(function (b) {
       b.addEventListener("click", function () {
         setSaveMenu(false, true);
-        if (api()) api().save(b.dataset.save).then(function (name) {
-          if (name) toast(t("saved") + ": " + name);
-        });
+        saveFile(b.dataset.save);
       });
     });
     document.querySelectorAll("[data-view]").forEach(function (b) {
-      b.addEventListener("click", function () { setView(b.getAttribute("data-view")); });
+      b.addEventListener("click", function () { setView(b.dataset.view); });
     });
     $("lang").addEventListener("click", function () {
       lang = lang === "he" ? "en" : "he";
       applyLanguage();
       if (api()) api().set_language(lang);
     });
-    $("about-open").addEventListener("click", function () {
-      var pre = $("third-party");
-      if (!pre.textContent && api()) api().third_party().then(function (s) { pre.textContent = s; });
-      $("about").showModal();
-      document.body.classList.add("about-open");
-    });
+    $("about-open").addEventListener("click", openAbout);
     $("about-close").addEventListener("click", function () { $("about").close(); });
     $("about").addEventListener("close", function () { document.body.classList.remove("about-open"); });
-    // Drag feedback only; Python receives the drop itself (with the file's full path).
+    // The web view paints the veil; the native drop handler receives the full path.
     var depth = 0;
-    document.addEventListener("dragenter", function (e) { e.preventDefault(); depth++; document.body.classList.add("is-dragging"); });
-    document.addEventListener("dragleave", function () { depth = Math.max(0, depth - 1); if (!depth) document.body.classList.remove("is-dragging"); });
-    document.addEventListener("dragover", function (e) { e.preventDefault(); });
-    document.addEventListener("drop", function (e) { e.preventDefault(); depth = 0; document.body.classList.remove("is-dragging"); });
+    function isFileDrag(event) {
+      return event.dataTransfer && Array.from(event.dataTransfer.types).includes("Files");
+    }
+    function showDropVeil(visible) {
+      document.body.classList.toggle("is-dragging", visible);
+    }
+    function clearDropVeil() {
+      depth = 0;
+      showDropVeil(false);
+    }
+    window.addEventListener("dragenter", function (event) {
+      if (!isFileDrag(event)) return;
+      event.preventDefault();
+      depth++;
+      showDropVeil(true);
+    }, true);
+    window.addEventListener("dragover", function (event) {
+      // Keep links and files from navigating the app's single local page.
+      event.preventDefault();
+      if (isFileDrag(event)) showDropVeil(true);
+    }, true);
+    window.addEventListener("dragleave", function () {
+      depth = Math.max(0, depth - 1);
+      if (!depth) clearDropVeil();
+    }, true);
+    window.addEventListener("drop", function (event) {
+      event.preventDefault();
+      clearDropVeil();
+    }, true);
+    window.addEventListener("blur", clearDropVeil);
   }
 
   (BOOT.models || []).forEach(function (m) {

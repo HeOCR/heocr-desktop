@@ -17,7 +17,7 @@ import traceback
 from importlib import metadata
 from pathlib import Path
 
-from heocr_desktop import engine, exports, i18n, render
+from heocr_desktop import engine, exports, i18n, menus, render
 
 UI = Path(__file__).resolve().parent / "ui"
 APP_NAME = "HeOCR"
@@ -201,15 +201,10 @@ def _bind_drop(window, api: Api) -> None:
             if path:
                 api.start(path)
                 return
-        window.evaluate_js("heocr.dropFailed()")
+        if files:
+            window.evaluate_js("heocr.dropFailed()")
 
-    def ignore(_event) -> None:
-        return None
-
-    document = window.dom.document
-    document.events.dragenter += DOMEventHandler(ignore, True, True)
-    document.events.dragover += DOMEventHandler(ignore, True, True)
-    document.events.drop += DOMEventHandler(on_drop, True, True)
+    window.dom.document.events.drop += DOMEventHandler(on_drop, prevent_default=True)
     # A file named on the command line (Windows "Open with", release screenshots) opens at once.
     first = next((a for a in sys.argv[1:] if not a.startswith("-") and Path(a).is_file()), None)
     if first:
@@ -241,7 +236,12 @@ def main() -> None:
         background_color="#F7F7F5",
     )
     api._window = window
-    webview.start(_bind_drop, (window, api), private_mode=True, http_server=False)
+    def menu_action(action: str) -> None:
+        window.evaluate_js(f"heocr.action({json.dumps(action)})")
+
+    webview.settings["SHOW_DEFAULT_MENUS"] = False
+    menu = menus.build(language, menu_action, window.destroy, sys.platform)
+    webview.start(_bind_drop, (window, api), private_mode=True, http_server=False, menu=menu)
 
 
 if __name__ == "__main__":
