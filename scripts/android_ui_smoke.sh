@@ -228,6 +228,20 @@ else
   echo "no app for text files on this phone: the saved toast shows no Open (as designed)"
 fi
 alive || fail "the app stopped after saving"
+# Save as Word: the action bar's primary button once heocr can write Word (0.3 and later).
+if seen "save as word"; then
+  "$ADB" logcat -c
+  tap_retry "^save as word$" || fail "no Save as Word button"
+  sleep 5
+  tap_retry "^save$" || fail "the save screen had no Save button (Word)"
+  logged "HeOCR saved docx" || fail "Save as Word wrote nothing"
+  "$ADB" logcat -d | grep -o "HeOCR saved docx: .*" | tail -1
+  sleep 1
+  "$ADB" exec-out screencap -p > $OUT/7f-saved-word.png
+  alive || fail "the app stopped after saving a Word file"
+else
+  echo "no Save as Word on this build (heocr without a Word writer)"
+fi
 # More: the sheet opens in place; Back closes it, and Back again goes Home.
 sleep 4
 tap_retry "^more actions$" || fail "no More button"
@@ -276,4 +290,4 @@ fi
 "$ADB" logcat -d | grep -o "HeOCR text zoom: .*" | tail -1 || true
 "$ADB" shell cmd uimode night no >/dev/null
 "$ADB" shell settings put system font_scale 1.0
-echo "UI smoke passed: started, read the sample, read shared PDFs (*/* and application/pdf), opened one with the picker, copied, shared, saved as text (and opened it), the sheet and Back, About, diagnostics, night and 200% text"
+echo "UI smoke passed: started, read the sample, read shared PDFs (*/* and application/pdf), opened one with the picker, copied, shared, saved as text (and opened it), saved as Word when offered, the sheet and Back, About, diagnostics, night and 200% text"

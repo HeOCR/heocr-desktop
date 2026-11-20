@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "heocr-desktop"
-version = "0.1.0"
+version = "0.3.0a1"
 description = "HeOCR desktop app: drop in a PDF, Word file or image and get its Hebrew text out. Fully offline."
 readme = "README.md"
 requires-python = ">=3.12"
@@ -18,8 +18,8 @@ dependencies = []
 [project.optional-dependencies]
 test = ["pytest>=8"]
 # The desktop app from a checkout (python -m heocr_desktop) and its unit tests.
-# heocr 0.2.0 from PyPI (tag v0.2.0, 5d41b43): HeOCR's own models in the package, heocr_modern_v1 by default.
-desktop = ["heocr==0.2.0", "pywebview==6.2.1"]
+# Preview branch (not for main): heocr 0.3.0a1 from PyPI, with the Word (DOCX) writer; 0.2.0's models and default.
+desktop = ["heocr==0.3.0a1", "pywebview==6.2.1"]
 
 [project.urls]
 Homepage = "https://heocr.github.io"
@@ -41,7 +41,7 @@ testpaths = ["tests"]
 [tool.briefcase]
 project_name = "HeOCR"
 bundle = "io.github.heocr"
-version = "0.1.0"
+version = "0.3.0a1"
 url = "https://heocr.github.io"
 license = "Apache-2.0"
 author = "HeOCR maintainers"
@@ -57,7 +57,7 @@ icon = "icons/heocr"
 # heocr 0.2.0 (tag v0.2.0, 5d41b43): HeOCR's own models in the package, heocr_modern_v1 by default, the
 # model the owner chose to keep as the default (it writes no niqqud: pointed text comes out unpointed).
 requires = [
-  "heocr==0.2.0",
+  "heocr==0.3.0a1",  # preview branch: heocr 0.3.0a1, with the Word (DOCX) writer
   "pypdfium2==5.15.2",
   "Pillow==13.0.0",
   "defusedxml==0.7.1",
@@ -105,7 +105,7 @@ sources = ["src/heocr_mobile", "src/heocr_desktop"]
 icon = "icons/heocr"
 requires = [
   # heocr 0.2.0, as the desktop app: HeOCR's own models in the package, heocr_modern_v1 by default.
-  "heocr==0.2.0",
+  "heocr==0.3.0a1",  # preview branch: heocr 0.3.0a1, with the Word (DOCX) writer
   "pypdfium2==5.15.2",
   "Pillow==13.0.0",  # built for Android by scripts/build_pillow_android.py (Pillow has no Android wheels)
   "defusedxml==0.7.1",
