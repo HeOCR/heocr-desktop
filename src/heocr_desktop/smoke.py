@@ -20,7 +20,7 @@ import re
 import sys
 from pathlib import Path
 
-from heocr_desktop import engine
+from heocr_desktop import engine, exports
 
 _MODEL = re.compile(r"^tesseract:(.+)\.traineddata$")
 
@@ -28,6 +28,29 @@ _MODEL = re.compile(r"^tesseract:(.+)\.traineddata$")
 def models(doc) -> list[str]:
     """The Tesseract models a reading used, from its record (``heocr_modern_v1``, ``heb``, ``eng``)."""
     return sorted({m.group(1) for key in getattr(doc, "components", {}) or {} if (m := _MODEL.match(key))})
+
+
+def check_exports(doc, stem: Path, entry: dict, needles: list[str]) -> list[str]:
+    """Every format the app offers saves, as the Save buttons do. A Word file (heocr 0.3 and later)
+    must read back through heocr itself with the fixture's expected text in it."""
+    import heocr
+
+    problems, sizes = [], {}
+    for kind in exports.formats():
+        try:
+            data = exports.export(doc, kind)
+            sizes[kind] = len(data)
+            if kind == "docx":
+                path = stem.with_suffix(".docx")
+                path.write_bytes(data)
+                back = heocr.extract(str(path), ocr=False, convert=False)
+                missing = [n for n in needles if n not in back.text]
+                if not back.text.strip() or missing:
+                    problems.append(f"docx reads back without {missing or 'any text'}")
+        except Exception as exc:  # noqa: BLE001
+            problems.append(f"save {kind}: {type(exc).__name__}: {exc}")
+    entry["exports"] = sizes
+    return problems
 
 
 def run(folder: str) -> int:
@@ -65,6 +88,8 @@ def run(folder: str) -> int:
             for needle in want.get("contains", []):
                 if needle not in text:
                     problems.append(f"missing {needle!r}")
+            if result.kind == "ok":
+                problems += check_exports(result.doc, base / f"{name}.export", entry, want.get("contains", []))
             entry["problems"] = problems
         except Exception as exc:  # noqa: BLE001
             entry["problems"] = [f"{type(exc).__name__}: {exc}"]
