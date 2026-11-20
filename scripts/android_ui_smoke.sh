@@ -57,8 +57,8 @@ PY
 }
 # The page is a WebView: uiautomator sees its links with their labels. It is flaky on emulators, so retry.
 # Between tries, scroll the page up a little: the control may be below the fold.
-tap_retry() {
-  for i in 1 2 3 4 5; do
+tap_retry() {  # About's last rows sit well below the fold: up to eight scrolls
+  for i in 1 2 3 4 5 6 7 8 9 10; do
     tap_text "$1" && return 0
     [ $i -ge 2 ] && "$ADB" shell input swipe 540 1500 540 900 300
     sleep 2
