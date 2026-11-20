@@ -9,6 +9,9 @@
   var elapsedTimer;
   var progress = null;
   var messageKey;
+  var readingId = 0;
+  var indexRows = [];
+  var activeIndexRow = null;
   document.body.classList.add(BOOT.platform === "darwin" ? "mac" : "win");
 
   function $(id) { return document.getElementById(id); }
@@ -34,13 +37,18 @@
     if (working) showProgress(progress);
     if (messageKey) $("message-text").textContent = t(messageKey);
     $("about-version").textContent = t("version", { v: BOOT.version, h: BOOT.heocr, t: BOOT.tesseract });
-    if (current) showChips(current);
+    if (current) {
+      showChips(current);
+      indexRows.forEach(function (row) {
+        if (row.pageLabel) row.label.textContent = row.target.textContent;
+      });
+    }
   }
 
   function show(name) {
     setSaveMenu(false);
     ["start", "reading", "result", "message"].forEach(function (v) {
-      $("view-" + v).classList.toggle("active", v === name);
+      document.body.classList.toggle("is-" + v, v === name);
     });
   }
 
@@ -48,9 +56,9 @@
   function toast(text) {
     var el = $("toast");
     el.textContent = text;
-    el.classList.add("show");
+    document.body.classList.add("toast-on");
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(function () { el.classList.remove("show"); }, 1600);
+    toastTimer = setTimeout(function () { document.body.classList.remove("toast-on"); }, 1600);
   }
 
   function chip(text) {
@@ -92,6 +100,83 @@
     notes.hidden = !notes.childElementCount;
   }
 
+  function setIndexCurrent(row) {
+    if (row === activeIndexRow) return;
+    if (activeIndexRow) activeIndexRow.button.removeAttribute("aria-current");
+    activeIndexRow = row;
+    if (row) row.button.setAttribute("aria-current", "true");
+  }
+
+  function updateIndexCurrent() {
+    if ($("index").hidden || !indexRows.length) return;
+    var reader = $("reader");
+    var cutoff = reader.getBoundingClientRect().top + 36;
+    // Rows are in document order, so a scroll needs only a few position lookups.
+    var low = 0;
+    var high = indexRows.length;
+    while (low < high) {
+      var mid = Math.floor((low + high) / 2);
+      if (indexRows[mid].target.getBoundingClientRect().top <= cutoff) low = mid + 1;
+      else high = mid;
+    }
+    setIndexCurrent(indexRows[Math.max(0, low - 1)]);
+  }
+
+  function buildIndex() {
+    var index = $("index");
+    index.textContent = "";
+    indexRows = [];
+    activeIndexRow = null;
+    var doc = $("doc-formatted");
+    var sections = [];
+    var section = { headings: [] };
+    Array.prototype.forEach.call(doc.children, function (node) {
+      if (node.classList.contains("page-break")) {
+        if (section.page || section.headings.length) sections.push(section);
+        section = { page: node, headings: [] };
+      } else if (/^H[1-6]$/.test(node.tagName) && node.textContent.trim()) {
+        section.headings.push(node);
+      }
+    });
+    sections.push(section);
+    if (sections.length === 1 && !section.headings.length) return;
+
+    var label = document.createElement("div");
+    label.className = "lab";
+    label.dataset.i18n = "index";
+    index.appendChild(label);
+    function addRow(target, heading, number, sub) {
+      var button = document.createElement("button");
+      button.type = "button";
+      if (sub) button.className = "sub";
+      if (number) {
+        var num = document.createElement("span");
+        num.className = "num";
+        num.textContent = number;
+        button.appendChild(num);
+      }
+      var caption = document.createElement("span");
+      caption.dir = "auto";
+      caption.textContent = heading ? heading.textContent : target.textContent;
+      button.appendChild(caption);
+      var row = { target: target, button: button, label: caption, pageLabel: !heading };
+      button.addEventListener("click", function () {
+        var reader = $("reader");
+        reader.scrollTop += target.getBoundingClientRect().top - reader.getBoundingClientRect().top - 22;
+        setIndexCurrent(row);
+      });
+      indexRows.push(row);
+      index.appendChild(button);
+    }
+    sections.forEach(function (part) {
+      var headings = part.headings;
+      if (part.page) addRow(part.page, headings[0], headings.length ? part.page.dataset.n : "", false);
+      headings.slice(part.page ? 1 : 0).forEach(function (heading) {
+        addRow(heading, heading, "", Boolean(part.page));
+      });
+    });
+  }
+
   function setView(name) {
     view = name;
     document.querySelectorAll("[data-view]").forEach(function (b) {
@@ -101,6 +186,10 @@
     $("doc-text").hidden = name !== "text";
     $("doc-markdown").hidden = name !== "markdown";
     $("reader").scrollTop = 0;
+    var hasIndex = name === "formatted" && indexRows.length > 0;
+    $("index").hidden = !hasIndex;
+    $("result-split").classList.toggle("has-index", hasIndex);
+    if (hasIndex) setIndexCurrent(indexRows[0]);
   }
 
   function render(r) {
@@ -120,9 +209,10 @@
     // Save offers what the installed heocr can write: Word first when it can.
     var formats = r.formats || ["txt", "md", "json"];
     document.querySelectorAll("[data-save]").forEach(function (b) { b.hidden = formats.indexOf(b.getAttribute("data-save")) < 0; });
+    buildIndex();
     applyLanguage(); // fills the page and section labels inside the document
-    setView("formatted");
     show("result");
+    setView("formatted");
   }
 
   function message(key) {
@@ -161,6 +251,7 @@
   // -- called by Python ------------------------------------------------------------------
   window.heocr = {
     started: function (p) {
+      readingId++;
       working = true;
       current = null;
       messageKey = null;
@@ -183,9 +274,12 @@
       if (p.kind === "cancelled") { show("start"); toast(t("cancelled")); return; }
       if (p.kind === "error") { message("error"); return; }
       if (p.kind !== "ok") { message(p.kind); return; }
-      api().result().then(render);
+      var finishedId = readingId;
+      api().result().then(function (result) {
+        if (readingId === finishedId && result.kind === "ok") render(result);
+      });
     },
-    dropFailed: function () { message("unreadable"); }
+    dropFailed: function () { if (!working) message("unreadable"); }
   };
 
   // -- user actions ----------------------------------------------------------------------
@@ -220,6 +314,7 @@
   }
 
   function bind() {
+    $("reader").addEventListener("scroll", updateIndexCurrent, { passive: true });
     $("open").addEventListener("click", function () { if (!working && api()) api().open_file(); });
     $("again").addEventListener("click", function () { show("start"); });
     $("message-again").addEventListener("click", function () {
@@ -259,14 +354,16 @@
       var pre = $("third-party");
       if (!pre.textContent && api()) api().third_party().then(function (s) { pre.textContent = s; });
       $("about").showModal();
+      document.body.classList.add("about-open");
     });
     $("about-close").addEventListener("click", function () { $("about").close(); });
+    $("about").addEventListener("close", function () { document.body.classList.remove("about-open"); });
     // Drag feedback only; Python receives the drop itself (with the file's full path).
     var depth = 0;
-    document.addEventListener("dragenter", function (e) { e.preventDefault(); depth++; document.body.classList.add("dragging"); });
-    document.addEventListener("dragleave", function () { depth = Math.max(0, depth - 1); if (!depth) document.body.classList.remove("dragging"); });
+    document.addEventListener("dragenter", function (e) { e.preventDefault(); depth++; document.body.classList.add("is-dragging"); });
+    document.addEventListener("dragleave", function () { depth = Math.max(0, depth - 1); if (!depth) document.body.classList.remove("is-dragging"); });
     document.addEventListener("dragover", function (e) { e.preventDefault(); });
-    document.addEventListener("drop", function (e) { e.preventDefault(); depth = 0; document.body.classList.remove("dragging"); });
+    document.addEventListener("drop", function (e) { e.preventDefault(); depth = 0; document.body.classList.remove("is-dragging"); });
   }
 
   (BOOT.models || []).forEach(function (m) {

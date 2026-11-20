@@ -9,7 +9,7 @@
 <style>/*STYLE*/</style>
 <style>/*APP_STYLE*/</style>
 </head>
-<body class="hw">
+<body class="hw is-start">
 <header class="bar"><span class="lockup" aria-label="HeOCR"><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="7" y="7" width="34" height="34" class="lg-box"/><rect x="4" y="4" width="6" height="6" class="lg-h"/><rect x="38" y="4" width="6" height="6" class="lg-h"/><rect x="4" y="38" width="6" height="6" class="lg-h"/><rect x="38" y="38" width="6" height="6" class="lg-h"/><path d="M16 18H32V32.5M16 24.5V32.5" class="lg-ink"/></svg><span>He<b>OCR</b></span></span><span class="spacer"></span>
 <button type="button" class="btn quiet" id="lang"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17"/><path d="M3.5 12h17M12 3.5v17"/></svg><span data-i18n="lang_toggle"></span>
 </button>
@@ -17,7 +17,7 @@
 </button>
 </header>
 <main>
-<section id="view-start" class="view active" aria-labelledby="start-title">
+<section id="view-start" class="view" aria-labelledby="start-title">
 <div class="start">
 <h1 id="start-title" data-i18n="tagline">
 </h1>
@@ -113,7 +113,7 @@
 </div>
 </div>
 <div class="split" id="result-split">
-<nav class="index" id="index" hidden>
+<nav class="index" id="index" data-label="index" hidden>
 </nav>
 <div class="reader" id="reader" tabindex="0">
 <div class="inner">

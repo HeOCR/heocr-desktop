@@ -15,6 +15,7 @@ from pathlib import Path
 
 STRINGS: dict[str, dict[str, str]] = {
     "en": {
+        "index": "Pages",
         "title": "HeOCR",
         "tagline": "Hebrew text out of any document",
         "drop": "Drop a file here",
@@ -89,6 +90,7 @@ STRINGS: dict[str, dict[str, str]] = {
         "licence": "Licence",
     },
     "he": {
+        "index": "עמודים",
         "title": "HeOCR",
         "tagline": "טקסט עברי מכל מסמך",
         "drop": "גררו קובץ לכאן",
