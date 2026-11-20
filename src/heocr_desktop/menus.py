@@ -44,6 +44,10 @@ def build(language, dispatch, quit_app, platform):
             item("Actual Size", "גודל רגיל", "actual"),
             item("עברית", "English", "language"),
         ]),
-        Menu(label("Help", "עזרה"), [about]),
+        Menu(label("Help", "עזרה"), [
+            item("HeOCR Website", "האתר של HeOCR", "website"),
+            item("HeOCR on GitHub", "HeOCR ב־GitHub", "github"),
+            about,
+        ]),
     ])
     return menus
