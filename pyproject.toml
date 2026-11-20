@@ -30,7 +30,7 @@ where = ["src"]
 
 [tool.setuptools.package-data]
 heocr_desktop = ["ui/*", "resources/**/*"]
-heocr_mobile = ["result.css"]
+heocr_mobile = ["app.css", "ui_strings.json"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -122,9 +122,13 @@ requires = ["toga-android==0.5.7"]
 icon = "icons/android/heocr"
 splash_background_color = "#FFFFFF"
 android_abis = ["arm64-v8a"]
-# Only what the template already brings (AppCompat). Toga needs Material only for OptionContainer, which
-# the app does not use; leaving it out takes about 4 MB off the APK.
-build_gradle_dependencies = []
+# What the template already brings (AppCompat), plus androidx.webkit: Toga's WebView needs it for its
+# navigation hook (every control in the page is a link) and for pages over 2 MB. Toga needs Material
+# only for OptionContainer, which the app does not use; leaving it out takes about 4 MB off the APK.
+build_gradle_dependencies = ["androidx.webkit:webkit:1.15.0"]
+# DayNight: the WebView reports the phone's dark theme to the page (prefers-color-scheme). The app
+# hides the action bar itself and draws the design's own (design/android/SPEC.md, sections 3.6, 6.1).
+base_theme = "Theme.AppCompat.DayNight.DarkActionBar"
 # One activity: a document shared while the app is open reaches it (scripts/android_patch_activity.py
 # hands the new intent to Python).
 android_manifest_activity_attrs_extra_content = 'android:launchMode="singleTask"'
@@ -158,6 +162,8 @@ android {
     defaultConfig {
         python {
             extractPackages "heocr_mobile", "heocr"
+            // Toga's WebViewClient, so the app sees each link the page follows (heocr_mobile.app.navigate).
+            staticProxy "toga_android.widgets.internal.webview"
         }
     }
     packagingOptions {

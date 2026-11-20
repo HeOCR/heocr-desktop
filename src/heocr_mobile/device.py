@@ -181,3 +181,77 @@ def write_to(uri, data: bytes) -> None:
         stream.write(jarray(jbyte)(data))
     finally:
         stream.close()
+
+
+# -- the screen: system bars, text size, the browser (design/android/SPEC.md, sections 3.4 to 3.8) -----
+
+BAR_LIGHT, BAR_NIGHT = "#ffffff", "#141414"  # the page background (--bg) in each theme
+
+
+def night(activity) -> bool:
+    """True when the phone is in its dark theme (the app's DayNight theme follows it)."""
+    Configuration = _jclass("android.content.res.Configuration")
+    mode = activity.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK
+    return mode == Configuration.UI_MODE_NIGHT_YES
+
+
+def style_system_bars(activity) -> None:
+    """Status and navigation bars in the page's background, with icons that read on it."""
+    dark = night(activity)
+    window = activity.getWindow()
+    colour = _jclass("android.graphics.Color").parseColor(BAR_NIGHT if dark else BAR_LIGHT)
+    window.setStatusBarColor(colour)
+    window.setNavigationBarColor(colour)
+    controller = _jclass("androidx.core.view.WindowCompat").getInsetsController(window, window.getDecorView())
+    controller.setAppearanceLightStatusBars(not dark)
+    controller.setAppearanceLightNavigationBars(not dark)
+
+
+def configure_webview(webview, activity) -> int:
+    """A phone page, not a zoomable web page: the viewport tag holds (``width=device-width``, scale 1),
+    no pinch zoom (Toga turns it on) and no text boosting, and the text follows the phone's font size
+    setting (the layout holds at 200%). Returns the text zoom in percent."""
+    settings = webview.getSettings()
+    settings.setUseWideViewPort(True)
+    settings.setLoadWithOverviewMode(False)
+    allow_zoom(webview, False)
+    settings.setLayoutAlgorithm(_jclass("android.webkit.WebSettings$LayoutAlgorithm").NORMAL)
+    # One CSS pixel per dp, pinned. Left to the WebView (setInitialScale(0)), the first page on some
+    # starts drew about 1.5 times too large, whatever its viewport tag said.
+    density = activity.getResources().getDisplayMetrics().density
+    webview.setInitialScale(round(density * 100))
+    scale = activity.getResources().getConfiguration().fontScale
+    wanted = max(50, min(300, round(scale * 100)))
+    default = settings.getTextZoom()
+    # Always set it: left at its default, a recent System WebView also zooms the whole page by the font
+    # scale (Android 14 emulator, 200%: icons and layout doubled, text larger still). Set explicitly, the
+    # text alone scales. Android 15 at 200% still draws the text too large: issue #23.
+    settings.setTextZoom(wanted)
+    print(f"HeOCR text zoom: font_scale={scale:.2f} webview_default={default} now={settings.getTextZoom()}", flush=True)
+    return int(settings.getTextZoom())
+
+
+def allow_zoom(webview, allowed: bool) -> None:
+    """Pinch zoom on the reading itself (a document to read closely), not on the app's screens.
+    The phone's font size setting scales the text everywhere either way."""
+    settings = webview.getSettings()
+    settings.setSupportZoom(allowed)
+    settings.setBuiltInZoomControls(allowed)
+    settings.setDisplayZoomControls(False)
+
+
+def open_in_browser(activity, url: str) -> bool:
+    """Open a website link in the phone's browser, never inside the app; False when there is none."""
+    Intent = _jclass("android.content.Intent")
+    intent = Intent(Intent.ACTION_VIEW, _jclass("android.net.Uri").parse(url))
+    try:
+        activity.startActivity(intent)
+    except Exception:  # noqa: BLE001 - no browser on the phone
+        return False
+    return True
+
+
+def phone() -> dict:
+    """The Android version and phone model, for "Copy technical details" (never anything personal)."""
+    Build = _jclass("android.os.Build")
+    return {"android": str(Build.VERSION.RELEASE), "sdk": int(Build.VERSION.SDK_INT), "model": str(Build.MODEL)}

@@ -10,6 +10,14 @@ PKG=io.github.heocr.heocr_mobile
 mkdir -p "dist/ui-smoke${AVD_SUFFIX:-}"
 AVD="${AVD:-heocrPhone}"
 OUT="dist/ui-smoke${AVD_SUFFIX:-}"
+# One emulator at a time: the previous step's emulator may still be shutting down, and adb would then
+# see two devices. Stop it and wait until adb lists none.
+for _ in $(seq 1 30); do
+  "$ADB" devices | grep -q "^emulator-" || break
+  "$ADB" emu kill >/dev/null 2>&1 || true
+  sleep 2
+done
+"$ADB" devices | grep -q "^emulator-" && { echo "an earlier emulator is still running"; "$ADB" devices; exit 1; }
 "$SDK/emulator/emulator" -avd "$AVD" -no-window -no-snapshot -no-audio -no-boot-anim > "dist/ui-smoke-emulator-$AVD.log" 2>&1 &
 trap '"$ADB" emu kill >/dev/null 2>&1 || true' EXIT  # one emulator at a time
 # A deadline on each wait: an emulator that never starts fails the step instead of the job's timeout.
@@ -28,30 +36,74 @@ fail() { echo "$1"; "$ADB" logcat -d > $OUT/logcat.txt; grep -E "AndroidRuntime|
 sleep 45
 alive || fail "the app is not running after start"
 "$ADB" exec-out screencap -p > $OUT/1-start.png
-# Find "Try a sample" from the UI tree; uiautomator is flaky on emulators, so fall back to where the
-# button sits on a 1080x1920 screen (the first of three equal buttons' middle).
-POS=""
-for _ in 1 2 3; do
-  "$ADB" shell uiautomator dump /data/local/tmp/ui.xml || true
-  if "$ADB" pull /data/local/tmp/ui.xml $OUT/ui.xml >/dev/null 2>&1; then
-    POS=$(python3 - $OUT/ui.xml <<'PY'
+tap_text() {  # tap_text <regex for text or content-desc>; 0 when tapped
+  "$ADB" shell uiautomator dump /data/local/tmp/ui.xml >/dev/null 2>&1 || true
+  "$ADB" pull /data/local/tmp/ui.xml $OUT/ui.xml >/dev/null 2>&1 || return 1
+  local pos
+  pos=$(python3 - $OUT/ui.xml "$1" <<'PY'
 import re, sys
-xml = open(sys.argv[1], encoding="utf-8").read()
-m = re.search(r'text="try a sample"[^>]*?bounds="\[(\d+),(\d+)\]\[(\d+),(\d+)\]"', xml, re.I)
-print(f"{(int(m[1]) + int(m[3])) // 2} {(int(m[2]) + int(m[4])) // 2}" if m else "")
+xml, want = open(sys.argv[1], encoding="utf-8").read(), sys.argv[2]
+for node in re.finditer(r"<node [^>]*>", xml):
+  n = node.group(0)
+  label = " ".join(x for x in re.findall(r'(?:text|content-desc)="([^"]*)"', n) if x).strip()
+  m = re.search(r'bounds="\[(\d+),(\d+)\]\[(\d+),(\d+)\]"', n)
+  # A node off screen (a link below the fold) has empty bounds: not tappable until scrolled to.
+  if m and re.search(want, label, re.I) and int(m[3]) > int(m[1]) and int(m[4]) > int(m[2]):
+      print(f"{(int(m[1]) + int(m[3])) // 2} {(int(m[2]) + int(m[4])) // 2}")
+      break
 PY
 )
-    [ -n "$POS" ] && break
-  fi
-  sleep 3
-done
-if [ -z "$POS" ]; then
-  SIZE=$("$ADB" shell wm size | grep -o '[0-9]*x[0-9]*' | tail -1)
-  W=${SIZE%x*}; H=${SIZE#*x}
-  POS="$((W * 3 / 4)) $((H * 579 / 1920))"  # row 3, right: "Try a sample"
-  echo "uiautomator gave no tree; tapping the button's usual place: $POS"
-fi
-"$ADB" shell input tap $POS
+  [ -n "$pos" ] && "$ADB" shell input tap $pos
+}
+# The page is a WebView: uiautomator sees its links with their labels. It is flaky on emulators, so retry.
+# Between tries, scroll the page up a little: the control may be below the fold.
+tap_retry() {
+  for i in 1 2 3 4 5; do
+    tap_text "$1" && return 0
+    [ $i -ge 2 ] && "$ADB" shell input swipe 540 1500 540 900 300
+    sleep 2
+  done
+  return 1
+}
+seen() { "$ADB" shell uiautomator dump /data/local/tmp/ui.xml >/dev/null 2>&1 || true; "$ADB" pull /data/local/tmp/ui.xml $OUT/ui.xml >/dev/null 2>&1 || return 1; grep -qiE "$1" $OUT/ui.xml; }
+logged() { for _ in $(seq 1 10); do "$ADB" logcat -d | grep -q "$1" && return 0; sleep 1; done; return 1; }
+# Home at phone scale (design SPEC 6): both buttons on screen and inside its width, before any scroll.
+# A page loaded before the WebView had its size draws zoomed, and they fall off the right edge.
+home_fits() {
+  "$ADB" shell uiautomator dump /data/local/tmp/ui.xml >/dev/null 2>&1 || true
+  "$ADB" pull /data/local/tmp/ui.xml $OUT/ui-home.xml >/dev/null 2>&1 || return 1
+  python3 - $OUT/ui-home.xml "$("$ADB" shell wm size | grep -o '[0-9]*x[0-9]*' | tail -1)" <<'PY'
+import re, sys
+xml, width = open(sys.argv[1], encoding="utf-8").read(), int(sys.argv[2].split("x")[0])
+found = {}
+for n in re.findall(r"<node [^>]*>", xml):
+    label = " ".join(x for x in re.findall(r'(?:text|content-desc)="([^"]*)"', n) if x).strip().lower()
+    m = re.search(r'bounds="\[(\d+),(\d+)\]\[(\d+),(\d+)\]"', n)
+    if m and label in ("open a file", "try a sample"):
+        found[label] = tuple(map(int, m.groups()))
+ok = len(found) == 2 and all(b[2] > b[0] and b[3] > b[1] and b[2] <= width for b in found.values())
+print("home buttons:", found, "screen width", width, "fit" if ok else "DO NOT FIT")
+sys.exit(0 if ok else 1)
+PY
+}
+# The page's scale, as the app logs it on each load, must be the screen density: no page zoom.
+scale_ok() {  # scale_ok <what>: the page's own zoom is 1 and its width is the screen's width in dp
+  local line px dpi
+  line=$("$ADB" logcat -d | grep -o "HeOCR page home: .*" | tail -1 || true)
+  px=$("$ADB" shell wm size | grep -o '[0-9]*x[0-9]*' | tail -1); dpi=$("$ADB" shell wm density | grep -o '[0-9]*' | tail -1)
+  python3 - "$line" "${px%x*}" "$dpi" "$1" <<'PY'
+import re, sys
+line, px, dpi, what = sys.argv[1], int(sys.argv[2]), int(sys.argv[3]), sys.argv[4]
+z = re.search(r"zoom=([0-9.]+)", line); w = re.search(r"width=([0-9.]+)", line)
+want = px / (dpi / 160)
+ok = bool(z and w) and abs(float(z[1]) - 1) < 0.02 and abs(float(w[1]) - want) < want * 0.05
+print(f"page on {what}: {line or 'not measured'} (want zoom=1 width~{want:.0f})", "ok" if ok else "ZOOMED")
+sys.exit(0 if ok else 1)
+PY
+}
+scale_ok "first start" || fail "Home loaded zoomed on the first start"
+home_fits || { sleep 5; home_fits; } || fail "Home is not at phone scale: its buttons are off screen (zoomed page)"
+tap_retry "^try a sample$" || fail "no 'Try a sample' button on the home screen"
 for _ in $(seq 1 30); do
   sleep 5
   alive || fail "the app stopped while reading the sample"
@@ -109,25 +161,9 @@ if [ -f "$FIXTURES/itext-style.pdf" ]; then
   "$ADB" push "$FIXTURES/itext-style.pdf" "/sdcard/Download/$PICK" >/dev/null
   "$ADB" shell content call --uri content://media --method scan_volume --arg external_primary >/dev/null 2>&1 || true
   "$ADB" logcat -c
-  tap_text() {  # tap_text <regex for text or content-desc>; 0 when tapped
-    "$ADB" shell uiautomator dump /data/local/tmp/ui.xml >/dev/null 2>&1 || true
-    "$ADB" pull /data/local/tmp/ui.xml $OUT/picker.xml >/dev/null 2>&1 || return 1
-    local pos
-    pos=$(python3 - $OUT/picker.xml "$1" <<'PY'
-import re, sys
-xml, want = open(sys.argv[1], encoding="utf-8").read(), sys.argv[2]
-for node in re.finditer(r"<node [^>]*>", xml):
-    n = node.group(0)
-    label = " ".join(x for x in re.findall(r'(?:text|content-desc)="([^"]*)"', n) if x).strip()
-    m = re.search(r'bounds="\[(\d+),(\d+)\]\[(\d+),(\d+)\]"', n)
-    if m and re.search(want, label, re.I):
-        print(f"{(int(m[1]) + int(m[3])) // 2} {(int(m[2]) + int(m[4])) // 2}")
-        break
-PY
-)
-    [ -n "$pos" ] && "$ADB" shell input tap $pos
-  }
-  tap_text "^open a file$" || fail "no 'Open a file' button"
+  "$ADB" shell input keyevent 4  # from the last reading back to Home, where "Open a file" is
+  sleep 2
+  tap_retry "^open a file$" || fail "no 'Open a file' button"
   sleep 6
   "$ADB" exec-out screencap -p > $OUT/5-picker.png
   # The file's own row (exact name), not its "Preview the file …" icon.
@@ -151,4 +187,59 @@ PY
   case "$LINE" in *": ok "*"'text_layer': 2"*) ;; *) fail "the picked file did not read as ok from its text layer";; esac
   "$ADB" exec-out screencap -p > $OUT/6-picked.png
 fi
-echo "UI smoke passed: started, read the sample, read shared PDFs (*/* and application/pdf), opened one with the picker, still running"
+# The design's screens (design/android/SPEC.md): every control is a link the app intercepts.
+# Copy: the toast is put into the page from outside (evaluate_javascript under the page's policy).
+tap_retry "^copy$" || fail "no Copy button on the result"
+logged "HeOCR copied" || fail "Copy did nothing"
+sleep 1
+seen "text copied" || fail "the copied toast did not show (evaluate_javascript)"
+"$ADB" exec-out screencap -p > $OUT/7-copied.png
+# More: the sheet opens in place; Back closes it, and Back again goes Home.
+sleep 4
+tap_retry "^more actions$" || fail "no More button"
+logged "HeOCR action more" || fail "More did nothing"
+sleep 1
+seen "copy technical details" || fail "the sheet did not open"
+"$ADB" exec-out screencap -p > $OUT/8-sheet.png
+"$ADB" logcat -c
+"$ADB" shell input keyevent 4
+sleep 2
+alive || fail "Back closed the app with the sheet open"
+"$ADB" logcat -d | grep -q "HeOCR screen home" && fail "Back left the result instead of closing the sheet"
+"$ADB" shell input keyevent 4
+logged "HeOCR screen home" || fail "Back on the result did not go Home"
+# About, and Copy technical details from it.
+tap_retry "^about$" || fail "no About button"
+logged "HeOCR screen about" || fail "About did not open"
+"$ADB" exec-out screencap -p > $OUT/9-about.png
+tap_retry "^copy technical details" || fail "no Copy technical details row"
+logged "HeOCR diagnostics copied" || fail "Copy technical details did nothing"
+"$ADB" logcat -c
+"$ADB" shell input keyevent 4
+logged "HeOCR screen home" || fail "Back on About did not go Home"
+alive || fail "the app stopped on Back"
+# Night and 200% text: the page follows the phone (SPEC 3.6, 3.7).
+"$ADB" shell cmd uimode night yes >/dev/null
+"$ADB" shell settings put system font_scale 2.0
+"$ADB" shell am force-stop "$PKG"
+"$ADB" logcat -c
+"$ADB" shell am start -n "$PKG/org.beeware.android.MainActivity" >/dev/null
+logged "HeOCR screen: night=True text_zoom=200" || { sleep 20; logged "HeOCR screen: night=True text_zoom=200" || fail "the app did not follow night mode and the font scale"; }
+sleep 5
+"$ADB" exec-out screencap -p > $OUT/10-home-night-200.png
+scale_ok "relaunch at 200% text" || fail "Home loaded zoomed at 200% text"
+# The reading itself at 200% text, for the screenshot (pinch zoom needs two fingers; not injected here).
+# Reported, not failed: on Android 15 the text at 200% is still too large (issue #23), so the button
+# can fall off the screen. The screenshots show it.
+if tap_retry "^try a sample$"; then
+  for _ in $(seq 1 30); do sleep 5; "$ADB" logcat -d | grep -q "HeOCR screen result" && break; done
+  "$ADB" logcat -d | grep -q "HeOCR screen result" || echo "WARNING: the sample was not read at 200% text"
+  sleep 2
+  "$ADB" exec-out screencap -p > $OUT/11-result-night-200.png
+else
+  echo "WARNING: no 'Try a sample' on screen at 200% text (issue #23)"
+fi
+"$ADB" logcat -d | grep -o "HeOCR text zoom: .*" | tail -1 || true
+"$ADB" shell cmd uimode night no >/dev/null
+"$ADB" shell settings put system font_scale 1.0
+echo "UI smoke passed: started, read the sample, read shared PDFs (*/* and application/pdf), opened one with the picker, copied, the sheet and Back, About, diagnostics, night and 200% text"

@@ -164,6 +164,8 @@ jobs:
           tail -40 gradle-info.log
       - name: Emulator facts (on failure)
         if: failure()
+        # adb waits for a device forever when none started (a broken system image download).
+        timeout-minutes: 3
         run: |
           adb="${ANDROID_HOME:-$HOME/.cache/briefcase/tools/android_sdk}/platform-tools/adb"
           $adb devices || true
