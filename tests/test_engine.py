@@ -62,8 +62,9 @@ def test_cancel_stops_before_the_first_page():
 
     stop = threading.Event()
     stop.set()
-    with pytest.raises(engine.Cancelled):
+    with pytest.raises(engine.Cancelled) as stopped:
         engine.convert(FIX / "garden.pdf", report=lambda p: None, cancel=stop)
+    assert (stopped.value.done, stopped.value.total) == (0, 1)
 
 
 def test_progress_hook_does_not_change_the_reading():

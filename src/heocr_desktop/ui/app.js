@@ -4,11 +4,12 @@
   var lang = BOOT.language in BOOT.strings ? BOOT.language : "en";
   var current = null; // the last result
   var view = "formatted";
+  var zoom = 10;
   var working = false;
   var readingStarted;
   var elapsedTimer;
   var progress = null;
-  var messageKey;
+  var currentMessage;
   var readingId = 0;
   var indexRows = [];
   var activeIndexRow = null;
@@ -35,7 +36,7 @@
       el.setAttribute("aria-label", t(el.dataset.label));
     });
     if (working) showProgress(progress);
-    if (messageKey) $("message-text").textContent = t(messageKey);
+    if (currentMessage) localizeMessage();
     setShortcutTitles();
     $("about-version").textContent = t("version", { v: BOOT.version, h: BOOT.heocr, t: BOOT.tesseract });
     if (current) {
@@ -48,18 +49,32 @@
 
   function show(name) {
     setSaveMenu(false);
+    hideToast();
     ["start", "reading", "result", "message"].forEach(function (v) {
       document.body.classList.toggle("is-" + v, v === name);
     });
   }
 
-  var toastTimer = null;
-  function toast(text) {
-    var el = $("toast");
-    el.textContent = text;
-    document.body.classList.add("toast-on");
+  var toastTimer;
+  function hideToast() {
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(function () { document.body.classList.remove("toast-on"); }, 1600);
+    if ($("toast").contains(document.activeElement) && current) $("save").focus();
+    document.body.classList.remove("toast-on");
+  }
+
+  function toast(text, saved) {
+    hideToast();
+    $("toast-label").textContent = text;
+    $("toast-name").textContent = saved ? saved.name : "";
+    $("toast-name").parentElement.hidden = !saved;
+    var reveal = $("toast-reveal");
+    reveal.hidden = !(saved && saved.reveal);
+    reveal.onclick = reveal.hidden ? null : function () {
+      if (api()) api().reveal_saved(saved.reveal);
+      hideToast();
+    };
+    document.body.classList.add("toast-on");
+    toastTimer = setTimeout(hideToast, reveal.hidden ? 4000 : 8000);
   }
 
   function chip(text) {
@@ -94,10 +109,28 @@
     $("how").hidden = !routeBox.childElementCount;
     var notes = $("notes");
     notes.textContent = "";
-    function note(text) { var d = document.createElement("div"); d.className = "notice"; d.textContent = text; notes.appendChild(d); }
+    function note(text, title) {
+      var notice = document.createElement("div");
+      notice.className = "notice";
+      var body = document.createElement("p");
+      if (title) {
+        var strong = document.createElement("strong");
+        strong.textContent = title;
+        body.append(strong, " ");
+      }
+      body.append(text);
+      notice.appendChild(body);
+      notes.appendChild(notice);
+    }
     if (!r.ocr_available) note(t("no_ocr"));
     (r.notes || []).forEach(function (n) { note(t("note_" + n)); });
-    if (r.unread) note(r.unread === 1 ? t("unread_1") : t("unread_n", { n: r.unread }));
+    if (r.unread_picture_page) {
+      var slots = { n: r.unread, page: r.unread_picture_page };
+      note(t("unread_picture_body", slots), t("unread_picture_title", slots));
+    } else if (r.unread) {
+      var count = t(r.unread === 1 ? "unread_1" : "unread_n", { n: r.unread });
+      note(count + " " + t("unread_details"));
+    }
     notes.hidden = !notes.childElementCount;
   }
 
@@ -198,7 +231,7 @@
     $("result-name").textContent = $("work-name").textContent;
     ["doc-formatted", "doc-text", "doc-markdown"].forEach(function (id) { $(id).dir = r.direction || "auto"; });
     $("doc-formatted").innerHTML = r.html; // built by Python from the record, every text escaped
-    if (r.ocr_blocks) {
+    if (r.ocr_blocks || (r.routes && r.routes.ocr)) {
       var caution = document.createElement("p");
       caution.className = "note";
       caution.dir = "auto";
@@ -216,11 +249,34 @@
     setView("formatted");
   }
 
-  function message(key) {
+  var messages = {
+    needs_converter: { title: "m_unsupported_t", mark: "converter", body: "needs_converter" },
+    unreadable: { title: "m_damaged_t", mark: "warning", body: "unreadable" },
+    error: { title: "m_damaged_t", mark: "warning", body: "error" },
+    empty: { title: "m_empty_t", mark: "image", body: "empty", hint: "m_empty_hint" },
+    cancelled: { title: "m_cancelled_t", mark: "stopped", body: "nothing_saved", retry: true }
+  };
+
+  function localizeMessage() {
+    var state = currentMessage.state;
+    var progress = currentMessage.progress;
+    $("message-title").textContent = t(state.title);
+    $("message-text").textContent = progress ? t("m_cancelled_b", progress) : t(state.body);
+    $("message-hint").textContent = state.hint ? t(state.hint) : "";
+  }
+
+  function message(kind, stopped) {
     current = null;
-    messageKey = key;
+    var state = messages[kind] || messages.unreadable;
+    currentMessage = { state: state, progress: stopped && stopped.total && stopped.done > 0 ? stopped : null };
     $("message-name").textContent = $("work-name").textContent;
-    $("message-text").textContent = t(key);
+    document.querySelectorAll("[data-message-mark]").forEach(function (icon) {
+      icon.toggleAttribute("hidden", icon.dataset.messageMark !== state.mark);
+    });
+    $("message-hint").hidden = !state.hint;
+    $("message-retry").hidden = !state.retry;
+    $("message-again").classList.toggle("primary", !state.retry);
+    localizeMessage();
     show("message");
   }
 
@@ -256,7 +312,7 @@
       readingId++;
       working = true;
       current = null;
-      messageKey = null;
+      currentMessage = null;
       progress = null;
       $("work-name").textContent = p.name;
       readingStarted = Date.now();
@@ -273,9 +329,7 @@
     finished: function (p) {
       working = false;
       clearInterval(elapsedTimer);
-      if (p.kind === "cancelled") { show("start"); toast(t("cancelled")); return; }
-      if (p.kind === "error") { message("error"); return; }
-      if (p.kind !== "ok") { message(p.kind); return; }
+      if (p.kind !== "ok") { message(p.kind, p.kind === "cancelled" ? p : null); return; }
       var finishedId = readingId;
       api().result().then(function (result) {
         if (readingId === finishedId && result.kind === "ok") render(result);
@@ -320,9 +374,9 @@
   }
 
   function closeFile() {
-    if (working || (!current && !messageKey)) return;
+    if (working || (!current && !currentMessage)) return;
     current = null;
-    messageKey = null;
+    currentMessage = null;
     show("start");
     $("open").focus();
   }
@@ -334,8 +388,8 @@
   function saveFile(format) {
     if (!current || !api()) return;
     var result = current;
-    api().save(format).then(function (name) {
-      if (name && current === result) toast(t("saved") + ": " + name);
+    api().save(format).then(function (saved) {
+      if (saved && current === result) toast(t("saved"), saved);
     });
   }
 
@@ -362,6 +416,20 @@
     document.body.classList.add("about-open");
   }
 
+  function setZoom(tenths) {
+    if (!current) return;
+    zoom = Math.max(8, Math.min(20, tenths));
+    $("reader").style.setProperty("--doc-zoom", String(zoom / 10));
+    $("zoom-value").textContent = zoom * 10 + "%";
+    $("zoom-out").disabled = zoom === 8;
+    $("zoom-in").disabled = zoom === 20;
+    updateIndexCurrent();
+  }
+
+  function openProjectLink(link) {
+    if (api()) api().open_project_link(link);
+  }
+
   // Native menus and keyboard shortcuts share the web view's screen guards.
   var actions = {
     open: openFile,
@@ -383,7 +451,12 @@
     formatted: function () { if (current) setView("formatted"); },
     text: function () { if (current) setView("text"); },
     markdown: function () { if (current) setView("markdown"); },
+    larger: function () { setZoom(zoom + 1); },
+    smaller: function () { setZoom(zoom - 1); },
+    actual: function () { setZoom(10); },
     language: function () { $("lang").click(); },
+    website: function () { openProjectLink("website"); },
+    github: function () { openProjectLink("github"); },
     about: openAbout
   };
 
@@ -402,6 +475,8 @@
     title("again", "open", mod + "O");
     title("copy", "copy_all", (mac ? shift + mod : mod + shift) + "C");
     title("save", "save", mod + "S");
+    title("zoom-in", "zoom_in", mod + "+");
+    title("zoom-out", "zoom_out", mod + "−");
     title("cancel", "cancel", "Esc");
     title("about-close", "close", "Esc");
     document.querySelectorAll("[data-view]").forEach(function (button, i) {
@@ -443,8 +518,9 @@
     var modifier = mac ? event.metaKey && !event.ctrlKey : event.ctrlKey && !event.metaKey;
     if (!modifier || event.altKey) return;
     var key = event.key.toLowerCase();
-    var shortcut = event.shiftKey ? { s: "saveAs", c: "copyAll" }[key] :
-      { o: "open", s: "save", w: "close", a: "selectAll", "1": "formatted", "2": "text", "3": "markdown" }[key];
+    var zoomShortcut = { "+": "larger", "=": "larger", "-": "smaller", "−": "smaller", "0": "actual" }[key];
+    var shortcut = zoomShortcut || (event.shiftKey ? { s: "saveAs", c: "copyAll" }[key] :
+      { o: "open", s: "save", w: "close", a: "selectAll", "1": "formatted", "2": "text", "3": "markdown" }[key]);
     // The web view handles the system copy shortcut and keeps the selection's logical order.
     if (shortcut) {
       event.preventDefault();
@@ -454,9 +530,14 @@
 
   function bind() {
     $("reader").addEventListener("scroll", updateIndexCurrent, { passive: true });
+    $("zoom-in").addEventListener("click", actions.larger);
+    $("zoom-out").addEventListener("click", actions.smaller);
     $("open").addEventListener("click", openFile);
     $("again").addEventListener("click", openFile);
     $("message-again").addEventListener("click", openFile);
+    $("message-retry").addEventListener("click", function () {
+      if (!working && api()) api().retry();
+    });
     $("cancel").addEventListener("click", function () { if (api()) api().cancel(); });
     $("copy").addEventListener("click", copyAll);
     $("save").addEventListener("click", function () {
@@ -484,6 +565,9 @@
       if (api()) api().set_language(lang);
     });
     $("about-open").addEventListener("click", openAbout);
+    document.querySelectorAll("[data-project-link]").forEach(function (button) {
+      button.addEventListener("click", function () { openProjectLink(button.dataset.projectLink); });
+    });
     $("about-close").addEventListener("click", function () { $("about").close(); });
     $("about").addEventListener("close", function () { document.body.classList.remove("about-open"); });
     // The web view paints the veil; the native drop handler receives the full path.
@@ -520,11 +604,16 @@
     window.addEventListener("blur", clearDropVeil);
   }
 
-  (BOOT.models || []).forEach(function (m) {
-    var li = document.createElement("div");
-    li.dir = "ltr";
-    li.textContent = m.name + " — " + m.origin + " — sha256 " + m.sha256;
-    $("models").appendChild(li);
+  (BOOT.models || []).forEach(function (model) {
+    var row = document.createElement("div");
+    var label = document.createElement("span");
+    label.dir = "ltr";
+    label.textContent = model.name + (model.origin ? " · " + model.origin : "");
+    var licence = document.createElement("span");
+    licence.className = "end ltr";
+    licence.textContent = model.licence;
+    row.append(label, licence);
+    $("models").appendChild(row);
   });
   applyLanguage();
   bind();
