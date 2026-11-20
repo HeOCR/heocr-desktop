@@ -18,6 +18,7 @@ Repo: https://github.com/HeOCR/heocr-desktop.git
 
 Builds:
   - versionName: 0.1.0
+    disable: Placeholder release; version, tag, versionCode and build recipe require verification.
     versionCode: 10000
     # The tag of the first Android release (to be created with it).
     commit: android-v0.1.0
@@ -27,9 +28,8 @@ Builds:
       - apt-get install -y python3 python3-venv python3-pip cmake ninja-build git curl zip unzip pkg-config
     ndk: r27c
     build:
-      # Everything native is built from pinned sources here, as in this repository's CI
-      # (.github/workflows/android.yml): Tesseract and its image libraries (vcpkg), then Pillow against
-      # the same libraries; Python packages come from PyPI and Chaquopy's runtime from Maven Central.
+      # Experimental CI-inspired recipe, not proven on the F-Droid buildserver. See the audit.
+      # Downloads and binary provenance require review; this is not an all-source build.
       - python3 -m venv /tmp/venv
       - . /tmp/venv/bin/activate
       - pip install briefcase==0.4.7
@@ -44,7 +44,7 @@ Builds:
       - cd build/heocr_mobile/android/gradle
       - ./gradlew assembleRelease --console plain
 
-AutoUpdateMode: Version
-UpdateCheckMode: Tags ^android-v.*$
+AutoUpdateMode: None
+UpdateCheckMode: None
 CurrentVersion: 0.1.0
 CurrentVersionCode: 10000
