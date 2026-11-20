@@ -157,8 +157,17 @@ class HeOCR(toga.App):
         self.toast_id += 1
         mine = self.toast_id
         markup = screens.toast(text, sub, low=self.screen != "result", action=action)
-        self.js("(function(){var o=document.getElementById('toast');if(o)o.remove();"
-                f"document.body.insertAdjacentHTML('beforeend',{json.dumps(markup)});}})()")
+        def report(visible):
+            # CI observes the WebView before the transient confirmation expires.
+            if visible is True:
+                print("HeOCR toast shown", flush=True)
+
+        self.webview.evaluate_javascript(
+            "(function(){var o=document.getElementById('toast');if(o)o.remove();"
+            f"document.body.insertAdjacentHTML('beforeend',{json.dumps(markup)});"
+            "return document.getElementById('toast').getBoundingClientRect().height > 0;})()",
+            on_result=report,
+        )
 
         async def leave():
             await asyncio.sleep(TOAST_ACTION_SECONDS if action else TOAST_SECONDS)

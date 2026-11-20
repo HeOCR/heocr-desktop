@@ -218,11 +218,11 @@ if [ -f "$FIXTURES/itext-style.pdf" ]; then
   "$ADB" exec-out screencap -p > $OUT/6-picked.png
 fi
 # The design's screens (design/android/SPEC.md): every control is a link the app intercepts.
-# Copy: the toast is put into the page from outside (evaluate_javascript under the page's policy).
+# Check the rendered toast in the WebView. A UI Automator dump can outlast the four-second toast.
+"$ADB" logcat -c
 tap_retry "^copy$" || fail "no Copy button on the result"
 logged "HeOCR copied" || fail "Copy did nothing"
-sleep 1
-seen "text copied" || fail "the copied toast did not show (evaluate_javascript)"
+logged "HeOCR toast shown" || fail "the copied toast did not render in the WebView"
 "$ADB" exec-out screencap -p > $OUT/7-copied.png
 # Share: the system share sheet with the text (it is its own confirmation); Back returns to the reading.
 sleep 4
@@ -244,8 +244,7 @@ sleep 5
 tap_retry "^save$" || fail "the save screen had no Save button"
 logged "HeOCR saved txt" || fail "Save as text wrote nothing"
 "$ADB" logcat -d | grep -o "HeOCR saved txt: .*" | tail -1
-sleep 1
-seen "saved to downloads|saved" || fail "the saved toast did not show"
+logged "HeOCR toast shown" || fail "the saved toast did not render in the WebView"
 "$ADB" exec-out screencap -p > $OUT/7d-saved.png
 if "$ADB" logcat -d | grep -q "HeOCR saved txt: .*viewer=True"; then
   tap_retry "^open$" || fail "the saved toast had no Open, though a viewer exists"
