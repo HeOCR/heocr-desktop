@@ -9,7 +9,7 @@ HeOCR desktop is Apache-2.0. This is every component its macOS app and Windows i
 
 | Component | Version | Licence | Notes |
 |---|---|---|---|
-| heocr | 0.2.0 from PyPI (tag `v0.2.0`, `5d41b43`) | Apache-2.0 | Its NOTICE ships in its `dist-info`. heocr's own audit of its dependencies: [THIRD_PARTY_LICENSES.md](https://github.com/HeOCR/heocr/blob/main/THIRD_PARTY_LICENSES.md) |
+| heocr | 0.2.1 from PyPI (tag `v0.2.1`, `fd2ef3e`; 0.2.0's code) | Apache-2.0 | Its NOTICE ships in its `dist-info`. heocr's own audit of its dependencies: [THIRD_PARTY_LICENSES.md](https://github.com/HeOCR/heocr/blob/main/THIRD_PARTY_LICENSES.md) |
 | pypdfium2 | 5.15.2 | Apache-2.0 or BSD-3-Clause | Bundles PDFium (BSD-3-Clause) with Abseil, Highway, AGG, Dragonbox, fast_float, FreeType (FTL), HarfBuzz (MIT), ICU (Unicode-3.0), Little CMS (MIT), libjpeg-turbo, OpenJPEG, libpng, libtiff, simdutf, zlib, Brotli, libyuv and LLVM libc pieces, all permissive; listed in heocr's audit |
 | Pillow | 13.0.0 | MIT-CMU (HPND) | Bundles libjpeg-turbo, libtiff, libwebp, OpenJPEG, libpng, zlib-ng, FreeType (FTL), HarfBuzz, Little CMS, libavif, Brotli, liblzma (0BSD), libxcb/libXau (MIT); listed in heocr's audit |
 | defusedxml | 0.7.1 | PSF-2.0 | |
@@ -86,7 +86,7 @@ The Android app (`heocr_mobile`) bundles the same pipeline and OCR components (w
 
 | Component | Version | Licence | Notes |
 |---|---|---|---|
-| HeOCR models `heocr_modern_v1`, `heocr_oldprint_v1` | 2026-11 (inside heocr 0.2.0, in both apps) | Apache-2.0 | Zenodo 10.5281/zenodo.24372349 and 10.5281/zenodo.24372352; their NOTICE files ship in heocr's `models_data/` |
+| HeOCR models `heocr_modern_v1`, `heocr_oldprint_v1` | 2026-11 (inside heocr 0.2.1, in both apps) | Apache-2.0 | Zenodo 10.5281/zenodo.24372349 and 10.5281/zenodo.24372352; their NOTICE files ship in heocr's `models_data/` |
 | Noto Sans Hebrew | 400, 500, 700 (subset) | SIL OFL 1.1 | The design's typeface, embedded as WOFF2 in the result stylesheet (`design/android/fonts/`); `third_party/fonts/OFL-NotoSansHebrew.txt` ships in the app |
 | JetBrains Mono | 500, 700 (subset) | SIL OFL 1.1 | As above; `third_party/fonts/OFL-JetBrainsMono.txt` ships in the app |
 | Chaquopy runtime | 17.2.0 | MIT | Python on Android, from Maven Central (Briefcase's Android template) |
