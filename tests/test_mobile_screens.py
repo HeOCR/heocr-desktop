@@ -9,7 +9,7 @@ from heocr_desktop import i18n
 from heocr_mobile import screens, view
 
 ACTIONS = {"photo", "open", "sample", "cancel", "home", "back", "about", "save-docx", "save-txt", "copy",
-           "diagnostics", "licences", "more", "dismiss", "next"}
+           "diagnostics", "licences", "more", "dismiss", "next", "share", "open-saved", "retry"}
 
 
 def links(page: str) -> set[str]:
@@ -120,3 +120,13 @@ def test_app_screens_never_zoom_and_the_reading_can(monkeypatch):
     assert screens.VIEWPORT_FIXED in screens.about(t, "en", {"app": "1", "heocr": "2", "tesseract": "3"})
     page = screens.result(t, d, "en", doc(monkeypatch), "a.pdf", 1, 1.0, False, ["txt"])
     assert screens.VIEWPORT_ZOOM in page and "maximum-scale=1" not in page
+
+
+def test_result_bar_shares_and_toasts_can_carry_an_action(monkeypatch):
+    t, d = screens.strings("he"), i18n.STRINGS["he"]
+    page = screens.result(t, d, "he", doc(monkeypatch), "a.pdf", 1, 1.0, False, ["txt"])
+    assert f'href="heocr:share" role="button" aria-label="{t["share"]}"' in page
+    assert ACTIONS >= links(page)
+    saved = screens.toast(t["saved"], "<bdi>a.txt</bdi>", action=(t["open_it"], "open-saved"))
+    assert 'href="heocr:open-saved"' in saved and t["open_it"] in saved and 'role="status"' in saved
+    assert "<a " not in screens.toast(t["copied"])
