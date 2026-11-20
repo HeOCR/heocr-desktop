@@ -15,6 +15,9 @@ from pathlib import Path
 
 STRINGS: dict[str, dict[str, str]] = {
     "en": {
+        "zoom_in": "Larger text",
+        "zoom_out": "Smaller text",
+        "show_file": "Show in folder",
         "copy_all": "Copy all text",
         "index": "Pages",
         "title": "HeOCR",
@@ -91,6 +94,9 @@ STRINGS: dict[str, dict[str, str]] = {
         "licence": "Licence",
     },
     "he": {
+        "zoom_in": "הגדלת הטקסט",
+        "zoom_out": "הקטנת הטקסט",
+        "show_file": "הצגה בתיקייה",
         "copy_all": "העתקת כל הטקסט",
         "index": "עמודים",
         "title": "HeOCR",

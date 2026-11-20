@@ -103,7 +103,7 @@
 <button type="button" role="tab" data-view="markdown" aria-selected="false"><span data-i18n="view_markdown"></span>
 </button>
 </div>
-<div class="zoom" id="zoom" hidden>
+<div class="zoom" id="zoom">
 <button type="button" class="iconbtn" id="zoom-out" data-label="zoom_out"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="12" height="12"/><path d="M15 15l6 6M7 10h6"/></svg>
 </button><span class="num" id="zoom-value">100%</span>
 <button type="button" class="iconbtn" id="zoom-in" data-label="zoom_in"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="12" height="12"/><path d="M15 15l6 6M10 7v6M7 10h6"/></svg>
@@ -153,6 +153,9 @@
 </div>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite">
+<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12.5l5 5L19.5 7"/></svg>
+<div><span id="toast-label"></span><small hidden><bdi id="toast-name"></bdi></small></div>
+<button type="button" id="toast-reveal" data-i18n="show_file" hidden></button>
 </div>
 
 <dialog id="about" aria-labelledby="about-title">

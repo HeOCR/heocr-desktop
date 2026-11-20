@@ -16,8 +16,9 @@ import time
 import traceback
 from importlib import metadata
 from pathlib import Path
+from uuid import uuid4
 
-from heocr_desktop import engine, exports, i18n, menus, render
+from heocr_desktop import engine, exports, i18n, menus, render, reveal
 
 UI = Path(__file__).resolve().parent / "ui"
 APP_NAME = "HeOCR"
@@ -83,6 +84,7 @@ class Api:
         self._window = None
         self._result: engine.Result | None = None
         self._source: Path | None = None
+        self._saved: tuple[str, Path] | None = None
         self._cancel = threading.Event()
         self._busy = threading.Lock()
         self._last_push = 0.0
@@ -109,6 +111,7 @@ class Api:
             return False
         self._cancel.clear()
         self._source = Path(path)
+        self._saved = None
         self._result = None
         self._push("heocr.started", {"name": self._source.name})
         threading.Thread(target=self._run, args=(self._source,), daemon=True).start()
@@ -140,7 +143,7 @@ class Api:
             "formats": list(exports.formats()),
         }
 
-    def save(self, kind: str) -> str | None:
+    def save(self, kind: str) -> dict | None:
         import webview
 
         r = self._result
@@ -155,8 +158,20 @@ class Api:
         if not target:
             return None
         target = target[0] if isinstance(target, (list, tuple)) else target
-        Path(target).write_bytes(exports.export(r.doc, kind))
-        return Path(target).name
+        target = Path(target)
+        target.write_bytes(exports.export(r.doc, kind))
+        path = reveal.local_file(target)
+        token = None
+        if self._result is r:
+            self._saved = None
+            if path is not None:
+                token = uuid4().hex
+                self._saved = (token, path)
+        return {"name": target.name, "reveal": token}
+
+    def reveal_saved(self, token: str) -> bool:
+        saved = self._saved
+        return bool(saved and saved[0] == token and reveal.show(saved[1]))
 
     def third_party(self) -> str:
         path = Path(__file__).resolve().parent / "resources" / "THIRD_PARTY_LICENSES.md"

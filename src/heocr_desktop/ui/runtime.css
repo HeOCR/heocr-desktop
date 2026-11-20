@@ -7,3 +7,4 @@
 .notice + .notice { margin-block-start: 6px; }
 .hw .menu button:focus-visible, .hw .seg button:focus-visible { outline-offset: -2px; }
 .work .hint { color: var(--muted); font-size: 13.5px; }
+.hw .iconbtn:disabled { color: var(--muted); background: transparent; }

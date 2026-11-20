@@ -4,6 +4,7 @@
   var lang = BOOT.language in BOOT.strings ? BOOT.language : "en";
   var current = null; // the last result
   var view = "formatted";
+  var zoom = 10;
   var working = false;
   var readingStarted;
   var elapsedTimer;
@@ -48,18 +49,32 @@
 
   function show(name) {
     setSaveMenu(false);
+    hideToast();
     ["start", "reading", "result", "message"].forEach(function (v) {
       document.body.classList.toggle("is-" + v, v === name);
     });
   }
 
-  var toastTimer = null;
-  function toast(text) {
-    var el = $("toast");
-    el.textContent = text;
-    document.body.classList.add("toast-on");
+  var toastTimer;
+  function hideToast() {
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(function () { document.body.classList.remove("toast-on"); }, 1600);
+    if ($("toast").contains(document.activeElement) && current) $("save").focus();
+    document.body.classList.remove("toast-on");
+  }
+
+  function toast(text, saved) {
+    hideToast();
+    $("toast-label").textContent = text;
+    $("toast-name").textContent = saved ? saved.name : "";
+    $("toast-name").parentElement.hidden = !saved;
+    var reveal = $("toast-reveal");
+    reveal.hidden = !(saved && saved.reveal);
+    reveal.onclick = reveal.hidden ? null : function () {
+      if (api()) api().reveal_saved(saved.reveal);
+      hideToast();
+    };
+    document.body.classList.add("toast-on");
+    toastTimer = setTimeout(hideToast, reveal.hidden ? 4000 : 8000);
   }
 
   function chip(text) {
@@ -334,8 +349,8 @@
   function saveFile(format) {
     if (!current || !api()) return;
     var result = current;
-    api().save(format).then(function (name) {
-      if (name && current === result) toast(t("saved") + ": " + name);
+    api().save(format).then(function (saved) {
+      if (saved && current === result) toast(t("saved"), saved);
     });
   }
 
@@ -362,6 +377,16 @@
     document.body.classList.add("about-open");
   }
 
+  function setZoom(tenths) {
+    if (!current) return;
+    zoom = Math.max(8, Math.min(20, tenths));
+    $("reader").style.setProperty("--doc-zoom", String(zoom / 10));
+    $("zoom-value").textContent = zoom * 10 + "%";
+    $("zoom-out").disabled = zoom === 8;
+    $("zoom-in").disabled = zoom === 20;
+    updateIndexCurrent();
+  }
+
   // Native menus and keyboard shortcuts share the web view's screen guards.
   var actions = {
     open: openFile,
@@ -383,6 +408,9 @@
     formatted: function () { if (current) setView("formatted"); },
     text: function () { if (current) setView("text"); },
     markdown: function () { if (current) setView("markdown"); },
+    larger: function () { setZoom(zoom + 1); },
+    smaller: function () { setZoom(zoom - 1); },
+    actual: function () { setZoom(10); },
     language: function () { $("lang").click(); },
     about: openAbout
   };
@@ -402,6 +430,8 @@
     title("again", "open", mod + "O");
     title("copy", "copy_all", (mac ? shift + mod : mod + shift) + "C");
     title("save", "save", mod + "S");
+    title("zoom-in", "zoom_in", mod + "+");
+    title("zoom-out", "zoom_out", mod + "−");
     title("cancel", "cancel", "Esc");
     title("about-close", "close", "Esc");
     document.querySelectorAll("[data-view]").forEach(function (button, i) {
@@ -443,8 +473,9 @@
     var modifier = mac ? event.metaKey && !event.ctrlKey : event.ctrlKey && !event.metaKey;
     if (!modifier || event.altKey) return;
     var key = event.key.toLowerCase();
-    var shortcut = event.shiftKey ? { s: "saveAs", c: "copyAll" }[key] :
-      { o: "open", s: "save", w: "close", a: "selectAll", "1": "formatted", "2": "text", "3": "markdown" }[key];
+    var zoomShortcut = { "+": "larger", "=": "larger", "-": "smaller", "−": "smaller", "0": "actual" }[key];
+    var shortcut = zoomShortcut || (event.shiftKey ? { s: "saveAs", c: "copyAll" }[key] :
+      { o: "open", s: "save", w: "close", a: "selectAll", "1": "formatted", "2": "text", "3": "markdown" }[key]);
     // The web view handles the system copy shortcut and keeps the selection's logical order.
     if (shortcut) {
       event.preventDefault();
@@ -454,6 +485,8 @@
 
   function bind() {
     $("reader").addEventListener("scroll", updateIndexCurrent, { passive: true });
+    $("zoom-in").addEventListener("click", actions.larger);
+    $("zoom-out").addEventListener("click", actions.smaller);
     $("open").addEventListener("click", openFile);
     $("again").addEventListener("click", openFile);
     $("message-again").addEventListener("click", openFile);
