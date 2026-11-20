@@ -71,7 +71,7 @@ class HeOCR(toga.App):
         self.toast_id = 0
         self.page = ""  # the page on screen, drawn again when the window's size changes
         self.size = None
-        self.webview = toga.WebView(style=Pack(flex=1), on_navigation_starting=self.navigate)
+        self.webview = toga.WebView(style=Pack(flex=1), on_navigation_starting=self.navigate, on_webview_load=self.loaded)
         self.main_window = toga.MainWindow(title=self.formal_name, on_gain_focus=self.on_focus, on_resize=self.on_resize)
         self.main_window.content = self.webview
         back.handler = self.on_back
@@ -97,6 +97,14 @@ class HeOCR(toga.App):
         self.page = page
         self.webview.set_content("about:blank", page)
         print(f"HeOCR screen {screen}", flush=True)
+
+    def loaded(self, widget, **kwargs):
+        """Each page load: the WebView's scale in device pixels per CSS pixel (the density, unless zoomed)."""
+        try:
+            native = self.webview._impl.native
+            print(f"HeOCR loaded {self.screen}: scale={native.getScale():.3f} width={native.getWidth()}", flush=True)
+        except Exception:  # noqa: BLE001 - diagnostics only
+            pass
 
     def on_resize(self, window, **kwargs):
         """Draw the page again when the window's size changes: the first page loads before the WebView

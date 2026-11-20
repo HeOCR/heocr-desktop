@@ -216,7 +216,10 @@ def configure_webview(webview, activity) -> int:
     settings.setLoadWithOverviewMode(False)
     allow_zoom(webview, False)
     settings.setLayoutAlgorithm(_jclass("android.webkit.WebSettings$LayoutAlgorithm").NORMAL)
-    webview.setInitialScale(0)
+    # One CSS pixel per dp, pinned. Left to the WebView (setInitialScale(0)), the first page on some
+    # starts drew about 1.5 times too large, whatever its viewport tag said.
+    density = activity.getResources().getDisplayMetrics().density
+    webview.setInitialScale(round(density * 100))
     scale = activity.getResources().getConfiguration().fontScale
     wanted = max(50, min(300, round(scale * 100)))
     default = settings.getTextZoom()
