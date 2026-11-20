@@ -83,8 +83,26 @@ for n in re.findall(r"<node [^>]*>", xml):
         found[label] = tuple(map(int, m.groups()))
 ok = len(found) == 2 and all(b[2] > b[0] and b[3] > b[1] and b[2] <= width for b in found.values())
 print("home buttons:", found, "screen width", width, "fit" if ok else "DO NOT FIT")
+if ok:  # where Home's buttons are, for a tap when the accessibility tree comes back empty later
+    with open(sys.argv[1].replace("ui-home.xml", "home-buttons.txt"), "w") as out:
+        for label, b in found.items():
+            out.write(f"{label}\t{(b[0] + b[2]) // 2} {(b[1] + b[3]) // 2}\n")
 sys.exit(0 if ok else 1)
 PY
+}
+# A Home button by label, or, when the WebView's accessibility tree is empty (seen on Android 15 after
+# several page loads), at the place home_fits measured for it on this run.
+tap_home() {  # tap_home <label in lower case>
+  tap_retry "^$1$" && return 0
+  local pos
+  pos=$(grep -P "^$1\t" $OUT/home-buttons.txt 2>/dev/null | cut -f2)
+  [ -n "$pos" ] || return 1
+  echo "the accessibility tree is empty: tapping '$1' where Home showed it ($pos)"
+  # tap_retry scrolled while it searched: back to the top, where home_fits measured the button.
+  for _ in 1 2 3 4; do "$ADB" shell input swipe 540 500 540 1600 200; sleep 1; done
+  "$ADB" logcat -c
+  "$ADB" shell input tap $pos
+  logged "HeOCR action " || { echo "the tap at $pos reached no control"; return 1; }
 }
 # The page's scale, as the app logs it on each load, must be the screen density: no page zoom.
 scale_ok() {  # scale_ok <what>: the page's own zoom is 1 and its width is the screen's width in dp
@@ -123,14 +141,26 @@ alive || fail "the app stopped after reading the sample"
 AUTH=$("$ADB" shell dumpsys package "$PKG" | grep -o '[A-Za-z0-9_.-]*\.fileprovider' | head -1)
 [ -n "$AUTH" ] || fail "no FileProvider authority for $PKG"
 echo "FileProvider: $AUTH"
+# adb exits 255 when it loses the emulator for a moment (seen right after a push): retry those.
+adbr() {
+  local i rc
+  for i in 1 2 3; do
+    "$ADB" "$@" && return 0
+    rc=$?
+    [ "$rc" = 255 ] || return "$rc"
+    echo "adb $1: lost the device (try $i); retrying"; sleep 3
+    "$ADB" wait-for-device
+  done
+  return 255
+}
 share() {  # share <local file> <name on the device> <mime> <expected route text>
-  "$ADB" push "$1" "/data/local/tmp/$2" >/dev/null
-  "$ADB" shell chmod 644 "/data/local/tmp/$2"
-  "$ADB" shell run-as "$PKG" mkdir -p cache/shared
-  "$ADB" shell run-as "$PKG" cp "/data/local/tmp/$2" "cache/shared/$2"
-  "$ADB" logcat -c
+  adbr push "$1" "/data/local/tmp/$2" >/dev/null
+  adbr shell chmod 644 "/data/local/tmp/$2"
+  adbr shell run-as "$PKG" mkdir -p cache/shared
+  adbr shell run-as "$PKG" cp "/data/local/tmp/$2" "cache/shared/$2"
+  adbr logcat -c
   # adb shell hands the line to the device's shell: quote the type, or */* is expanded as a glob there.
-  "$ADB" shell am start -a android.intent.action.SEND -t "'$3'" \
+  adbr shell am start -a android.intent.action.SEND -t "'$3'" \
     --eu android.intent.extra.STREAM "content://$AUTH/shared/$2" \
     --grant-read-uri-permission -n "$PKG/org.beeware.android.MainActivity" >/dev/null
   for _ in $(seq 1 24); do
@@ -163,7 +193,7 @@ if [ -f "$FIXTURES/itext-style.pdf" ]; then
   "$ADB" logcat -c
   "$ADB" shell input keyevent 4  # from the last reading back to Home, where "Open a file" is
   sleep 2
-  tap_retry "^open a file$" || fail "no 'Open a file' button"
+  tap_home "open a file" || fail "no 'Open a file' button"
   sleep 6
   "$ADB" exec-out screencap -p > $OUT/5-picker.png
   # The file's own row (exact name), not its "Preview the file …" icon.
@@ -259,7 +289,21 @@ alive || fail "the app stopped on Back"
 "$ADB" logcat -c
 "$ADB" shell am start -n "$PKG/org.beeware.android.MainActivity" >/dev/null
 logged "HeOCR screen: night=True text_zoom=200" || { sleep 20; logged "HeOCR screen: night=True text_zoom=200" || fail "the app did not follow night mode and the font scale"; }
-sleep 5
+# Switching to night mode restarts the launcher, and the app can start behind it: wait until HeOCR is
+# the activity in front, then measure Home from a load made on screen (About, then Back).
+for _ in $(seq 1 20); do
+  "$ADB" shell dumpsys activity activities | grep -q "ResumedActivity.*$PKG" && break
+  "$ADB" shell am start -n "$PKG/org.beeware.android.MainActivity" >/dev/null 2>&1 || true
+  sleep 3
+done
+"$ADB" shell dumpsys activity activities | grep -q "ResumedActivity.*$PKG" || fail "HeOCR did not come to the front after the relaunch"
+sleep 3
+tap_retry "^about$" || fail "no About button at 200% text"
+logged "HeOCR screen about" || fail "About did not open at 200% text"
+"$ADB" logcat -c
+"$ADB" shell input keyevent 4
+logged "HeOCR page home" || fail "Home did not load again at 200% text"
+sleep 2
 "$ADB" exec-out screencap -p > $OUT/10-home-night-200.png
 scale_ok "relaunch at 200% text" || fail "Home loaded zoomed at 200% text"
 # The reading itself at 200% text, for the screenshot (pinch zoom needs two fingers; not injected here).
