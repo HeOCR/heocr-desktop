@@ -36,6 +36,21 @@ Builds:
       - export ANDROID_NDK_HOME=$$NDK$$
       - python scripts/build_tesseract.py --target android-arm64 --out build/tess/android-arm64
       - python scripts/build_pillow_android.py --deps build/tess/android-arm64/deps --out build/android-wheels
+      # Stage the six exact PyPI release wheels beside the locally built Pillow wheel.
+      - >-
+        python -m pip download --no-index --no-cache-dir --no-deps --require-hashes
+        --platform android_23_arm64_v8a --python-version 3.13
+        --dest build/android-wheels -r docs/stores/fdroid/android-pypi-wheels.txt
+      - cat docs/stores/fdroid/android-pypi-wheels.txt build/android-wheels/BUILD_INFO-pillow.json
+      - sha256sum build/android-wheels/*.whl
+      # Chaquopy 17.2.0 suppresses its extra index only with an explicit --index-url token.
+      # --no-index then disables all indexes. Briefcase resolves the ./ wheelhouse path.
+      - >-
+        python -c 'from pathlib import Path; p = Path("pyproject.toml"); s = p.read_text();
+        old = "requirement_installer_args = [\"--find-links\", \"./build/android-wheels\"]";
+        assert s.count(old) == 1, "Review the Android pip configuration";
+        new = old.replace("[", "[\"--index-url\", \"https://pypi.org/simple\", \"--no-index\", ", 1);
+        p.write_text(s.replace(old, new))'
       - python scripts/assemble_resources.py --android build/tess/android-arm64
       - briefcase create android -a heocr_mobile --no-input
       - python scripts/android_patch_activity.py

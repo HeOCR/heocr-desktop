@@ -1,0 +1,8 @@
+# PyPI release wheel URLs and SHA-256 hashes for Android arm64, CPython 3.13.
+# Pillow is compiled separately from its pinned PyPI sdist.
+https://files.pythonhosted.org/packages/e6/63/432f33f95e85e94102320a82dfd0aa8fd6af9d51c0f6fd4add5d59567206/heocr-0.2.0-py3-none-any.whl --hash=sha256:93fd4466583d78a6ff9a7248ea0c4440190a1f63cc6f6fb02e7d08214935e943
+https://files.pythonhosted.org/packages/73/cf/a4adc114427c7e72716aaa487ddff7d085791dbe5ac830f2345f61814f3c/pypdfium2-5.15.2-py3-none-android_23_arm64_v8a.whl --hash=sha256:fe64472c32d0717669c99758ce234066500b0234730dad0327248f09399e9736
+https://files.pythonhosted.org/packages/07/6c/aa3f2f849e01cb6a001cd8554a88d4c77c5c1a31c95bdf1cf9301e6d9ef4/defusedxml-0.7.1-py2.py3-none-any.whl --hash=sha256:a352e7e428770286cc899e2542b6cdaedb2b4953ff269a210103ec58f6198a61
+https://files.pythonhosted.org/packages/30/13/69c037b0df220bb6f584d75888d51c1aab372fe2b749ce3a540bb10426ca/toga_android-0.5.7-py3-none-any.whl --hash=sha256:c2df9c36b2ccef310d8b200f585ce89769831a2152e5a0a771d8f693406af065
+https://files.pythonhosted.org/packages/67/fb/e9f7d4aa837411a02e67f51538529f7a54f79f2ba1d9b338ce988212e44d/toga_core-0.5.7-py3-none-any.whl --hash=sha256:7b95e0c18e62fe2de32b5d88178e532fae90b72d29cca38da83ddcacb8dc8302
+https://files.pythonhosted.org/packages/61/eb/daf19ae19480c908facff6c828b3f2d4086747bf7db8da0d7a8315a0e793/travertino-0.5.7-py3-none-any.whl --hash=sha256:0bcaed5fc2d2059fb3207e20a85ca1637bfcd81c0faa392eaa818e2bfd708a61

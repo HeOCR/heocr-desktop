@@ -8,7 +8,7 @@ This proposal is **not ready to submit**. Replace this paragraph after resolving
 
 - Released tag and exact commit: [owner to fill]; APK version name/code and application ID: [verified values].
 - Buildserver test and scanner results: [commands, version and outcome]. List required srclibs, patches, network inputs and binary exceptions, with hashes, sources and licences.
-- Full Android runtime and build dependency licence/provenance inventory: [link]. Explain Chaquopy/Python, PDFium wheel, vcpkg bootstrap and traineddata treatment.
+- Full Android runtime and build dependency licence/provenance inventory: [link]. Include the release wheel URLs and hashes, locally built Pillow record and build log showing Chaquopy resolving from the staged wheels with indexes disabled. Explain the separate Chaquopy Maven/Python artifacts, PDFium wheel, vcpkg bootstrap and traineddata treatment.
 - Fastlane validation and age/eligibility evidence: [results].
 - Known limitations and reviewer questions: [details].
 
