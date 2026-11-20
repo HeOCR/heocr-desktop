@@ -18,8 +18,8 @@ dependencies = []
 [project.optional-dependencies]
 test = ["pytest>=8"]
 # The desktop app from a checkout (python -m heocr_desktop) and its unit tests.
-# Preview branch (not for main): heocr 0.3.0a1 from PyPI, with the Word (DOCX) writer; 0.2.0's models and default.
-desktop = ["heocr==0.3.0a1", "pywebview==6.2.1"]
+# Preview branch (not for main): heocr 0.3.0a2 from PyPI (0.3.0a1's code; 0.3.0a1 left PyPI), with the Word (DOCX) writer; 0.2.0's models and default.
+desktop = ["heocr==0.3.0a2", "pywebview==6.2.1"]
 
 [project.urls]
 Homepage = "https://heocr.github.io"
@@ -57,7 +57,7 @@ icon = "icons/heocr"
 # heocr 0.2.0 (tag v0.2.0, 5d41b43): HeOCR's own models in the package, heocr_modern_v1 by default, the
 # model the owner chose to keep as the default (it writes no niqqud: pointed text comes out unpointed).
 requires = [
-  "heocr==0.3.0a1",  # preview branch: heocr 0.3.0a1, with the Word (DOCX) writer
+  "heocr==0.3.0a2",  # preview branch: heocr 0.3.0a2, with the Word (DOCX) writer
   "pypdfium2==5.15.2",
   "Pillow==13.0.0",
   "defusedxml==0.7.1",
@@ -105,7 +105,7 @@ sources = ["src/heocr_mobile", "src/heocr_desktop"]
 icon = "icons/heocr"
 requires = [
   # heocr 0.2.0, as the desktop app: HeOCR's own models in the package, heocr_modern_v1 by default.
-  "heocr==0.3.0a1",  # preview branch: heocr 0.3.0a1, with the Word (DOCX) writer
+  "heocr==0.3.0a2",  # preview branch: heocr 0.3.0a2, with the Word (DOCX) writer
   "pypdfium2==5.15.2",
   "Pillow==13.0.0",  # built for Android by scripts/build_pillow_android.py (Pillow has no Android wheels)
   "defusedxml==0.7.1",
