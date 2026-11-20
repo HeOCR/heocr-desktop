@@ -387,6 +387,10 @@
     updateIndexCurrent();
   }
 
+  function openProjectLink(link) {
+    if (api()) api().open_project_link(link);
+  }
+
   // Native menus and keyboard shortcuts share the web view's screen guards.
   var actions = {
     open: openFile,
@@ -412,6 +416,8 @@
     smaller: function () { setZoom(zoom - 1); },
     actual: function () { setZoom(10); },
     language: function () { $("lang").click(); },
+    website: function () { openProjectLink("website"); },
+    github: function () { openProjectLink("github"); },
     about: openAbout
   };
 
@@ -517,6 +523,9 @@
       if (api()) api().set_language(lang);
     });
     $("about-open").addEventListener("click", openAbout);
+    document.querySelectorAll("[data-project-link]").forEach(function (button) {
+      button.addEventListener("click", function () { openProjectLink(button.dataset.projectLink); });
+    });
     $("about-close").addEventListener("click", function () { $("about").close(); });
     $("about").addEventListener("close", function () { document.body.classList.remove("about-open"); });
     // The web view paints the veil; the native drop handler receives the full path.
@@ -553,11 +562,16 @@
     window.addEventListener("blur", clearDropVeil);
   }
 
-  (BOOT.models || []).forEach(function (m) {
-    var li = document.createElement("div");
-    li.dir = "ltr";
-    li.textContent = m.name + " — " + m.origin + " — sha256 " + m.sha256;
-    $("models").appendChild(li);
+  (BOOT.models || []).forEach(function (model) {
+    var row = document.createElement("div");
+    var label = document.createElement("span");
+    label.dir = "ltr";
+    label.textContent = model.name + (model.origin ? " · " + model.origin : "");
+    var licence = document.createElement("span");
+    licence.className = "end ltr";
+    licence.textContent = model.licence;
+    row.append(label, licence);
+    $("models").appendChild(row);
   });
   applyLanguage();
   bind();

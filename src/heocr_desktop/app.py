@@ -22,6 +22,10 @@ from heocr_desktop import engine, exports, i18n, menus, render, reveal
 
 UI = Path(__file__).resolve().parent / "ui"
 APP_NAME = "HeOCR"
+PROJECT_LINKS = {
+    "website": "https://heocr.org",
+    "github": "https://github.com/HeOCR/heocr-desktop",
+}
 
 
 def app_version() -> str:
@@ -46,13 +50,25 @@ def tesseract_version() -> str:
 
 
 def bundled_models() -> list[dict]:
-    """The OCR models inside the app, with their origin and sha256 (from the build's pins)."""
+    """List the licensed models present in the installed heocr and app resources."""
+    from heocr.models import MODELS, bundled_dir
+
+    directory = bundled_dir()
+    models = [
+        {"name": model.name, "origin": "", "licence": model.licence}
+        for model in MODELS.values()
+        if model.bundled and (directory / f"{model.name}.traineddata").is_file()
+    ]
     try:
         info = json.loads((engine.RESOURCES / "BUILD_INFO.json").read_text("utf-8"))
         files = info["tessdata"]["files"]
     except (OSError, ValueError, KeyError):
-        return []
-    return [{"name": name, "origin": pin.get("origin", ""), "sha256": pin["sha256"]} for name, pin in sorted(files.items())]
+        return models
+    models.extend(
+        {"name": Path(name).stem, "origin": pin.get("origin", ""), "licence": "Apache-2.0"}
+        for name, pin in sorted(files.items())
+    )
+    return models
 
 
 def page_html(language: str) -> str:
@@ -173,6 +189,21 @@ class Api:
         saved = self._saved
         return bool(saved and saved[0] == token and reveal.show(saved[1]))
 
+    def open_project_link(self, link: str) -> bool:
+        """Send a known project URL to the system's browser."""
+        if not isinstance(link, str) or link not in PROJECT_LINKS:
+            return False
+        url = PROJECT_LINKS[link]
+        try:
+            if sys.platform == "darwin":
+                return subprocess.run(["/usr/bin/open", url], check=False, timeout=5).returncode == 0
+            if sys.platform == "win32":
+                os.startfile(url)
+                return True
+        except (OSError, subprocess.SubprocessError):
+            pass
+        return False
+
     def third_party(self) -> str:
         path = Path(__file__).resolve().parent / "resources" / "THIRD_PARTY_LICENSES.md"
         try:
@@ -246,11 +277,12 @@ def main() -> None:
         js_api=api,
         width=1100,
         height=780,
-        min_size=(640, 480),
+        min_size=(720, 520),
         text_select=True,
         background_color="#F7F7F5",
     )
     api._window = window
+
     def menu_action(action: str) -> None:
         window.evaluate_js(f"heocr.action({json.dumps(action)})")
 
