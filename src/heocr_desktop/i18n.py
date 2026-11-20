@@ -15,6 +15,9 @@ from pathlib import Path
 
 STRINGS: dict[str, dict[str, str]] = {
     "en": {
+        "unread_picture_title": "{n} part not read:",
+        "unread_picture_body": "a picture on page {page}. Details are in the JSON record.",
+        "unread_details": "Details are in the JSON record.",
         "m_unsupported_t": "This file needs converting first",
         "m_damaged_t": "This file could not be read",
         "m_empty_t": "No text found",
@@ -63,8 +66,8 @@ STRINGS: dict[str, dict[str, str]] = {
         "pages": "{n} pages",
         "page": "1 page",
         "seconds": "{s} s",
-        "unread_n": "{n} parts not read (see Save .json)",
-        "unread_1": "1 part not read (see Save .json)",
+        "unread_n": "{n} parts not read.",
+        "unread_1": "1 part not read.",
         "ocr_note": "Text read by OCR may have mistakes. Check it before you rely on it.",
         "needs_converter": "Older Word files (.doc), RTF and OpenDocument files aren't supported yet: reading them needs LibreOffice, which this app does not include. Open the file in Word or LibreOffice, save it as .docx or PDF, and drop that here.",
         "unreadable": "This file could not be read. It may be damaged, password-protected, or a format HeOCR does not read yet.",
@@ -102,6 +105,9 @@ STRINGS: dict[str, dict[str, str]] = {
         "licence": "Licence",
     },
     "he": {
+        "unread_picture_title": "חלק {n} לא נקרא:",
+        "unread_picture_body": "תמונה בעמוד {page}. הפרטים ברשומת ה־JSON.",
+        "unread_details": "הפרטים ברשומת ה־JSON.",
         "m_unsupported_t": "הקובץ הזה צריך המרה",
         "m_damaged_t": "לא ניתן היה לקרוא את הקובץ",
         "m_empty_t": "לא נמצא טקסט",
@@ -150,8 +156,8 @@ STRINGS: dict[str, dict[str, str]] = {
         "pages": "{n} עמודים",
         "page": "עמוד אחד",
         "seconds": "{s} שנ׳",
-        "unread_n": "{n} חלקים לא נקראו (פרטים בשמירה כ-‎.json)",
-        "unread_1": "חלק אחד לא נקרא (פרטים בשמירה כ-‎.json)",
+        "unread_n": "{n} חלקים לא נקראו.",
+        "unread_1": "חלק אחד לא נקרא.",
         "ocr_note": "טקסט שנקרא ב-OCR עלול לכלול טעויות. כדאי לבדוק אותו לפני שמסתמכים עליו.",
         "needs_converter": "קובצי וורד ישנים (‎.doc), ‏RTF וקובצי OpenDocument עדיין לא נתמכים: קריאתם דורשת את LibreOffice, שלא כלול ביישום. פתחו את הקובץ בוורד או ב-LibreOffice, שמרו אותו כ-‎.docx או כ-PDF, וגררו אותו לכאן.",
         "unreadable": "לא ניתן היה לקרוא את הקובץ. ייתכן שהוא פגום, מוגן בסיסמה, או בפורמט ש-HeOCR עדיין לא קורא.",

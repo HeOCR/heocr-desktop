@@ -109,10 +109,28 @@
     $("how").hidden = !routeBox.childElementCount;
     var notes = $("notes");
     notes.textContent = "";
-    function note(text) { var d = document.createElement("div"); d.className = "notice"; d.textContent = text; notes.appendChild(d); }
+    function note(text, title) {
+      var notice = document.createElement("div");
+      notice.className = "notice";
+      var body = document.createElement("p");
+      if (title) {
+        var strong = document.createElement("strong");
+        strong.textContent = title;
+        body.append(strong, " ");
+      }
+      body.append(text);
+      notice.appendChild(body);
+      notes.appendChild(notice);
+    }
     if (!r.ocr_available) note(t("no_ocr"));
     (r.notes || []).forEach(function (n) { note(t("note_" + n)); });
-    if (r.unread) note(r.unread === 1 ? t("unread_1") : t("unread_n", { n: r.unread }));
+    if (r.unread_picture_page) {
+      var slots = { n: r.unread, page: r.unread_picture_page };
+      note(t("unread_picture_body", slots), t("unread_picture_title", slots));
+    } else if (r.unread) {
+      var count = t(r.unread === 1 ? "unread_1" : "unread_n", { n: r.unread });
+      note(count + " " + t("unread_details"));
+    }
     notes.hidden = !notes.childElementCount;
   }
 
@@ -213,7 +231,7 @@
     $("result-name").textContent = $("work-name").textContent;
     ["doc-formatted", "doc-text", "doc-markdown"].forEach(function (id) { $(id).dir = r.direction || "auto"; });
     $("doc-formatted").innerHTML = r.html; // built by Python from the record, every text escaped
-    if (r.ocr_blocks) {
+    if (r.ocr_blocks || (r.routes && r.routes.ocr)) {
       var caution = document.createElement("p");
       caution.className = "note";
       caution.dir = "auto";

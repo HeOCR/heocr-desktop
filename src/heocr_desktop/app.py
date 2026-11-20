@@ -144,6 +144,11 @@ class Api:
         if r is None or r.doc is None:
             return {}
         doc = r.doc
+        picture_page = None
+        if len(doc.unread) == 1:
+            part = doc.unread[0]
+            if part.reason == "image_region_ocr_low_confidence" and part.page is not None:
+                picture_page = part.page + 1
         return {
             "kind": r.kind,
             "format": r.format,
@@ -151,6 +156,7 @@ class Api:
             "routes": r.routes,
             "sources": r.sources,
             "unread": r.unread,
+            "unread_picture_page": picture_page,
             "seconds": max(0.1, round(r.seconds, 1)),
             "ocr_blocks": r.sources.get("ocr", 0),
             "ocr_available": r.ocr_available,
