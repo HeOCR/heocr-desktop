@@ -17,8 +17,13 @@ git -C "$fdroidserver" checkout -q --detach FETCH_HEAD
 export PATH="$fdroidserver:$PATH"
 fdroid --version
 
-# Match the SDK basics in fdroiddata's build job. The recipe and Gradle request the rest.
-sdkmanager "platform-tools" "build-tools;31.0.0"
+# Match the SDK basics in fdroiddata's build job. Briefcase uses version 19.0
+# and cibuildwheel's Android helper calls the SDK manager through "latest".
+sdkmanager "platform-tools" "build-tools;31.0.0" "cmdline-tools;19.0"
+if [[ ! -e "$ANDROID_HOME/cmdline-tools/latest" ]]; then
+  ln -s 19.0 "$ANDROID_HOME/cmdline-tools/latest"
+fi
+test -x "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
 
 app_id=io.github.heocr.heocr_mobile
 work="$home_vagrant/build-probe"
