@@ -11,15 +11,15 @@ requires-python = ">=3.12"
 license = "Apache-2.0"
 license-files = ["LICENSE", "NOTICE", "THIRD_PARTY_LICENSES.md"]
 authors = [{ name = "HeOCR maintainers" }]
-# Each app pins its own heocr in its Briefcase requires below (desktop: 0.1.2, Android: 0.2.0rc1).
+# Each app pins its own heocr in its Briefcase requires below (both 0.2.0).
 # Nothing here, because Briefcase adds [project].dependencies to every app.
 dependencies = []
 
 [project.optional-dependencies]
 test = ["pytest>=8"]
 # The desktop app from a checkout (python -m heocr_desktop) and its unit tests.
-# heocr 0.1.2 from PyPI: the gated 0.1.0 plus its fixes (tag v0.1.2, ac1ad20).
-desktop = ["heocr==0.1.2", "pywebview==6.2.1"]
+# heocr 0.2.0 from PyPI (tag v0.2.0, 5d41b43): HeOCR's own models in the package, heocr_modern_v1 by default.
+desktop = ["heocr==0.2.0", "pywebview==6.2.1"]
 
 [project.urls]
 Homepage = "https://heocr.github.io"
@@ -54,9 +54,10 @@ into the window and get its text, headings and tables, ready to copy or save as 
 Markdown or JSON. It runs entirely on your computer: no network, no telemetry."""
 sources = ["src/heocr_desktop"]
 icon = "icons/heocr"
-# Pinned to the versions heocr's release gate ran with, so the app reads PDFs exactly as measured.
+# heocr 0.2.0 (tag v0.2.0, 5d41b43): HeOCR's own models in the package, heocr_modern_v1 by default, the
+# model the owner chose to keep as the default (it writes no niqqud: pointed text comes out unpointed).
 requires = [
-  "heocr==0.1.2",
+  "heocr==0.2.0",
   "pypdfium2==5.15.2",
   "Pillow==13.0.0",
   "defusedxml==0.7.1",
@@ -103,9 +104,8 @@ phone itself. It has no internet permission: nothing you read ever leaves the ph
 sources = ["src/heocr_mobile", "src/heocr_desktop"]
 icon = "icons/heocr"
 requires = [
-  # heocr 0.2.0rc1: HeOCR's own models in the package, heocr_modern_v1 by default (D6), as the desktop
-  # app will read once 0.2.0 ships.
-  "heocr==0.2.0rc1",
+  # heocr 0.2.0, as the desktop app: HeOCR's own models in the package, heocr_modern_v1 by default.
+  "heocr==0.2.0",
   "pypdfium2==5.15.2",
   "Pillow==13.0.0",  # built for Android by scripts/build_pillow_android.py (Pillow has no Android wheels)
   "defusedxml==0.7.1",
