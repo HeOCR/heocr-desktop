@@ -1,0 +1,39 @@
+name: F-Droid buildserver probe
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 75
+    env:
+      # Same image family as fdroiddata's "fdroid build" job. Pin the amd64 manifest.
+      FDROID_IMAGE: registry.gitlab.com/fdroid/fdroidserver:buildserver-trixie@sha256:1ea8bef1820bff06c2974e31b4fc4c79c364cd24231b86e71fa4b926797e0dac
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Build and scan in the official F-Droid image
+        shell: bash
+        run: |
+          mkdir -p "$RUNNER_TEMP/fdroid-evidence"
+          {
+            echo "Image: $FDROID_IMAGE"
+            docker pull "$FDROID_IMAGE"
+            docker run --rm --platform linux/amd64 \
+              --mount "type=bind,src=$PWD,dst=/source,readonly" \
+              --mount "type=bind,src=$RUNNER_TEMP/fdroid-evidence,dst=/evidence" \
+              "$FDROID_IMAGE" bash /source/scripts/fdroid_buildserver.sh "$GITHUB_SHA"
+          } 2>&1 | tee "$RUNNER_TEMP/fdroid-evidence/build.log"
+      - name: Retain build evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fdroid-buildserver-evidence
+          path: ${{ runner.temp }}/fdroid-evidence/
+          retention-days: 90

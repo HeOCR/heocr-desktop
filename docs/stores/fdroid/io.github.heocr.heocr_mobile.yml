@@ -24,14 +24,15 @@ Builds:
     commit: android-v0.1.0
     output: build/heocr_mobile/android/gradle/app/build/outputs/apk/release/app-release-unsigned.apk
     sudo:
-      - apt-get update
-      - apt-get install -y python3 python3-venv python3-pip cmake ninja-build git curl zip unzip pkg-config
+      - apt-get -o quiet=0 update
+      - apt-get -o quiet=0 install -y python3 python3-venv python3-pip openjdk-21-jdk-headless build-essential cmake ninja-build git curl zip unzip pkg-config
     ndk: r27c
     build:
       # Experimental CI-inspired recipe, not proven on the F-Droid buildserver. See the audit.
       # Downloads and binary provenance require review; this is not an all-source build.
       - python3 -m venv /tmp/venv
       - . /tmp/venv/bin/activate
+      - export PIP_CONFIG_FILE=/dev/null PIP_INDEX_URL=https://pypi.org/simple PIP_EXTRA_INDEX_URL= PIP_VERBOSE=1
       - pip install briefcase==0.4.7
       - export ANDROID_NDK_HOME=$$NDK$$
       - python scripts/build_tesseract.py --target android-arm64 --out build/tess/android-arm64
@@ -49,15 +50,26 @@ Builds:
         python -c 'from pathlib import Path; p = Path("pyproject.toml"); s = p.read_text();
         old = "requirement_installer_args = [\"--find-links\", \"./build/android-wheels\"]";
         assert s.count(old) == 1, "Review the Android pip configuration";
-        new = old.replace("[", "[\"--index-url\", \"https://pypi.org/simple\", \"--no-index\", ", 1);
+        new = old.replace("[", "[\"--index-url\", \"https://pypi.org/simple\", \"--no-index\", \"--verbose\", ", 1);
         p.write_text(s.replace(old, new))'
       - python scripts/assemble_resources.py --android build/tess/android-arm64
-      - briefcase create android -a heocr_mobile --no-input
+      - briefcase create android -a heocr_mobile --no-input -v
       - python scripts/android_patch_activity.py
       - python scripts/android_design_res.py
-      - briefcase build android -a heocr_mobile --no-input
       - cd build/heocr_mobile/android/gradle
-      - ./gradlew assembleRelease --console plain
+      # Briefcase 0.4.7 writes these two template inputs before assembling a debug APK.
+      # Write the release equivalents directly so this recipe produces only an unsigned APK.
+      - touch app/extract-packages.txt
+      - >-
+        printf '%s\n' '<resources><string name="main_module">heocr_mobile</string></resources>'
+        > app/src/main/res/values/briefcase.xml
+      - cat app/pip-options.txt
+      - ./gradlew assembleRelease --no-daemon --info --console plain | tee fdroid-gradle.log
+      - >-
+        if grep -E 'Looking in indexes:|https://chaquo\.com/pypi' fdroid-gradle.log; then
+          echo "Unexpected index in the Android pip log" >&2; exit 1;
+        fi
+      - grep -F 'Looking in links:' fdroid-gradle.log | grep -F '/build/android-wheels'
 
 AutoUpdateMode: None
 UpdateCheckMode: None
