@@ -1,6 +1,6 @@
 {
   "_note": "Strings used in the mockups. Keys listed in _already_reviewed reuse wording that is already in heocr_mobile/app.py or heocr_desktop/i18n.py; every other Hebrew string is new and needs the maintainer's review. Values may contain inline markup (strong, span.num, bdi).",
-  "_reviewed": "2026-11-19: every Hebrew string here reviewed and approved as written by the maintainer (through the lead).",
+  "_reviewed": "2026-11-19: every Hebrew string here reviewed and approved as written by the maintainer (through the lead). 2026-11-20: \"niqqud\" (the line under Accuracy) reviewed and chosen by the maintainer.",
   "_already_reviewed": [
     "tagline",
     "capture",
@@ -111,7 +111,8 @@
       "footnotes": "הערות שוליים",
       "headers": "כותרות עליונות",
       "footers": "כותרות תחתונות"
-    }
+    },
+    "niqqud": "המודלים של HeOCR לא כותבים ניקוד: בינתיים טקסט מנוקד יוצא בלי ניקוד."
   },
   "en": {
     "tagline": "Hebrew text out of any document",
@@ -210,6 +211,7 @@
       "footnotes": "Footnotes",
       "headers": "Headers",
       "footers": "Footers"
-    }
+    },
+    "niqqud": "HeOCR's own models write no niqqud: pointed text comes out unpointed, for now."
   }
 }

@@ -130,3 +130,12 @@ def test_result_bar_shares_and_toasts_can_carry_an_action(monkeypatch):
     saved = screens.toast(t["saved"], "<bdi>a.txt</bdi>", action=(t["open_it"], "open-saved"))
     assert 'href="heocr:open-saved"' in saved and t["open_it"] in saved and 'role="status"' in saved
     assert "<a " not in screens.toast(t["copied"])
+
+
+@pytest.mark.parametrize("lang", ["he", "en"])
+def test_about_says_niqqud_comes_out_unpointed(lang):
+    from heocr_desktop import i18n as desktop
+
+    t = screens.strings(lang)
+    assert t["niqqud"] in screens.about(t, lang, {"app": "0.2.0", "heocr": "0.2.0", "tesseract": "5.5.3"})
+    assert desktop.STRINGS[lang]["niqqud"] == t["niqqud"]  # the same reviewed sentence in both apps
