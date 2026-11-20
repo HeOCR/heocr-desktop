@@ -271,7 +271,21 @@ alive || fail "the app stopped on Back"
 "$ADB" logcat -c
 "$ADB" shell am start -n "$PKG/org.beeware.android.MainActivity" >/dev/null
 logged "HeOCR screen: night=True text_zoom=200" || { sleep 20; logged "HeOCR screen: night=True text_zoom=200" || fail "the app did not follow night mode and the font scale"; }
-sleep 5
+# Switching to night mode restarts the launcher, and the app can start behind it: wait until HeOCR is
+# the activity in front, then measure Home from a load made on screen (About, then Back).
+for _ in $(seq 1 20); do
+  "$ADB" shell dumpsys activity activities | grep -q "ResumedActivity.*$PKG" && break
+  "$ADB" shell am start -n "$PKG/org.beeware.android.MainActivity" >/dev/null 2>&1 || true
+  sleep 3
+done
+"$ADB" shell dumpsys activity activities | grep -q "ResumedActivity.*$PKG" || fail "HeOCR did not come to the front after the relaunch"
+sleep 3
+tap_retry "^about$" || fail "no About button at 200% text"
+logged "HeOCR screen about" || fail "About did not open at 200% text"
+"$ADB" logcat -c
+"$ADB" shell input keyevent 4
+logged "HeOCR page home" || fail "Home did not load again at 200% text"
+sleep 2
 "$ADB" exec-out screencap -p > $OUT/10-home-night-200.png
 scale_ok "relaunch at 200% text" || fail "Home loaded zoomed at 200% text"
 # The reading itself at 200% text, for the screenshot (pinch zoom needs two fingers; not injected here).
