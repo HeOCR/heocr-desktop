@@ -72,7 +72,7 @@ On macOS the app removes the parts of Python it never uses: Tcl/Tk, curses (ncur
 ## Not bundled, on purpose
 
 - **LibreOffice** (MPL-2.0), which heocr can use for DOC, RTF, ODT, XLS, ODS, PPT and ODP. The app turns conversion off and says so for those files.
-- **HeOCR's trained models**, which heocr can download on request. The app never downloads anything; it runs the stock Tesseract `heb` model selected explicitly.
+- **HeOCR's trained models.** Both apps use the stock Tesseract `heb` model selected explicitly.
 
 ## Acknowledgements the licences ask for
 

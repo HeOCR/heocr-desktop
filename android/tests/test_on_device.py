@@ -47,7 +47,7 @@ def test_android_refuses_the_network():
 
 
 def test_fixtures_read_as_on_the_desktop():
-    code = smoke.run(str(FIXTURES))
+    code = smoke.run(str(FIXTURES), resources=device.RESOURCES)
     report = json.loads((FIXTURES / "smoke-report.json").read_text("utf-8"))
     print(json.dumps(report, ensure_ascii=False, indent=2))
     assert code == 0 and report["ok"], report
