@@ -98,7 +98,11 @@ tap_home() {  # tap_home <label in lower case>
   pos=$(grep -P "^$1\t" $OUT/home-buttons.txt 2>/dev/null | cut -f2)
   [ -n "$pos" ] || return 1
   echo "the accessibility tree is empty: tapping '$1' where Home showed it ($pos)"
+  # tap_retry scrolled while it searched: back to the top, where home_fits measured the button.
+  for _ in 1 2 3 4; do "$ADB" shell input swipe 540 500 540 1600 200; sleep 1; done
+  "$ADB" logcat -c
   "$ADB" shell input tap $pos
+  logged "HeOCR action " || { echo "the tap at $pos reached no control"; return 1; }
 }
 # The page's scale, as the app logs it on each load, must be the screen density: no page zoom.
 scale_ok() {  # scale_ok <what>: the page's own zoom is 1 and its width is the screen's width in dp
