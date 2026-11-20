@@ -83,8 +83,22 @@ for n in re.findall(r"<node [^>]*>", xml):
         found[label] = tuple(map(int, m.groups()))
 ok = len(found) == 2 and all(b[2] > b[0] and b[3] > b[1] and b[2] <= width for b in found.values())
 print("home buttons:", found, "screen width", width, "fit" if ok else "DO NOT FIT")
+if ok:  # where Home's buttons are, for a tap when the accessibility tree comes back empty later
+    with open(sys.argv[1].replace("ui-home.xml", "home-buttons.txt"), "w") as out:
+        for label, b in found.items():
+            out.write(f"{label}\t{(b[0] + b[2]) // 2} {(b[1] + b[3]) // 2}\n")
 sys.exit(0 if ok else 1)
 PY
+}
+# A Home button by label, or, when the WebView's accessibility tree is empty (seen on Android 15 after
+# several page loads), at the place home_fits measured for it on this run.
+tap_home() {  # tap_home <label in lower case>
+  tap_retry "^$1$" && return 0
+  local pos
+  pos=$(grep -P "^$1\t" $OUT/home-buttons.txt 2>/dev/null | cut -f2)
+  [ -n "$pos" ] || return 1
+  echo "the accessibility tree is empty: tapping '$1' where Home showed it ($pos)"
+  "$ADB" shell input tap $pos
 }
 # The page's scale, as the app logs it on each load, must be the screen density: no page zoom.
 scale_ok() {  # scale_ok <what>: the page's own zoom is 1 and its width is the screen's width in dp
@@ -175,7 +189,7 @@ if [ -f "$FIXTURES/itext-style.pdf" ]; then
   "$ADB" logcat -c
   "$ADB" shell input keyevent 4  # from the last reading back to Home, where "Open a file" is
   sleep 2
-  tap_retry "^open a file$" || fail "no 'Open a file' button"
+  tap_home "open a file" || fail "no 'Open a file' button"
   sleep 6
   "$ADB" exec-out screencap -p > $OUT/5-picker.png
   # The file's own row (exact name), not its "Preview the file …" icon.
