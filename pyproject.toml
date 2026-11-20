@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "heocr-desktop"
-version = "0.1.0"
+version = "0.2.0"
 description = "HeOCR desktop app: drop in a PDF, Word file or image and get its Hebrew text out. Fully offline."
 readme = "README.md"
 requires-python = ">=3.12"
@@ -41,7 +41,7 @@ testpaths = ["tests"]
 [tool.briefcase]
 project_name = "HeOCR"
 bundle = "io.github.heocr"
-version = "0.1.0"
+version = "0.2.0"
 url = "https://heocr.github.io"
 license = "Apache-2.0"
 author = "HeOCR maintainers"
