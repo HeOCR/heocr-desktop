@@ -72,13 +72,20 @@ On macOS the app removes the parts of Python it never uses: Tcl/Tk, curses (ncur
 ## Not bundled, on purpose
 
 - **LibreOffice** (MPL-2.0), which heocr can use for DOC, RTF, ODT, XLS, ODS, PPT and ODP. The app turns conversion off and says so for those files.
-- **HeOCR's trained models**, which heocr can download on request. The app never downloads anything; it runs stock Tesseract `heb`, heocr's default.
 
 ## Acknowledgements the licences ask for
 
 FreeType (inside PDFium and Pillow):
 
 > Portions of this software are copyright © 2025 The FreeType Project (www.freetype.org). All rights reserved.
+
+## HeOCR OCR models
+
+The desktop and Android apps ship the two models bundled by heocr.
+
+| Component | Version | Licence | Notes |
+|---|---|---|---|
+| HeOCR models `heocr_modern_v1`, `heocr_oldprint_v1` | 2026-11 (inside heocr 0.2.1, in both apps) | Apache-2.0 | Zenodo 10.5281/zenodo.24372349 and 10.5281/zenodo.24372352; their NOTICE files ship in heocr's `models_data/` |
 
 ## App typefaces
 
@@ -96,7 +103,6 @@ The Android app (`heocr_mobile`) bundles the same pipeline and OCR components (w
 
 | Component | Version | Licence | Notes |
 |---|---|---|---|
-| HeOCR models `heocr_modern_v1`, `heocr_oldprint_v1` | 2026-11 (inside heocr 0.2.1, in both apps) | Apache-2.0 | Zenodo 10.5281/zenodo.24372349 and 10.5281/zenodo.24372352; their NOTICE files ship in heocr's `models_data/` |
 | Chaquopy runtime | 17.2.0 | MIT | Python on Android, from Maven Central (Briefcase's Android template) |
 | Toga (toga-core, toga-android) | 0.5.7 | BSD-3-Clause | The native shell |
 | cpu_features (ndk_compat) | 0.11.0 | Apache-2.0 | Static, inside the Android Tesseract (its CPU detection) |

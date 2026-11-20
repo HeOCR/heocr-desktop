@@ -39,7 +39,12 @@ SUPPORTED_SUFFIXES = (
 
 
 class Cancelled(Exception):
-    """The user pressed Cancel."""
+    """The user pressed Cancel before starting the next page."""
+
+    def __init__(self, done: int = 0, total: int | None = None) -> None:
+        super().__init__("Reading stopped")
+        self.done = done
+        self.total = total
 
 
 # -- the offline guard ---------------------------------------------------------------------
@@ -214,7 +219,7 @@ def _tick(doc, index: int, image: bool) -> None:
     if report is None:
         return
     if getattr(_hook_state, "cancel", None) is not None and _hook_state.cancel.is_set():
-        raise Cancelled()
+        raise Cancelled(done=index, total=doc.page_count)
     report(Progress(done=index, total=doc.page_count, stage="pages"))
 
 

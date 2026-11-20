@@ -1,11 +1,10 @@
 /* Desktop bridge and dynamic content. The design stylesheet is kept verbatim. */
 [hidden] { display: none !important; }
-.is-dragging #view-start .dropzone { background: var(--drop-bg); }
-/* The next drag iteration enables the veil only for file drags. */
-.is-dragging .dropveil { display: none; }
+.dropveil { pointer-events: none; }
 
 .split:not(.has-index) { grid-template-columns: minmax(0, 1fr); }
 .how #routes { justify-content: flex-end; }
 .notice + .notice { margin-block-start: 6px; }
 .hw .menu button:focus-visible, .hw .seg button:focus-visible { outline-offset: -2px; }
 .work .hint { color: var(--muted); font-size: 13.5px; }
+.hw .iconbtn:disabled { color: var(--muted); background: transparent; }
