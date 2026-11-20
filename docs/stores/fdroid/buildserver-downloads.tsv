@@ -1,0 +1,739 @@
+run	evidence	dependency	source
+44718184374	APT	trixie InRelease	https://deb.debian.org/debian
+44718184374	APT	trixie-backports InRelease	https://deb.debian.org/debian
+44718184374	APT	trixie-backports/main amd64 Packages	https://deb.debian.org/debian
+44718184374	APT	trixie-updates InRelease	https://deb.debian.org/debian
+44718184374	APT	trixie-updates/main amd64 Packages	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 Packages	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 binutils amd64 2.44-3	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 binutils-common amd64 2.44-3	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 binutils-x86-64-linux-gnu amd64 2.44-3	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 build-essential amd64 12.12	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 bzip2 amd64 1.0.8-6	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 cmake amd64 3.31.6-2	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 cmake-data all 3.31.6-2	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 cpp amd64 4:14.2.0-1	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 cpp-14 amd64 14.2.0-19	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 cpp-14-x86-64-linux-gnu amd64 14.2.0-19	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 cpp-x86-64-linux-gnu amd64 4:14.2.0-1	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 dpkg-dev all 1.22.22	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 g++ amd64 4:14.2.0-1	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 g++-14 amd64 14.2.0-19	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 g++-14-x86-64-linux-gnu amd64 14.2.0-19	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 g++-x86-64-linux-gnu amd64 4:14.2.0-1	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 gcc amd64 4:14.2.0-1	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 gcc-14 amd64 14.2.0-19	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 gcc-14-x86-64-linux-gnu amd64 14.2.0-19	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 gcc-x86-64-linux-gnu amd64 4:14.2.0-1	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 libarchive13t64 amd64 3.7.4-4+deb13u1	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 libasan8 amd64 14.2.0-19	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 libbinutils amd64 2.44-3	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 libc-dev-bin amd64 2.41-12+deb13u4	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 libc6-dev amd64 2.41-12+deb13u4	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 libcc1-0 amd64 14.2.0-19	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 libcrypt-dev amd64 1:4.4.38-1	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 libctf-nobfd0 amd64 2.44-3	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 libctf0 amd64 2.44-3	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 libdpkg-perl all 1.22.22	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 libgcc-14-dev amd64 14.2.0-19	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 libgprofng0 amd64 2.44-3	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 libhwasan0 amd64 14.2.0-19	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 libisl23 amd64 0.27-1	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 libitm1 amd64 14.2.0-19	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 libjansson4 amd64 2.14-2+b3	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 libjsoncpp26 amd64 1.9.6-3	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 liblsan0 amd64 14.2.0-19	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 libmpc3 amd64 1.3.1-1+b3	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 libmpfr6 amd64 4.2.2-1	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 libpkgconf3 amd64 1.8.1-4	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 libquadmath0 amd64 14.2.0-19	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 librhash1 amd64 1.4.5-1	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 libsframe1 amd64 2.44-3	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 libstdc++-14-dev amd64 14.2.0-19	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 libtsan2 amd64 14.2.0-19	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 libubsan1 amd64 14.2.0-19	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 libuv1t64 amd64 1.50.0-2	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 make amd64 4.4.1-2	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 ninja-build amd64 1.12.1-1	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 pkg-config amd64 1.8.1-4	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 pkgconf amd64 1.8.1-4	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 pkgconf-bin amd64 1.8.1-4	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 python3-pip all 25.1.1+dfsg-1	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 python3-pip-whl all 25.1.1+dfsg-1	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 python3-setuptools-whl all 78.1.1-0.1	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 python3-venv amd64 3.13.5-1	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 python3-wheel all 0.46.1-2	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 python3.13-venv amd64 3.13.5-2+deb13u5	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 rpcsvc-proto amd64 1.4.3-1	https://deb.debian.org/debian
+44718184374	APT	trixie/main amd64 zip amd64 3.0-15+deb13u1	https://deb.debian.org/debian
+44718184374	APT	trixie-security InRelease	https://security.debian.org/debian-security
+44718184374	APT	trixie-security/main amd64 Packages	https://security.debian.org/debian-security
+44718184374	APT	trixie-security/main amd64 linux-libc-dev all 6.12.117-1	https://security.debian.org/debian-security
+44718184374	APT	trixie-security/main amd64 openjdk-21-jdk-headless amd64 21.0.13.1+2-1~deb13u1	https://security.debian.org/debian-security
+44718184374	APT	trixie-security/main amd64 openjdk-21-jre amd64 21.0.13.1+2-1~deb13u1	https://security.debian.org/debian-security
+44718184374	APT	trixie-security/main amd64 openjdk-21-jre-headless amd64 21.0.13.1+2-1~deb13u1	https://security.debian.org/debian-security
+44718184374	APT	trixie-security/main amd64 xz-utils amd64 5.8.1-1+deb13u2	https://security.debian.org/debian-security
+44718184374	Download	android-ndk-r27c-linux.zip	https://dl.google.com/android/repository/android-ndk-r27c-linux.zip
+44718184374	Download	build-tools_r31-linux.zip	https://dl.google.com/android/repository/build-tools_r31-linux.zip
+44718184374	Download	commandlinetools-linux-13114758_latest.zip	https://dl.google.com/android/repository/commandlinetools-linux-13114758_latest.zip
+44718184374	Download	platform-tools_r37.0.1-linux.zip	https://dl.google.com/android/repository/platform-tools_r37.0.1-linux.zip
+44718184374	Download	activity-1.8.0.aar	https://dl.google.com/dl/android/maven2/androidx/activity/activity/1.8.0/activity-1.8.0.aar
+44718184374	Download	activity-1.8.0.module	https://dl.google.com/dl/android/maven2/androidx/activity/activity/1.8.0/activity-1.8.0.module
+44718184374	Download	activity-1.8.0.pom	https://dl.google.com/dl/android/maven2/androidx/activity/activity/1.8.0/activity-1.8.0.pom
+44718184374	Download	annotation-experimental-1.3.0.module	https://dl.google.com/dl/android/maven2/androidx/annotation/annotation-experimental/1.3.0/annotation-experimental-1.3.0.module
+44718184374	Download	annotation-experimental-1.3.0.pom	https://dl.google.com/dl/android/maven2/androidx/annotation/annotation-experimental/1.3.0/annotation-experimental-1.3.0.pom
+44718184374	Download	annotation-experimental-1.4.0.aar	https://dl.google.com/dl/android/maven2/androidx/annotation/annotation-experimental/1.4.0/annotation-experimental-1.4.0.aar
+44718184374	Download	annotation-experimental-1.4.0.module	https://dl.google.com/dl/android/maven2/androidx/annotation/annotation-experimental/1.4.0/annotation-experimental-1.4.0.module
+44718184374	Download	annotation-experimental-1.4.0.pom	https://dl.google.com/dl/android/maven2/androidx/annotation/annotation-experimental/1.4.0/annotation-experimental-1.4.0.pom
+44718184374	Download	annotation-jvm-1.8.1.jar	https://dl.google.com/dl/android/maven2/androidx/annotation/annotation-jvm/1.8.1/annotation-jvm-1.8.1.jar
+44718184374	Download	annotation-jvm-1.8.1.module	https://dl.google.com/dl/android/maven2/androidx/annotation/annotation-jvm/1.8.1/annotation-jvm-1.8.1.module
+44718184374	Download	annotation-jvm-1.8.1.pom	https://dl.google.com/dl/android/maven2/androidx/annotation/annotation-jvm/1.8.1/annotation-jvm-1.8.1.pom
+44718184374	Download	annotation-1.3.0.module	https://dl.google.com/dl/android/maven2/androidx/annotation/annotation/1.3.0/annotation-1.3.0.module
+44718184374	Download	annotation-1.3.0.pom	https://dl.google.com/dl/android/maven2/androidx/annotation/annotation/1.3.0/annotation-1.3.0.pom
+44718184374	Download	annotation-1.8.1.module	https://dl.google.com/dl/android/maven2/androidx/annotation/annotation/1.8.1/annotation-1.8.1.module
+44718184374	Download	annotation-1.8.1.pom	https://dl.google.com/dl/android/maven2/androidx/annotation/annotation/1.8.1/annotation-1.8.1.pom
+44718184374	Download	appcompat-resources-1.7.1.aar	https://dl.google.com/dl/android/maven2/androidx/appcompat/appcompat-resources/1.7.1/appcompat-resources-1.7.1.aar
+44718184374	Download	appcompat-resources-1.7.1.module	https://dl.google.com/dl/android/maven2/androidx/appcompat/appcompat-resources/1.7.1/appcompat-resources-1.7.1.module
+44718184374	Download	appcompat-resources-1.7.1.pom	https://dl.google.com/dl/android/maven2/androidx/appcompat/appcompat-resources/1.7.1/appcompat-resources-1.7.1.pom
+44718184374	Download	appcompat-1.7.1.aar	https://dl.google.com/dl/android/maven2/androidx/appcompat/appcompat/1.7.1/appcompat-1.7.1.aar
+44718184374	Download	appcompat-1.7.1.module	https://dl.google.com/dl/android/maven2/androidx/appcompat/appcompat/1.7.1/appcompat-1.7.1.module
+44718184374	Download	appcompat-1.7.1.pom	https://dl.google.com/dl/android/maven2/androidx/appcompat/appcompat/1.7.1/appcompat-1.7.1.pom
+44718184374	Download	core-common-2.1.0.pom	https://dl.google.com/dl/android/maven2/androidx/arch/core/core-common/2.1.0/core-common-2.1.0.pom
+44718184374	Download	core-common-2.2.0.jar	https://dl.google.com/dl/android/maven2/androidx/arch/core/core-common/2.2.0/core-common-2.2.0.jar
+44718184374	Download	core-common-2.2.0.module	https://dl.google.com/dl/android/maven2/androidx/arch/core/core-common/2.2.0/core-common-2.2.0.module
+44718184374	Download	core-common-2.2.0.pom	https://dl.google.com/dl/android/maven2/androidx/arch/core/core-common/2.2.0/core-common-2.2.0.pom
+44718184374	Download	core-runtime-2.1.0.aar	https://dl.google.com/dl/android/maven2/androidx/arch/core/core-runtime/2.1.0/core-runtime-2.1.0.aar
+44718184374	Download	core-runtime-2.1.0.pom	https://dl.google.com/dl/android/maven2/androidx/arch/core/core-runtime/2.1.0/core-runtime-2.1.0.pom
+44718184374	Download	core-runtime-2.2.0.aar	https://dl.google.com/dl/android/maven2/androidx/arch/core/core-runtime/2.2.0/core-runtime-2.2.0.aar
+44718184374	Download	core-runtime-2.2.0.module	https://dl.google.com/dl/android/maven2/androidx/arch/core/core-runtime/2.2.0/core-runtime-2.2.0.module
+44718184374	Download	core-runtime-2.2.0.pom	https://dl.google.com/dl/android/maven2/androidx/arch/core/core-runtime/2.2.0/core-runtime-2.2.0.pom
+44718184374	Download	collection-1.0.0.pom	https://dl.google.com/dl/android/maven2/androidx/collection/collection/1.0.0/collection-1.0.0.pom
+44718184374	Download	collection-1.1.0.jar	https://dl.google.com/dl/android/maven2/androidx/collection/collection/1.1.0/collection-1.1.0.jar
+44718184374	Download	collection-1.1.0.pom	https://dl.google.com/dl/android/maven2/androidx/collection/collection/1.1.0/collection-1.1.0.pom
+44718184374	Download	concurrent-futures-1.0.0.pom	https://dl.google.com/dl/android/maven2/androidx/concurrent/concurrent-futures/1.0.0/concurrent-futures-1.0.0.pom
+44718184374	Download	concurrent-futures-1.1.0.jar	https://dl.google.com/dl/android/maven2/androidx/concurrent/concurrent-futures/1.1.0/concurrent-futures-1.1.0.jar
+44718184374	Download	concurrent-futures-1.1.0.module	https://dl.google.com/dl/android/maven2/androidx/concurrent/concurrent-futures/1.1.0/concurrent-futures-1.1.0.module
+44718184374	Download	concurrent-futures-1.1.0.pom	https://dl.google.com/dl/android/maven2/androidx/concurrent/concurrent-futures/1.1.0/concurrent-futures-1.1.0.pom
+44718184374	Download	core-ktx-1.13.0.aar	https://dl.google.com/dl/android/maven2/androidx/core/core-ktx/1.13.0/core-ktx-1.13.0.aar
+44718184374	Download	core-ktx-1.13.0.module	https://dl.google.com/dl/android/maven2/androidx/core/core-ktx/1.13.0/core-ktx-1.13.0.module
+44718184374	Download	core-ktx-1.13.0.pom	https://dl.google.com/dl/android/maven2/androidx/core/core-ktx/1.13.0/core-ktx-1.13.0.pom
+44718184374	Download	core-ktx-1.2.0.aar	https://dl.google.com/dl/android/maven2/androidx/core/core-ktx/1.2.0/core-ktx-1.2.0.aar
+44718184374	Download	core-ktx-1.2.0.pom	https://dl.google.com/dl/android/maven2/androidx/core/core-ktx/1.2.0/core-ktx-1.2.0.pom
+44718184374	Download	core-1.13.0.aar	https://dl.google.com/dl/android/maven2/androidx/core/core/1.13.0/core-1.13.0.aar
+44718184374	Download	core-1.13.0.module	https://dl.google.com/dl/android/maven2/androidx/core/core/1.13.0/core-1.13.0.module
+44718184374	Download	core-1.13.0.pom	https://dl.google.com/dl/android/maven2/androidx/core/core/1.13.0/core-1.13.0.pom
+44718184374	Download	cursoradapter-1.0.0.aar	https://dl.google.com/dl/android/maven2/androidx/cursoradapter/cursoradapter/1.0.0/cursoradapter-1.0.0.aar
+44718184374	Download	cursoradapter-1.0.0.pom	https://dl.google.com/dl/android/maven2/androidx/cursoradapter/cursoradapter/1.0.0/cursoradapter-1.0.0.pom
+44718184374	Download	customview-1.0.0.aar	https://dl.google.com/dl/android/maven2/androidx/customview/customview/1.0.0/customview-1.0.0.aar
+44718184374	Download	customview-1.0.0.pom	https://dl.google.com/dl/android/maven2/androidx/customview/customview/1.0.0/customview-1.0.0.pom
+44718184374	Download	databinding-common-9.3.1.jar	https://dl.google.com/dl/android/maven2/androidx/databinding/databinding-common/9.3.1/databinding-common-9.3.1.jar
+44718184374	Download	databinding-common-9.3.1.pom	https://dl.google.com/dl/android/maven2/androidx/databinding/databinding-common/9.3.1/databinding-common-9.3.1.pom
+44718184374	Download	databinding-compiler-common-9.3.1.jar	https://dl.google.com/dl/android/maven2/androidx/databinding/databinding-compiler-common/9.3.1/databinding-compiler-common-9.3.1.jar
+44718184374	Download	databinding-compiler-common-9.3.1.pom	https://dl.google.com/dl/android/maven2/androidx/databinding/databinding-compiler-common/9.3.1/databinding-compiler-common-9.3.1.pom
+44718184374	Download	drawerlayout-1.0.0.aar	https://dl.google.com/dl/android/maven2/androidx/drawerlayout/drawerlayout/1.0.0/drawerlayout-1.0.0.aar
+44718184374	Download	drawerlayout-1.0.0.pom	https://dl.google.com/dl/android/maven2/androidx/drawerlayout/drawerlayout/1.0.0/drawerlayout-1.0.0.pom
+44718184374	Download	emoji2-views-helper-1.2.0.module	https://dl.google.com/dl/android/maven2/androidx/emoji2/emoji2-views-helper/1.2.0/emoji2-views-helper-1.2.0.module
+44718184374	Download	emoji2-views-helper-1.2.0.pom	https://dl.google.com/dl/android/maven2/androidx/emoji2/emoji2-views-helper/1.2.0/emoji2-views-helper-1.2.0.pom
+44718184374	Download	emoji2-views-helper-1.3.0.aar	https://dl.google.com/dl/android/maven2/androidx/emoji2/emoji2-views-helper/1.3.0/emoji2-views-helper-1.3.0.aar
+44718184374	Download	emoji2-views-helper-1.3.0.module	https://dl.google.com/dl/android/maven2/androidx/emoji2/emoji2-views-helper/1.3.0/emoji2-views-helper-1.3.0.module
+44718184374	Download	emoji2-views-helper-1.3.0.pom	https://dl.google.com/dl/android/maven2/androidx/emoji2/emoji2-views-helper/1.3.0/emoji2-views-helper-1.3.0.pom
+44718184374	Download	emoji2-1.3.0.aar	https://dl.google.com/dl/android/maven2/androidx/emoji2/emoji2/1.3.0/emoji2-1.3.0.aar
+44718184374	Download	emoji2-1.3.0.module	https://dl.google.com/dl/android/maven2/androidx/emoji2/emoji2/1.3.0/emoji2-1.3.0.module
+44718184374	Download	emoji2-1.3.0.pom	https://dl.google.com/dl/android/maven2/androidx/emoji2/emoji2/1.3.0/emoji2-1.3.0.pom
+44718184374	Download	fragment-1.5.4.aar	https://dl.google.com/dl/android/maven2/androidx/fragment/fragment/1.5.4/fragment-1.5.4.aar
+44718184374	Download	fragment-1.5.4.module	https://dl.google.com/dl/android/maven2/androidx/fragment/fragment/1.5.4/fragment-1.5.4.module
+44718184374	Download	fragment-1.5.4.pom	https://dl.google.com/dl/android/maven2/androidx/fragment/fragment/1.5.4/fragment-1.5.4.pom
+44718184374	Download	interpolator-1.0.0.aar	https://dl.google.com/dl/android/maven2/androidx/interpolator/interpolator/1.0.0/interpolator-1.0.0.aar
+44718184374	Download	interpolator-1.0.0.pom	https://dl.google.com/dl/android/maven2/androidx/interpolator/interpolator/1.0.0/interpolator-1.0.0.pom
+44718184374	Download	lifecycle-common-2.6.1.module	https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-common/2.6.1/lifecycle-common-2.6.1.module
+44718184374	Download	lifecycle-common-2.6.1.pom	https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-common/2.6.1/lifecycle-common-2.6.1.pom
+44718184374	Download	lifecycle-common-2.6.2.jar	https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-common/2.6.2/lifecycle-common-2.6.2.jar
+44718184374	Download	lifecycle-common-2.6.2.module	https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-common/2.6.2/lifecycle-common-2.6.2.module
+44718184374	Download	lifecycle-common-2.6.2.pom	https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-common/2.6.2/lifecycle-common-2.6.2.pom
+44718184374	Download	lifecycle-livedata-core-2.5.1.module	https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-livedata-core/2.5.1/lifecycle-livedata-core-2.5.1.module
+44718184374	Download	lifecycle-livedata-core-2.5.1.pom	https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-livedata-core/2.5.1/lifecycle-livedata-core-2.5.1.pom
+44718184374	Download	lifecycle-livedata-core-2.6.1.module	https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-livedata-core/2.6.1/lifecycle-livedata-core-2.6.1.module
+44718184374	Download	lifecycle-livedata-core-2.6.1.pom	https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-livedata-core/2.6.1/lifecycle-livedata-core-2.6.1.pom
+44718184374	Download	lifecycle-livedata-core-2.6.2.aar	https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-livedata-core/2.6.2/lifecycle-livedata-core-2.6.2.aar
+44718184374	Download	lifecycle-livedata-core-2.6.2.module	https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-livedata-core/2.6.2/lifecycle-livedata-core-2.6.2.module
+44718184374	Download	lifecycle-livedata-core-2.6.2.pom	https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-livedata-core/2.6.2/lifecycle-livedata-core-2.6.2.pom
+44718184374	Download	lifecycle-livedata-2.6.2.aar	https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-livedata/2.6.2/lifecycle-livedata-2.6.2.aar
+44718184374	Download	lifecycle-livedata-2.6.2.module	https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-livedata/2.6.2/lifecycle-livedata-2.6.2.module
+44718184374	Download	lifecycle-livedata-2.6.2.pom	https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-livedata/2.6.2/lifecycle-livedata-2.6.2.pom
+44718184374	Download	lifecycle-process-2.4.1.module	https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-process/2.4.1/lifecycle-process-2.4.1.module
+44718184374	Download	lifecycle-process-2.4.1.pom	https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-process/2.4.1/lifecycle-process-2.4.1.pom
+44718184374	Download	lifecycle-process-2.6.1.module	https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-process/2.6.1/lifecycle-process-2.6.1.module
+44718184374	Download	lifecycle-process-2.6.1.pom	https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-process/2.6.1/lifecycle-process-2.6.1.pom
+44718184374	Download	lifecycle-process-2.6.2.aar	https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-process/2.6.2/lifecycle-process-2.6.2.aar
+44718184374	Download	lifecycle-process-2.6.2.module	https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-process/2.6.2/lifecycle-process-2.6.2.module
+44718184374	Download	lifecycle-process-2.6.2.pom	https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-process/2.6.2/lifecycle-process-2.6.2.pom
+44718184374	Download	lifecycle-runtime-2.6.1.module	https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-runtime/2.6.1/lifecycle-runtime-2.6.1.module
+44718184374	Download	lifecycle-runtime-2.6.1.pom	https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-runtime/2.6.1/lifecycle-runtime-2.6.1.pom
+44718184374	Download	lifecycle-runtime-2.6.2.aar	https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-runtime/2.6.2/lifecycle-runtime-2.6.2.aar
+44718184374	Download	lifecycle-runtime-2.6.2.module	https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-runtime/2.6.2/lifecycle-runtime-2.6.2.module
+44718184374	Download	lifecycle-runtime-2.6.2.pom	https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-runtime/2.6.2/lifecycle-runtime-2.6.2.pom
+44718184374	Download	lifecycle-viewmodel-savedstate-2.6.1.module	https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-viewmodel-savedstate/2.6.1/lifecycle-viewmodel-savedstate-2.6.1.module
+44718184374	Download	lifecycle-viewmodel-savedstate-2.6.1.pom	https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-viewmodel-savedstate/2.6.1/lifecycle-viewmodel-savedstate-2.6.1.pom
+44718184374	Download	lifecycle-viewmodel-savedstate-2.6.2.aar	https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-viewmodel-savedstate/2.6.2/lifecycle-viewmodel-savedstate-2.6.2.aar
+44718184374	Download	lifecycle-viewmodel-savedstate-2.6.2.module	https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-viewmodel-savedstate/2.6.2/lifecycle-viewmodel-savedstate-2.6.2.module
+44718184374	Download	lifecycle-viewmodel-savedstate-2.6.2.pom	https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-viewmodel-savedstate/2.6.2/lifecycle-viewmodel-savedstate-2.6.2.pom
+44718184374	Download	lifecycle-viewmodel-2.6.1.module	https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-viewmodel/2.6.1/lifecycle-viewmodel-2.6.1.module
+44718184374	Download	lifecycle-viewmodel-2.6.1.pom	https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-viewmodel/2.6.1/lifecycle-viewmodel-2.6.1.pom
+44718184374	Download	lifecycle-viewmodel-2.6.2.aar	https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-viewmodel/2.6.2/lifecycle-viewmodel-2.6.2.aar
+44718184374	Download	lifecycle-viewmodel-2.6.2.module	https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-viewmodel/2.6.2/lifecycle-viewmodel-2.6.2.module
+44718184374	Download	lifecycle-viewmodel-2.6.2.pom	https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-viewmodel/2.6.2/lifecycle-viewmodel-2.6.2.pom
+44718184374	Download	loader-1.0.0.aar	https://dl.google.com/dl/android/maven2/androidx/loader/loader/1.0.0/loader-1.0.0.aar
+44718184374	Download	loader-1.0.0.pom	https://dl.google.com/dl/android/maven2/androidx/loader/loader/1.0.0/loader-1.0.0.pom
+44718184374	Download	profileinstaller-1.3.1.aar	https://dl.google.com/dl/android/maven2/androidx/profileinstaller/profileinstaller/1.3.1/profileinstaller-1.3.1.aar
+44718184374	Download	profileinstaller-1.3.1.module	https://dl.google.com/dl/android/maven2/androidx/profileinstaller/profileinstaller/1.3.1/profileinstaller-1.3.1.module
+44718184374	Download	profileinstaller-1.3.1.pom	https://dl.google.com/dl/android/maven2/androidx/profileinstaller/profileinstaller/1.3.1/profileinstaller-1.3.1.pom
+44718184374	Download	resourceinspection-annotation-1.0.1.jar	https://dl.google.com/dl/android/maven2/androidx/resourceinspection/resourceinspection-annotation/1.0.1/resourceinspection-annotation-1.0.1.jar
+44718184374	Download	resourceinspection-annotation-1.0.1.module	https://dl.google.com/dl/android/maven2/androidx/resourceinspection/resourceinspection-annotation/1.0.1/resourceinspection-annotation-1.0.1.module
+44718184374	Download	resourceinspection-annotation-1.0.1.pom	https://dl.google.com/dl/android/maven2/androidx/resourceinspection/resourceinspection-annotation/1.0.1/resourceinspection-annotation-1.0.1.pom
+44718184374	Download	savedstate-1.2.1.aar	https://dl.google.com/dl/android/maven2/androidx/savedstate/savedstate/1.2.1/savedstate-1.2.1.aar
+44718184374	Download	savedstate-1.2.1.module	https://dl.google.com/dl/android/maven2/androidx/savedstate/savedstate/1.2.1/savedstate-1.2.1.module
+44718184374	Download	savedstate-1.2.1.pom	https://dl.google.com/dl/android/maven2/androidx/savedstate/savedstate/1.2.1/savedstate-1.2.1.pom
+44718184374	Download	startup-runtime-1.0.0.module	https://dl.google.com/dl/android/maven2/androidx/startup/startup-runtime/1.0.0/startup-runtime-1.0.0.module
+44718184374	Download	startup-runtime-1.0.0.pom	https://dl.google.com/dl/android/maven2/androidx/startup/startup-runtime/1.0.0/startup-runtime-1.0.0.pom
+44718184374	Download	startup-runtime-1.1.1.aar	https://dl.google.com/dl/android/maven2/androidx/startup/startup-runtime/1.1.1/startup-runtime-1.1.1.aar
+44718184374	Download	startup-runtime-1.1.1.module	https://dl.google.com/dl/android/maven2/androidx/startup/startup-runtime/1.1.1/startup-runtime-1.1.1.module
+44718184374	Download	startup-runtime-1.1.1.pom	https://dl.google.com/dl/android/maven2/androidx/startup/startup-runtime/1.1.1/startup-runtime-1.1.1.pom
+44718184374	Download	tracing-1.0.0.aar	https://dl.google.com/dl/android/maven2/androidx/tracing/tracing/1.0.0/tracing-1.0.0.aar
+44718184374	Download	tracing-1.0.0.module	https://dl.google.com/dl/android/maven2/androidx/tracing/tracing/1.0.0/tracing-1.0.0.module
+44718184374	Download	tracing-1.0.0.pom	https://dl.google.com/dl/android/maven2/androidx/tracing/tracing/1.0.0/tracing-1.0.0.pom
+44718184374	Download	vectordrawable-animated-1.1.0.aar	https://dl.google.com/dl/android/maven2/androidx/vectordrawable/vectordrawable-animated/1.1.0/vectordrawable-animated-1.1.0.aar
+44718184374	Download	vectordrawable-animated-1.1.0.pom	https://dl.google.com/dl/android/maven2/androidx/vectordrawable/vectordrawable-animated/1.1.0/vectordrawable-animated-1.1.0.pom
+44718184374	Download	vectordrawable-1.1.0.aar	https://dl.google.com/dl/android/maven2/androidx/vectordrawable/vectordrawable/1.1.0/vectordrawable-1.1.0.aar
+44718184374	Download	vectordrawable-1.1.0.pom	https://dl.google.com/dl/android/maven2/androidx/vectordrawable/vectordrawable/1.1.0/vectordrawable-1.1.0.pom
+44718184374	Download	versionedparcelable-1.1.1.aar	https://dl.google.com/dl/android/maven2/androidx/versionedparcelable/versionedparcelable/1.1.1/versionedparcelable-1.1.1.aar
+44718184374	Download	versionedparcelable-1.1.1.pom	https://dl.google.com/dl/android/maven2/androidx/versionedparcelable/versionedparcelable/1.1.1/versionedparcelable-1.1.1.pom
+44718184374	Download	viewpager-1.0.0.aar	https://dl.google.com/dl/android/maven2/androidx/viewpager/viewpager/1.0.0/viewpager-1.0.0.aar
+44718184374	Download	viewpager-1.0.0.pom	https://dl.google.com/dl/android/maven2/androidx/viewpager/viewpager/1.0.0/viewpager-1.0.0.pom
+44718184374	Download	webkit-1.15.0.aar	https://dl.google.com/dl/android/maven2/androidx/webkit/webkit/1.15.0/webkit-1.15.0.aar
+44718184374	Download	webkit-1.15.0.module	https://dl.google.com/dl/android/maven2/androidx/webkit/webkit/1.15.0/webkit-1.15.0.module
+44718184374	Download	webkit-1.15.0.pom	https://dl.google.com/dl/android/maven2/androidx/webkit/webkit/1.15.0/webkit-1.15.0.pom
+44718184374	Download	baseLibrary-9.3.1.jar	https://dl.google.com/dl/android/maven2/com/android/databinding/baseLibrary/9.3.1/baseLibrary-9.3.1.jar
+44718184374	Download	baseLibrary-9.3.1.pom	https://dl.google.com/dl/android/maven2/com/android/databinding/baseLibrary/9.3.1/baseLibrary-9.3.1.pom
+44718184374	Download	signflinger-9.3.1.jar	https://dl.google.com/dl/android/maven2/com/android/signflinger/9.3.1/signflinger-9.3.1.jar
+44718184374	Download	signflinger-9.3.1.pom	https://dl.google.com/dl/android/maven2/com/android/signflinger/9.3.1/signflinger-9.3.1.pom
+44718184374	Download	crash-32.3.1.jar	https://dl.google.com/dl/android/maven2/com/android/tools/analytics-library/crash/32.3.1/crash-32.3.1.jar
+44718184374	Download	crash-32.3.1.pom	https://dl.google.com/dl/android/maven2/com/android/tools/analytics-library/crash/32.3.1/crash-32.3.1.pom
+44718184374	Download	protos-32.3.1.jar	https://dl.google.com/dl/android/maven2/com/android/tools/analytics-library/protos/32.3.1/protos-32.3.1.jar
+44718184374	Download	protos-32.3.1.pom	https://dl.google.com/dl/android/maven2/com/android/tools/analytics-library/protos/32.3.1/protos-32.3.1.pom
+44718184374	Download	shared-32.3.1.jar	https://dl.google.com/dl/android/maven2/com/android/tools/analytics-library/shared/32.3.1/shared-32.3.1.jar
+44718184374	Download	shared-32.3.1.pom	https://dl.google.com/dl/android/maven2/com/android/tools/analytics-library/shared/32.3.1/shared-32.3.1.pom
+44718184374	Download	tracker-32.3.1.jar	https://dl.google.com/dl/android/maven2/com/android/tools/analytics-library/tracker/32.3.1/tracker-32.3.1.jar
+44718184374	Download	tracker-32.3.1.pom	https://dl.google.com/dl/android/maven2/com/android/tools/analytics-library/tracker/32.3.1/tracker-32.3.1.pom
+44718184374	Download	annotations-32.3.1.jar	https://dl.google.com/dl/android/maven2/com/android/tools/annotations/32.3.1/annotations-32.3.1.jar
+44718184374	Download	annotations-32.3.1.pom	https://dl.google.com/dl/android/maven2/com/android/tools/annotations/32.3.1/annotations-32.3.1.pom
+44718184374	Download	aapt2-proto-9.3.1-15703166.jar	https://dl.google.com/dl/android/maven2/com/android/tools/build/aapt2-proto/9.3.1-15703166/aapt2-proto-9.3.1-15703166.jar
+44718184374	Download	aapt2-proto-9.3.1-15703166.module	https://dl.google.com/dl/android/maven2/com/android/tools/build/aapt2-proto/9.3.1-15703166/aapt2-proto-9.3.1-15703166.module
+44718184374	Download	aapt2-proto-9.3.1-15703166.pom	https://dl.google.com/dl/android/maven2/com/android/tools/build/aapt2-proto/9.3.1-15703166/aapt2-proto-9.3.1-15703166.pom
+44718184374	Download	aapt2-9.3.1-15703166-linux.jar	https://dl.google.com/dl/android/maven2/com/android/tools/build/aapt2/9.3.1-15703166/aapt2-9.3.1-15703166-linux.jar
+44718184374	Download	aapt2-9.3.1-15703166.pom	https://dl.google.com/dl/android/maven2/com/android/tools/build/aapt2/9.3.1-15703166/aapt2-9.3.1-15703166.pom
+44718184374	Download	aaptcompiler-9.3.1.jar	https://dl.google.com/dl/android/maven2/com/android/tools/build/aaptcompiler/9.3.1/aaptcompiler-9.3.1.jar
+44718184374	Download	aaptcompiler-9.3.1.module	https://dl.google.com/dl/android/maven2/com/android/tools/build/aaptcompiler/9.3.1/aaptcompiler-9.3.1.module
+44718184374	Download	aaptcompiler-9.3.1.pom	https://dl.google.com/dl/android/maven2/com/android/tools/build/aaptcompiler/9.3.1/aaptcompiler-9.3.1.pom
+44718184374	Download	apksig-9.3.1.jar	https://dl.google.com/dl/android/maven2/com/android/tools/build/apksig/9.3.1/apksig-9.3.1.jar
+44718184374	Download	apksig-9.3.1.pom	https://dl.google.com/dl/android/maven2/com/android/tools/build/apksig/9.3.1/apksig-9.3.1.pom
+44718184374	Download	apkzlib-9.3.1.jar	https://dl.google.com/dl/android/maven2/com/android/tools/build/apkzlib/9.3.1/apkzlib-9.3.1.jar
+44718184374	Download	apkzlib-9.3.1.pom	https://dl.google.com/dl/android/maven2/com/android/tools/build/apkzlib/9.3.1/apkzlib-9.3.1.pom
+44718184374	Download	builder-model-9.3.1.jar	https://dl.google.com/dl/android/maven2/com/android/tools/build/builder-model/9.3.1/builder-model-9.3.1.jar
+44718184374	Download	builder-model-9.3.1.module	https://dl.google.com/dl/android/maven2/com/android/tools/build/builder-model/9.3.1/builder-model-9.3.1.module
+44718184374	Download	builder-model-9.3.1.pom	https://dl.google.com/dl/android/maven2/com/android/tools/build/builder-model/9.3.1/builder-model-9.3.1.pom
+44718184374	Download	builder-test-api-9.3.1.jar	https://dl.google.com/dl/android/maven2/com/android/tools/build/builder-test-api/9.3.1/builder-test-api-9.3.1.jar
+44718184374	Download	builder-test-api-9.3.1.module	https://dl.google.com/dl/android/maven2/com/android/tools/build/builder-test-api/9.3.1/builder-test-api-9.3.1.module
+44718184374	Download	builder-test-api-9.3.1.pom	https://dl.google.com/dl/android/maven2/com/android/tools/build/builder-test-api/9.3.1/builder-test-api-9.3.1.pom
+44718184374	Download	builder-9.3.1.jar	https://dl.google.com/dl/android/maven2/com/android/tools/build/builder/9.3.1/builder-9.3.1.jar
+44718184374	Download	builder-9.3.1.module	https://dl.google.com/dl/android/maven2/com/android/tools/build/builder/9.3.1/builder-9.3.1.module
+44718184374	Download	builder-9.3.1.pom	https://dl.google.com/dl/android/maven2/com/android/tools/build/builder/9.3.1/builder-9.3.1.pom
+44718184374	Download	bundletool-1.18.3.jar	https://dl.google.com/dl/android/maven2/com/android/tools/build/bundletool/1.18.3/bundletool-1.18.3.jar
+44718184374	Download	bundletool-1.18.3.pom	https://dl.google.com/dl/android/maven2/com/android/tools/build/bundletool/1.18.3/bundletool-1.18.3.pom
+44718184374	Download	gradle-api-9.3.1.jar	https://dl.google.com/dl/android/maven2/com/android/tools/build/gradle-api/9.3.1/gradle-api-9.3.1.jar
+44718184374	Download	gradle-api-9.3.1.module	https://dl.google.com/dl/android/maven2/com/android/tools/build/gradle-api/9.3.1/gradle-api-9.3.1.module
+44718184374	Download	gradle-api-9.3.1.pom	https://dl.google.com/dl/android/maven2/com/android/tools/build/gradle-api/9.3.1/gradle-api-9.3.1.pom
+44718184374	Download	gradle-common-api-9.3.1.jar	https://dl.google.com/dl/android/maven2/com/android/tools/build/gradle-common-api/9.3.1/gradle-common-api-9.3.1.jar
+44718184374	Download	gradle-common-api-9.3.1.module	https://dl.google.com/dl/android/maven2/com/android/tools/build/gradle-common-api/9.3.1/gradle-common-api-9.3.1.module
+44718184374	Download	gradle-common-api-9.3.1.pom	https://dl.google.com/dl/android/maven2/com/android/tools/build/gradle-common-api/9.3.1/gradle-common-api-9.3.1.pom
+44718184374	Download	gradle-settings-api-9.3.1.jar	https://dl.google.com/dl/android/maven2/com/android/tools/build/gradle-settings-api/9.3.1/gradle-settings-api-9.3.1.jar
+44718184374	Download	gradle-settings-api-9.3.1.module	https://dl.google.com/dl/android/maven2/com/android/tools/build/gradle-settings-api/9.3.1/gradle-settings-api-9.3.1.module
+44718184374	Download	gradle-settings-api-9.3.1.pom	https://dl.google.com/dl/android/maven2/com/android/tools/build/gradle-settings-api/9.3.1/gradle-settings-api-9.3.1.pom
+44718184374	Download	gradle-9.3.1.jar	https://dl.google.com/dl/android/maven2/com/android/tools/build/gradle/9.3.1/gradle-9.3.1.jar
+44718184374	Download	gradle-9.3.1.module	https://dl.google.com/dl/android/maven2/com/android/tools/build/gradle/9.3.1/gradle-9.3.1.module
+44718184374	Download	gradle-9.3.1.pom	https://dl.google.com/dl/android/maven2/com/android/tools/build/gradle/9.3.1/gradle-9.3.1.pom
+44718184374	Download	jetifier-core-1.0.0-beta10.jar	https://dl.google.com/dl/android/maven2/com/android/tools/build/jetifier/jetifier-core/1.0.0-beta10/jetifier-core-1.0.0-beta10.jar
+44718184374	Download	jetifier-core-1.0.0-beta10.module	https://dl.google.com/dl/android/maven2/com/android/tools/build/jetifier/jetifier-core/1.0.0-beta10/jetifier-core-1.0.0-beta10.module
+44718184374	Download	jetifier-core-1.0.0-beta10.pom	https://dl.google.com/dl/android/maven2/com/android/tools/build/jetifier/jetifier-core/1.0.0-beta10/jetifier-core-1.0.0-beta10.pom
+44718184374	Download	jetifier-processor-1.0.0-beta10.jar	https://dl.google.com/dl/android/maven2/com/android/tools/build/jetifier/jetifier-processor/1.0.0-beta10/jetifier-processor-1.0.0-beta10.jar
+44718184374	Download	jetifier-processor-1.0.0-beta10.module	https://dl.google.com/dl/android/maven2/com/android/tools/build/jetifier/jetifier-processor/1.0.0-beta10/jetifier-processor-1.0.0-beta10.module
+44718184374	Download	jetifier-processor-1.0.0-beta10.pom	https://dl.google.com/dl/android/maven2/com/android/tools/build/jetifier/jetifier-processor/1.0.0-beta10/jetifier-processor-1.0.0-beta10.pom
+44718184374	Download	manifest-merger-32.3.1.jar	https://dl.google.com/dl/android/maven2/com/android/tools/build/manifest-merger/32.3.1/manifest-merger-32.3.1.jar
+44718184374	Download	manifest-merger-32.3.1.module	https://dl.google.com/dl/android/maven2/com/android/tools/build/manifest-merger/32.3.1/manifest-merger-32.3.1.module
+44718184374	Download	manifest-merger-32.3.1.pom	https://dl.google.com/dl/android/maven2/com/android/tools/build/manifest-merger/32.3.1/manifest-merger-32.3.1.pom
+44718184374	Download	common-32.3.1.jar	https://dl.google.com/dl/android/maven2/com/android/tools/common/32.3.1/common-32.3.1.jar
+44718184374	Download	common-32.3.1.pom	https://dl.google.com/dl/android/maven2/com/android/tools/common/32.3.1/common-32.3.1.pom
+44718184374	Download	ddmlib-32.3.1.jar	https://dl.google.com/dl/android/maven2/com/android/tools/ddms/ddmlib/32.3.1/ddmlib-32.3.1.jar
+44718184374	Download	ddmlib-32.3.1.pom	https://dl.google.com/dl/android/maven2/com/android/tools/ddms/ddmlib/32.3.1/ddmlib-32.3.1.pom
+44718184374	Download	dvlib-32.3.1.jar	https://dl.google.com/dl/android/maven2/com/android/tools/dvlib/32.3.1/dvlib-32.3.1.jar
+44718184374	Download	dvlib-32.3.1.pom	https://dl.google.com/dl/android/maven2/com/android/tools/dvlib/32.3.1/dvlib-32.3.1.pom
+44718184374	Download	intellij-core-32.3.1.jar	https://dl.google.com/dl/android/maven2/com/android/tools/external/com-intellij/intellij-core/32.3.1/intellij-core-32.3.1.jar
+44718184374	Download	intellij-core-32.3.1.pom	https://dl.google.com/dl/android/maven2/com/android/tools/external/com-intellij/intellij-core/32.3.1/intellij-core-32.3.1.pom
+44718184374	Download	kotlin-compiler-32.3.1.jar	https://dl.google.com/dl/android/maven2/com/android/tools/external/com-intellij/kotlin-compiler/32.3.1/kotlin-compiler-32.3.1.jar
+44718184374	Download	kotlin-compiler-32.3.1.pom	https://dl.google.com/dl/android/maven2/com/android/tools/external/com-intellij/kotlin-compiler/32.3.1/kotlin-compiler-32.3.1.pom
+44718184374	Download	uast-32.3.1.jar	https://dl.google.com/dl/android/maven2/com/android/tools/external/org-jetbrains/uast/32.3.1/uast-32.3.1.jar
+44718184374	Download	uast-32.3.1.pom	https://dl.google.com/dl/android/maven2/com/android/tools/external/org-jetbrains/uast/32.3.1/uast-32.3.1.pom
+44718184374	Download	layoutlib-api-32.3.1.jar	https://dl.google.com/dl/android/maven2/com/android/tools/layoutlib/layoutlib-api/32.3.1/layoutlib-api-32.3.1.jar
+44718184374	Download	layoutlib-api-32.3.1.pom	https://dl.google.com/dl/android/maven2/com/android/tools/layoutlib/layoutlib-api/32.3.1/layoutlib-api-32.3.1.pom
+44718184374	Download	lint-api-32.3.1.jar	https://dl.google.com/dl/android/maven2/com/android/tools/lint/lint-api/32.3.1/lint-api-32.3.1.jar
+44718184374	Download	lint-api-32.3.1.pom	https://dl.google.com/dl/android/maven2/com/android/tools/lint/lint-api/32.3.1/lint-api-32.3.1.pom
+44718184374	Download	lint-checks-32.3.1.jar	https://dl.google.com/dl/android/maven2/com/android/tools/lint/lint-checks/32.3.1/lint-checks-32.3.1.jar
+44718184374	Download	lint-checks-32.3.1.pom	https://dl.google.com/dl/android/maven2/com/android/tools/lint/lint-checks/32.3.1/lint-checks-32.3.1.pom
+44718184374	Download	lint-gradle-32.3.1.jar	https://dl.google.com/dl/android/maven2/com/android/tools/lint/lint-gradle/32.3.1/lint-gradle-32.3.1.jar
+44718184374	Download	lint-gradle-32.3.1.pom	https://dl.google.com/dl/android/maven2/com/android/tools/lint/lint-gradle/32.3.1/lint-gradle-32.3.1.pom
+44718184374	Download	lint-model-32.3.1.jar	https://dl.google.com/dl/android/maven2/com/android/tools/lint/lint-model/32.3.1/lint-model-32.3.1.jar
+44718184374	Download	lint-model-32.3.1.pom	https://dl.google.com/dl/android/maven2/com/android/tools/lint/lint-model/32.3.1/lint-model-32.3.1.pom
+44718184374	Download	lint-typedef-remover-32.3.1.jar	https://dl.google.com/dl/android/maven2/com/android/tools/lint/lint-typedef-remover/32.3.1/lint-typedef-remover-32.3.1.jar
+44718184374	Download	lint-typedef-remover-32.3.1.pom	https://dl.google.com/dl/android/maven2/com/android/tools/lint/lint-typedef-remover/32.3.1/lint-typedef-remover-32.3.1.pom
+44718184374	Download	lint-32.3.1.jar	https://dl.google.com/dl/android/maven2/com/android/tools/lint/lint/32.3.1/lint-32.3.1.jar
+44718184374	Download	lint-32.3.1.pom	https://dl.google.com/dl/android/maven2/com/android/tools/lint/lint/32.3.1/lint-32.3.1.pom
+44718184374	Download	play-sdk-proto-32.3.1.jar	https://dl.google.com/dl/android/maven2/com/android/tools/play-sdk-proto/32.3.1/play-sdk-proto-32.3.1.jar
+44718184374	Download	play-sdk-proto-32.3.1.pom	https://dl.google.com/dl/android/maven2/com/android/tools/play-sdk-proto/32.3.1/play-sdk-proto-32.3.1.pom
+44718184374	Download	repository-32.3.1.jar	https://dl.google.com/dl/android/maven2/com/android/tools/repository/32.3.1/repository-32.3.1.jar
+44718184374	Download	repository-32.3.1.pom	https://dl.google.com/dl/android/maven2/com/android/tools/repository/32.3.1/repository-32.3.1.pom
+44718184374	Download	sdk-common-32.3.1.jar	https://dl.google.com/dl/android/maven2/com/android/tools/sdk-common/32.3.1/sdk-common-32.3.1.jar
+44718184374	Download	sdk-common-32.3.1.pom	https://dl.google.com/dl/android/maven2/com/android/tools/sdk-common/32.3.1/sdk-common-32.3.1.pom
+44718184374	Download	sdklib-32.3.1.jar	https://dl.google.com/dl/android/maven2/com/android/tools/sdklib/32.3.1/sdklib-32.3.1.jar
+44718184374	Download	sdklib-32.3.1.pom	https://dl.google.com/dl/android/maven2/com/android/tools/sdklib/32.3.1/sdklib-32.3.1.pom
+44718184374	Download	gradle-work-action-api-32.3.1.jar	https://dl.google.com/dl/android/maven2/com/android/tools/utp/gradle-work-action-api/32.3.1/gradle-work-action-api-32.3.1.jar
+44718184374	Download	gradle-work-action-api-32.3.1.module	https://dl.google.com/dl/android/maven2/com/android/tools/utp/gradle-work-action-api/32.3.1/gradle-work-action-api-32.3.1.module
+44718184374	Download	gradle-work-action-api-32.3.1.pom	https://dl.google.com/dl/android/maven2/com/android/tools/utp/gradle-work-action-api/32.3.1/gradle-work-action-api-32.3.1.pom
+44718184374	Download	zipflinger-9.3.1.jar	https://dl.google.com/dl/android/maven2/com/android/zipflinger/9.3.1/zipflinger-9.3.1.jar
+44718184374	Download	zipflinger-9.3.1.pom	https://dl.google.com/dl/android/maven2/com/android/zipflinger/9.3.1/zipflinger-9.3.1.pom
+44718184374	Download	checksums.json	https://fdroid.gitlab.io/android-sdk-transparency-log/checksums.json
+44718184374	Download	checksums.json.asc	https://fdroid.gitlab.io/android-sdk-transparency-log/checksums.json.asc
+44718184374	Download	pillow-13.0.0.tar.gz	https://files.pythonhosted.org/packages/ce/a4/9cc30690a394a8305e8be4c9036aa16d0dfddadd09079860b582f562496d/pillow-13.0.0.tar.gz
+44718184374	Download	1.87.0.tar.gz	https://github.com/DanBloomberg/leptonica/archive/1.87.0.tar.gz
+44718184374	Download	cmake-4.4.3-linux-x86_64.tar.gz	https://github.com/Kitware/CMake/releases/download/v4.4.3/cmake-4.4.3-linux-x86_64.tar.gz
+44718184374	Download	cpython-3.13.18+20261026-x86_64-unknown-linux-gnu-install_only.tar.gz	https://github.com/astral-sh/python-build-standalone/releases/download/20261026/cpython-3.13.18%2B20261026-x86_64-unknown-linux-gnu-install_only.tar.gz
+44718184374	Download	v0.11.0.tar.gz	https://github.com/google/cpu_features/archive/v0.11.0.tar.gz
+44718184374	Download	3.2.0.tar.gz	https://github.com/libjpeg-turbo/libjpeg-turbo/archive/3.2.0.tar.gz
+44718184374	Download	v1.3.2.tar.gz	https://github.com/madler/zlib/archive/v1.3.2.tar.gz
+44718184374	Download	v1.6.59.tar.gz	https://github.com/pnggroup/libpng/archive/v1.6.59.tar.gz
+44718184374	Download	virtualenv.pyz	https://github.com/pypa/get-virtualenv/releases/download/21.14.13/virtualenv.pyz
+44718184374	Download	v0.7.4.tar.gz	https://github.com/randy408/libspng/archive/v0.7.4.tar.gz
+44718184374	Download	heb.traineddata	https://github.com/tesseract-ocr/tessdata_best/raw/4.1.0/heb.traineddata
+44718184374	Download	eng.traineddata	https://github.com/tesseract-ocr/tessdata_fast/raw/4.1.0/eng.traineddata
+44718184374	Download	5.5.3.tar.gz	https://github.com/tesseract-ocr/tesseract/archive/refs/tags/5.5.3.tar.gz
+44718184374	Download	v5.8.4.tar.gz	https://github.com/tukaani-project/xz/archive/v5.8.4.tar.gz
+44718184374	Download	v2.5.4.tar.gz	https://github.com/uclouvain/openjpeg/archive/v2.5.4.tar.gz
+44718184374	Download	v1.6.0.tar.gz	https://github.com/webmproject/libwebp/archive/v1.6.0.tar.gz
+44718184374	Download	libtiff-v4.7.2.tar.gz	https://gitlab.com/libtiff/libtiff/-/archive/v4.7.2/libtiff-v4.7.2.tar.gz
+44718184374	Download	checksums.json	https://raw.githubusercontent.com/f-droid/android-sdk-transparency-log/master/signed/checksums.json
+44718184374	Download	checksums.json.asc	https://raw.githubusercontent.com/f-droid/android-sdk-transparency-log/master/signed/checksums.json.asc
+44718184374	Download	gradle-17.2.0.jar	https://repo.maven.apache.org/maven2/com/chaquo/python/gradle/17.2.0/gradle-17.2.0.jar
+44718184374	Download	gradle-17.2.0.module	https://repo.maven.apache.org/maven2/com/chaquo/python/gradle/17.2.0/gradle-17.2.0.module
+44718184374	Download	gradle-17.2.0.pom	https://repo.maven.apache.org/maven2/com/chaquo/python/gradle/17.2.0/gradle-17.2.0.pom
+44718184374	Download	python-3.13.15-aarch64-linux-android.tar.gz	https://repo.maven.apache.org/maven2/com/chaquo/python/python/3.13.15/python-3.13.15-aarch64-linux-android.tar.gz
+44718184374	Download	bootstrap-17.2.0-3.13.imy	https://repo.maven.apache.org/maven2/com/chaquo/python/runtime/bootstrap/17.2.0/bootstrap-17.2.0-3.13.imy
+44718184374	Download	bootstrap-17.2.0.pom	https://repo.maven.apache.org/maven2/com/chaquo/python/runtime/bootstrap/17.2.0/bootstrap-17.2.0.pom
+44718184374	Download	chaquopy-17.2.0-3.13-arm64-v8a.so	https://repo.maven.apache.org/maven2/com/chaquo/python/runtime/chaquopy/17.2.0/chaquopy-17.2.0-3.13-arm64-v8a.so
+44718184374	Download	chaquopy-17.2.0.pom	https://repo.maven.apache.org/maven2/com/chaquo/python/runtime/chaquopy/17.2.0/chaquopy-17.2.0.pom
+44718184374	Download	chaquopy_java-17.2.0.jar	https://repo.maven.apache.org/maven2/com/chaquo/python/runtime/chaquopy_java/17.2.0/chaquopy_java-17.2.0.jar
+44718184374	Download	chaquopy_java-17.2.0.module	https://repo.maven.apache.org/maven2/com/chaquo/python/runtime/chaquopy_java/17.2.0/chaquopy_java-17.2.0.module
+44718184374	Download	chaquopy_java-17.2.0.pom	https://repo.maven.apache.org/maven2/com/chaquo/python/runtime/chaquopy_java/17.2.0/chaquopy_java-17.2.0.pom
+44718184374	Download	libchaquopy_java-17.2.0-3.13-arm64-v8a.so	https://repo.maven.apache.org/maven2/com/chaquo/python/runtime/libchaquopy_java/17.2.0/libchaquopy_java-17.2.0-3.13-arm64-v8a.so
+44718184374	Download	libchaquopy_java-17.2.0.pom	https://repo.maven.apache.org/maven2/com/chaquo/python/runtime/libchaquopy_java/17.2.0/libchaquopy_java-17.2.0.pom
+44718184374	Download	target-3.13.16-0-arm64-v8a.zip	https://repo.maven.apache.org/maven2/com/chaquo/python/target/3.13.16-0/target-3.13.16-0-arm64-v8a.zip
+44718184374	Download	target-3.13.16-0-stdlib-pyc.zip	https://repo.maven.apache.org/maven2/com/chaquo/python/target/3.13.16-0/target-3.13.16-0-stdlib-pyc.zip
+44718184374	Download	target-3.13.16-0.pom	https://repo.maven.apache.org/maven2/com/chaquo/python/target/3.13.16-0/target-3.13.16-0.pom
+44718184374	Download	auto-parent-6.pom	https://repo.maven.apache.org/maven2/com/google/auto/auto-parent/6/auto-parent-6.pom
+44718184374	Download	auto-value-annotations-1.6.2.jar	https://repo.maven.apache.org/maven2/com/google/auto/value/auto-value-annotations/1.6.2/auto-value-annotations-1.6.2.jar
+44718184374	Download	auto-value-annotations-1.6.2.pom	https://repo.maven.apache.org/maven2/com/google/auto/value/auto-value-annotations/1.6.2/auto-value-annotations-1.6.2.pom
+44718184374	Download	auto-value-parent-1.6.2.pom	https://repo.maven.apache.org/maven2/com/google/auto/value/auto-value-parent/1.6.2/auto-value-parent-1.6.2.pom
+44718184374	Download	jsr305-3.0.2.jar	https://repo.maven.apache.org/maven2/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar
+44718184374	Download	jsr305-3.0.2.pom	https://repo.maven.apache.org/maven2/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.pom
+44718184374	Download	gson-parent-2.11.0.pom	https://repo.maven.apache.org/maven2/com/google/code/gson/gson-parent/2.11.0/gson-parent-2.11.0.pom
+44718184374	Download	gson-2.11.0.jar	https://repo.maven.apache.org/maven2/com/google/code/gson/gson/2.11.0/gson-2.11.0.jar
+44718184374	Download	gson-2.11.0.pom	https://repo.maven.apache.org/maven2/com/google/code/gson/gson/2.11.0/gson-2.11.0.pom
+44718184374	Download	tink-1.7.0.jar	https://repo.maven.apache.org/maven2/com/google/crypto/tink/tink/1.7.0/tink-1.7.0.jar
+44718184374	Download	tink-1.7.0.pom	https://repo.maven.apache.org/maven2/com/google/crypto/tink/tink/1.7.0/tink-1.7.0.pom
+44718184374	Download	dagger-2.28.3.jar	https://repo.maven.apache.org/maven2/com/google/dagger/dagger/2.28.3/dagger-2.28.3.jar
+44718184374	Download	dagger-2.28.3.pom	https://repo.maven.apache.org/maven2/com/google/dagger/dagger/2.28.3/dagger-2.28.3.pom
+44718184374	Download	error_prone_annotations-2.18.0.pom	https://repo.maven.apache.org/maven2/com/google/errorprone/error_prone_annotations/2.18.0/error_prone_annotations-2.18.0.pom
+44718184374	Download	error_prone_annotations-2.27.0.pom	https://repo.maven.apache.org/maven2/com/google/errorprone/error_prone_annotations/2.27.0/error_prone_annotations-2.27.0.pom
+44718184374	Download	error_prone_annotations-2.3.1.pom	https://repo.maven.apache.org/maven2/com/google/errorprone/error_prone_annotations/2.3.1/error_prone_annotations-2.3.1.pom
+44718184374	Download	error_prone_annotations-2.36.0.jar	https://repo.maven.apache.org/maven2/com/google/errorprone/error_prone_annotations/2.36.0/error_prone_annotations-2.36.0.jar
+44718184374	Download	error_prone_annotations-2.36.0.pom	https://repo.maven.apache.org/maven2/com/google/errorprone/error_prone_annotations/2.36.0/error_prone_annotations-2.36.0.pom
+44718184374	Download	error_prone_parent-2.18.0.pom	https://repo.maven.apache.org/maven2/com/google/errorprone/error_prone_parent/2.18.0/error_prone_parent-2.18.0.pom
+44718184374	Download	error_prone_parent-2.27.0.pom	https://repo.maven.apache.org/maven2/com/google/errorprone/error_prone_parent/2.27.0/error_prone_parent-2.27.0.pom
+44718184374	Download	error_prone_parent-2.3.1.pom	https://repo.maven.apache.org/maven2/com/google/errorprone/error_prone_parent/2.3.1/error_prone_parent-2.3.1.pom
+44718184374	Download	error_prone_parent-2.36.0.pom	https://repo.maven.apache.org/maven2/com/google/errorprone/error_prone_parent/2.36.0/error_prone_parent-2.36.0.pom
+44718184374	Download	flatbuffers-java-1.12.0.jar	https://repo.maven.apache.org/maven2/com/google/flatbuffers/flatbuffers-java/1.12.0/flatbuffers-java-1.12.0.jar
+44718184374	Download	flatbuffers-java-1.12.0.pom	https://repo.maven.apache.org/maven2/com/google/flatbuffers/flatbuffers-java/1.12.0/flatbuffers-java-1.12.0.pom
+44718184374	Download	failureaccess-1.0.2.jar	https://repo.maven.apache.org/maven2/com/google/guava/failureaccess/1.0.2/failureaccess-1.0.2.jar
+44718184374	Download	failureaccess-1.0.2.pom	https://repo.maven.apache.org/maven2/com/google/guava/failureaccess/1.0.2/failureaccess-1.0.2.pom
+44718184374	Download	guava-parent-26.0-android.pom	https://repo.maven.apache.org/maven2/com/google/guava/guava-parent/26.0-android/guava-parent-26.0-android.pom
+44718184374	Download	guava-parent-33.4.0-jre.pom	https://repo.maven.apache.org/maven2/com/google/guava/guava-parent/33.4.0-jre/guava-parent-33.4.0-jre.pom
+44718184374	Download	guava-33.4.0-jre.jar	https://repo.maven.apache.org/maven2/com/google/guava/guava/33.4.0-jre/guava-33.4.0-jre.jar
+44718184374	Download	guava-33.4.0-jre.module	https://repo.maven.apache.org/maven2/com/google/guava/guava/33.4.0-jre/guava-33.4.0-jre.module
+44718184374	Download	guava-33.4.0-jre.pom	https://repo.maven.apache.org/maven2/com/google/guava/guava/33.4.0-jre/guava-33.4.0-jre.pom
+44718184374	Download	listenablefuture-1.0.jar	https://repo.maven.apache.org/maven2/com/google/guava/listenablefuture/1.0/listenablefuture-1.0.jar
+44718184374	Download	listenablefuture-1.0.pom	https://repo.maven.apache.org/maven2/com/google/guava/listenablefuture/1.0/listenablefuture-1.0.pom
+44718184374	Download	listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar	https://repo.maven.apache.org/maven2/com/google/guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar
+44718184374	Download	listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.pom	https://repo.maven.apache.org/maven2/com/google/guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.pom
+44718184374	Download	j2objc-annotations-2.8.pom	https://repo.maven.apache.org/maven2/com/google/j2objc/j2objc-annotations/2.8/j2objc-annotations-2.8.pom
+44718184374	Download	j2objc-annotations-3.0.0.jar	https://repo.maven.apache.org/maven2/com/google/j2objc/j2objc-annotations/3.0.0/j2objc-annotations-3.0.0.jar
+44718184374	Download	j2objc-annotations-3.0.0.pom	https://repo.maven.apache.org/maven2/com/google/j2objc/j2objc-annotations/3.0.0/j2objc-annotations-3.0.0.pom
+44718184374	Download	jimfs-parent-1.1.pom	https://repo.maven.apache.org/maven2/com/google/jimfs/jimfs-parent/1.1/jimfs-parent-1.1.pom
+44718184374	Download	jimfs-1.1.jar	https://repo.maven.apache.org/maven2/com/google/jimfs/jimfs/1.1/jimfs-1.1.jar
+44718184374	Download	jimfs-1.1.pom	https://repo.maven.apache.org/maven2/com/google/jimfs/jimfs/1.1/jimfs-1.1.pom
+44718184374	Download	protobuf-bom-3.25.5.pom	https://repo.maven.apache.org/maven2/com/google/protobuf/protobuf-bom/3.25.5/protobuf-bom-3.25.5.pom
+44718184374	Download	protobuf-java-util-3.25.5.jar	https://repo.maven.apache.org/maven2/com/google/protobuf/protobuf-java-util/3.25.5/protobuf-java-util-3.25.5.jar
+44718184374	Download	protobuf-java-util-3.25.5.pom	https://repo.maven.apache.org/maven2/com/google/protobuf/protobuf-java-util/3.25.5/protobuf-java-util-3.25.5.pom
+44718184374	Download	protobuf-java-3.25.5.jar	https://repo.maven.apache.org/maven2/com/google/protobuf/protobuf-java/3.25.5/protobuf-java-3.25.5.jar
+44718184374	Download	protobuf-java-3.25.5.pom	https://repo.maven.apache.org/maven2/com/google/protobuf/protobuf-java/3.25.5/protobuf-java-3.25.5.pom
+44718184374	Download	protobuf-parent-3.25.5.pom	https://repo.maven.apache.org/maven2/com/google/protobuf/protobuf-parent/3.25.5/protobuf-parent-3.25.5.pom
+44718184374	Download	juniversalchardet-1.0.3.jar	https://repo.maven.apache.org/maven2/com/googlecode/juniversalchardet/juniversalchardet/1.0.3/juniversalchardet-1.0.3.jar
+44718184374	Download	juniversalchardet-1.0.3.pom	https://repo.maven.apache.org/maven2/com/googlecode/juniversalchardet/juniversalchardet/1.0.3/juniversalchardet-1.0.3.pom
+44718184374	Download	javapoet-1.13.0.jar	https://repo.maven.apache.org/maven2/com/squareup/javapoet/1.13.0/javapoet-1.13.0.jar
+44718184374	Download	javapoet-1.13.0.pom	https://repo.maven.apache.org/maven2/com/squareup/javapoet/1.13.0/javapoet-1.13.0.pom
+44718184374	Download	javawriter-2.5.0.jar	https://repo.maven.apache.org/maven2/com/squareup/javawriter/2.5.0/javawriter-2.5.0.jar
+44718184374	Download	javawriter-2.5.0.pom	https://repo.maven.apache.org/maven2/com/squareup/javawriter/2.5.0/javawriter-2.5.0.pom
+44718184374	Download	all-1.2.1.pom	https://repo.maven.apache.org/maven2/com/sun/activation/all/1.2.1/all-1.2.1.pom
+44718184374	Download	istack-commons-runtime-3.0.8.jar	https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-runtime/3.0.8/istack-commons-runtime-3.0.8.jar
+44718184374	Download	istack-commons-runtime-3.0.8.pom	https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-runtime/3.0.8/istack-commons-runtime-3.0.8.pom
+44718184374	Download	istack-commons-3.0.8.pom	https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons/3.0.8/istack-commons-3.0.8.pom
+44718184374	Download	jaxb-bom-ext-2.3.2.pom	https://repo.maven.apache.org/maven2/com/sun/xml/bind/jaxb-bom-ext/2.3.2/jaxb-bom-ext-2.3.2.pom
+44718184374	Download	jaxb-parent-2.3.2.pom	https://repo.maven.apache.org/maven2/com/sun/xml/bind/mvn/jaxb-parent/2.3.2/jaxb-parent-2.3.2.pom
+44718184374	Download	jaxb-runtime-parent-2.3.2.pom	https://repo.maven.apache.org/maven2/com/sun/xml/bind/mvn/jaxb-runtime-parent/2.3.2/jaxb-runtime-parent-2.3.2.pom
+44718184374	Download	jaxb-txw-parent-2.3.2.pom	https://repo.maven.apache.org/maven2/com/sun/xml/bind/mvn/jaxb-txw-parent/2.3.2/jaxb-txw-parent-2.3.2.pom
+44718184374	Download	FastInfoset-1.2.16.jar	https://repo.maven.apache.org/maven2/com/sun/xml/fastinfoset/FastInfoset/1.2.16/FastInfoset-1.2.16.jar
+44718184374	Download	FastInfoset-1.2.16.pom	https://repo.maven.apache.org/maven2/com/sun/xml/fastinfoset/FastInfoset/1.2.16/FastInfoset-1.2.16.pom
+44718184374	Download	fastinfoset-project-1.2.16.pom	https://repo.maven.apache.org/maven2/com/sun/xml/fastinfoset/fastinfoset-project/1.2.16/fastinfoset-project-1.2.16.pom
+44718184374	Download	commons-codec-1.17.1.jar	https://repo.maven.apache.org/maven2/commons-codec/commons-codec/1.17.1/commons-codec-1.17.1.jar
+44718184374	Download	commons-codec-1.17.1.pom	https://repo.maven.apache.org/maven2/commons-codec/commons-codec/1.17.1/commons-codec-1.17.1.pom
+44718184374	Download	commons-io-2.16.1.jar	https://repo.maven.apache.org/maven2/commons-io/commons-io/2.16.1/commons-io-2.16.1.jar
+44718184374	Download	commons-io-2.16.1.pom	https://repo.maven.apache.org/maven2/commons-io/commons-io/2.16.1/commons-io-2.16.1.pom
+44718184374	Download	commons-logging-1.2.jar	https://repo.maven.apache.org/maven2/commons-logging/commons-logging/1.2/commons-logging-1.2.jar
+44718184374	Download	commons-logging-1.2.pom	https://repo.maven.apache.org/maven2/commons-logging/commons-logging/1.2/commons-logging-1.2.pom
+44718184374	Download	jakarta.activation-api-1.2.1.jar	https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/1.2.1/jakarta.activation-api-1.2.1.jar
+44718184374	Download	jakarta.activation-api-1.2.1.pom	https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/1.2.1/jakarta.activation-api-1.2.1.pom
+44718184374	Download	jakarta.xml.bind-api-parent-2.3.2.pom	https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api-parent/2.3.2/jakarta.xml.bind-api-parent-2.3.2.pom
+44718184374	Download	jakarta.xml.bind-api-2.3.2.jar	https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/2.3.2/jakarta.xml.bind-api-2.3.2.jar
+44718184374	Download	jakarta.xml.bind-api-2.3.2.pom	https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/2.3.2/jakarta.xml.bind-api-2.3.2.pom
+44718184374	Download	javax.inject-1.jar	https://repo.maven.apache.org/maven2/javax/inject/javax.inject/1/javax.inject-1.jar
+44718184374	Download	javax.inject-1.pom	https://repo.maven.apache.org/maven2/javax/inject/javax.inject/1/javax.inject-1.pom
+44718184374	Download	jna-platform-5.6.0.jar	https://repo.maven.apache.org/maven2/net/java/dev/jna/jna-platform/5.6.0/jna-platform-5.6.0.jar
+44718184374	Download	jna-platform-5.6.0.pom	https://repo.maven.apache.org/maven2/net/java/dev/jna/jna-platform/5.6.0/jna-platform-5.6.0.pom
+44718184374	Download	jna-5.6.0.jar	https://repo.maven.apache.org/maven2/net/java/dev/jna/jna/5.6.0/jna-5.6.0.jar
+44718184374	Download	jna-5.6.0.pom	https://repo.maven.apache.org/maven2/net/java/dev/jna/jna/5.6.0/jna-5.6.0.pom
+44718184374	Download	jopt-simple-4.9.jar	https://repo.maven.apache.org/maven2/net/sf/jopt-simple/jopt-simple/4.9/jopt-simple-4.9.jar
+44718184374	Download	jopt-simple-4.9.pom	https://repo.maven.apache.org/maven2/net/sf/jopt-simple/jopt-simple/4.9/jopt-simple-4.9.pom
+44718184374	Download	kxml2-2.3.0.jar	https://repo.maven.apache.org/maven2/net/sf/kxml/kxml2/2.3.0/kxml2-2.3.0.jar
+44718184374	Download	kxml2-2.3.0.pom	https://repo.maven.apache.org/maven2/net/sf/kxml/kxml2/2.3.0/kxml2-2.3.0.pom
+44718184374	Download	apache-13.pom	https://repo.maven.apache.org/maven2/org/apache/apache/13/apache-13.pom
+44718184374	Download	apache-18.pom	https://repo.maven.apache.org/maven2/org/apache/apache/18/apache-18.pom
+44718184374	Download	apache-19.pom	https://repo.maven.apache.org/maven2/org/apache/apache/19/apache-19.pom
+44718184374	Download	apache-21.pom	https://repo.maven.apache.org/maven2/org/apache/apache/21/apache-21.pom
+44718184374	Download	apache-31.pom	https://repo.maven.apache.org/maven2/org/apache/apache/31/apache-31.pom
+44718184374	Download	apache-32.pom	https://repo.maven.apache.org/maven2/org/apache/apache/32/apache-32.pom
+44718184374	Download	apache-33.pom	https://repo.maven.apache.org/maven2/org/apache/apache/33/apache-33.pom
+44718184374	Download	commons-compress-1.18.pom	https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.18/commons-compress-1.18.pom
+44718184374	Download	commons-compress-1.27.1.jar	https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.27.1/commons-compress-1.27.1.jar
+44718184374	Download	commons-compress-1.27.1.pom	https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.27.1/commons-compress-1.27.1.pom
+44718184374	Download	commons-lang3-3.16.0.jar	https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.16.0/commons-lang3-3.16.0.jar
+44718184374	Download	commons-lang3-3.16.0.pom	https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.16.0/commons-lang3-3.16.0.pom
+44718184374	Download	commons-parent-34.pom	https://repo.maven.apache.org/maven2/org/apache/commons/commons-parent/34/commons-parent-34.pom
+44718184374	Download	commons-parent-47.pom	https://repo.maven.apache.org/maven2/org/apache/commons/commons-parent/47/commons-parent-47.pom
+44718184374	Download	commons-parent-69.pom	https://repo.maven.apache.org/maven2/org/apache/commons/commons-parent/69/commons-parent-69.pom
+44718184374	Download	commons-parent-71.pom	https://repo.maven.apache.org/maven2/org/apache/commons/commons-parent/71/commons-parent-71.pom
+44718184374	Download	commons-parent-72.pom	https://repo.maven.apache.org/maven2/org/apache/commons/commons-parent/72/commons-parent-72.pom
+44718184374	Download	httpclient-4.5.14.jar	https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpclient/4.5.14/httpclient-4.5.14.jar
+44718184374	Download	httpclient-4.5.14.pom	https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpclient/4.5.14/httpclient-4.5.14.pom
+44718184374	Download	httpclient-4.5.6.jar	https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpclient/4.5.6/httpclient-4.5.6.jar
+44718184374	Download	httpclient-4.5.6.pom	https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpclient/4.5.6/httpclient-4.5.6.pom
+44718184374	Download	httpcomponents-client-4.5.14.pom	https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcomponents-client/4.5.14/httpcomponents-client-4.5.14.pom
+44718184374	Download	httpcomponents-client-4.5.6.pom	https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcomponents-client/4.5.6/httpcomponents-client-4.5.6.pom
+44718184374	Download	httpcomponents-core-4.4.16.pom	https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcomponents-core/4.4.16/httpcomponents-core-4.4.16.pom
+44718184374	Download	httpcomponents-parent-10.pom	https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcomponents-parent/10/httpcomponents-parent-10.pom
+44718184374	Download	httpcomponents-parent-11.pom	https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcomponents-parent/11/httpcomponents-parent-11.pom
+44718184374	Download	httpcore-4.4.16.jar	https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/4.4.16/httpcore-4.4.16.jar
+44718184374	Download	httpcore-4.4.16.pom	https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/4.4.16/httpcore-4.4.16.pom
+44718184374	Download	httpmime-4.5.6.jar	https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/4.5.6/httpmime-4.5.6.jar
+44718184374	Download	httpmime-4.5.6.pom	https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/4.5.6/httpmime-4.5.6.pom
+44718184374	Download	jose4j-0.9.5.jar	https://repo.maven.apache.org/maven2/org/bitbucket/b_c/jose4j/0.9.5/jose4j-0.9.5.jar
+44718184374	Download	jose4j-0.9.5.pom	https://repo.maven.apache.org/maven2/org/bitbucket/b_c/jose4j/0.9.5/jose4j-0.9.5.pom
+44718184374	Download	bcpkix-jdk18on-1.79.jar	https://repo.maven.apache.org/maven2/org/bouncycastle/bcpkix-jdk18on/1.79/bcpkix-jdk18on-1.79.jar
+44718184374	Download	bcpkix-jdk18on-1.79.pom	https://repo.maven.apache.org/maven2/org/bouncycastle/bcpkix-jdk18on/1.79/bcpkix-jdk18on-1.79.pom
+44718184374	Download	bcprov-jdk18on-1.79.jar	https://repo.maven.apache.org/maven2/org/bouncycastle/bcprov-jdk18on/1.79/bcprov-jdk18on-1.79.jar
+44718184374	Download	bcprov-jdk18on-1.79.pom	https://repo.maven.apache.org/maven2/org/bouncycastle/bcprov-jdk18on/1.79/bcprov-jdk18on-1.79.pom
+44718184374	Download	bcutil-jdk18on-1.79.jar	https://repo.maven.apache.org/maven2/org/bouncycastle/bcutil-jdk18on/1.79/bcutil-jdk18on-1.79.jar
+44718184374	Download	bcutil-jdk18on-1.79.pom	https://repo.maven.apache.org/maven2/org/bouncycastle/bcutil-jdk18on/1.79/bcutil-jdk18on-1.79.pom
+44718184374	Download	checker-qual-2.5.8.pom	https://repo.maven.apache.org/maven2/org/checkerframework/checker-qual/2.5.8/checker-qual-2.5.8.pom
+44718184374	Download	checker-qual-3.43.0.jar	https://repo.maven.apache.org/maven2/org/checkerframework/checker-qual/3.43.0/checker-qual-3.43.0.jar
+44718184374	Download	checker-qual-3.43.0.module	https://repo.maven.apache.org/maven2/org/checkerframework/checker-qual/3.43.0/checker-qual-3.43.0.module
+44718184374	Download	checker-qual-3.43.0.pom	https://repo.maven.apache.org/maven2/org/checkerframework/checker-qual/3.43.0/checker-qual-3.43.0.pom
+44718184374	Download	groovy-3.0.22.jar	https://repo.maven.apache.org/maven2/org/codehaus/groovy/groovy/3.0.22/groovy-3.0.22.jar
+44718184374	Download	groovy-3.0.22.pom	https://repo.maven.apache.org/maven2/org/codehaus/groovy/groovy/3.0.22/groovy-3.0.22.pom
+44718184374	Download	project-1.0.2.pom	https://repo.maven.apache.org/maven2/org/eclipse/ee4j/project/1.0.2/project-1.0.2.pom
+44718184374	Download	project-1.0.5.pom	https://repo.maven.apache.org/maven2/org/eclipse/ee4j/project/1.0.5/project-1.0.5.pom
+44718184374	Download	jaxb-bom-2.3.2.pom	https://repo.maven.apache.org/maven2/org/glassfish/jaxb/jaxb-bom/2.3.2/jaxb-bom-2.3.2.pom
+44718184374	Download	jaxb-runtime-2.3.2.jar	https://repo.maven.apache.org/maven2/org/glassfish/jaxb/jaxb-runtime/2.3.2/jaxb-runtime-2.3.2.jar
+44718184374	Download	jaxb-runtime-2.3.2.pom	https://repo.maven.apache.org/maven2/org/glassfish/jaxb/jaxb-runtime/2.3.2/jaxb-runtime-2.3.2.pom
+44718184374	Download	txw2-2.3.2.jar	https://repo.maven.apache.org/maven2/org/glassfish/jaxb/txw2/2.3.2/txw2-2.3.2.jar
+44718184374	Download	txw2-2.3.2.pom	https://repo.maven.apache.org/maven2/org/glassfish/jaxb/txw2/2.3.2/txw2-2.3.2.pom
+44718184374	Download	jdom2-2.0.6.jar	https://repo.maven.apache.org/maven2/org/jdom/jdom2/2.0.6/jdom2-2.0.6.jar
+44718184374	Download	jdom2-2.0.6.pom	https://repo.maven.apache.org/maven2/org/jdom/jdom2/2.0.6/jdom2-2.0.6.pom
+44718184374	Download	annotations-13.0.jar	https://repo.maven.apache.org/maven2/org/jetbrains/annotations/13.0/annotations-13.0.jar
+44718184374	Download	annotations-13.0.pom	https://repo.maven.apache.org/maven2/org/jetbrains/annotations/13.0/annotations-13.0.pom
+44718184374	Download	annotations-23.0.0.jar	https://repo.maven.apache.org/maven2/org/jetbrains/annotations/23.0.0/annotations-23.0.0.jar
+44718184374	Download	annotations-23.0.0.pom	https://repo.maven.apache.org/maven2/org/jetbrains/annotations/23.0.0/annotations-23.0.0.pom
+44718184374	Download	abi-tools-api-2.2.10.jar	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/abi-tools-api/2.2.10/abi-tools-api-2.2.10.jar
+44718184374	Download	abi-tools-api-2.2.10.pom	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/abi-tools-api/2.2.10/abi-tools-api-2.2.10.pom
+44718184374	Download	fus-statistics-gradle-plugin-2.2.10-gradle813.jar	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/fus-statistics-gradle-plugin/2.2.10/fus-statistics-gradle-plugin-2.2.10-gradle813.jar
+44718184374	Download	fus-statistics-gradle-plugin-2.2.10.module	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/fus-statistics-gradle-plugin/2.2.10/fus-statistics-gradle-plugin-2.2.10.module
+44718184374	Download	fus-statistics-gradle-plugin-2.2.10.pom	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/fus-statistics-gradle-plugin/2.2.10/fus-statistics-gradle-plugin-2.2.10.pom
+44718184374	Download	kotlin-build-statistics-2.2.10.jar	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-build-statistics/2.2.10/kotlin-build-statistics-2.2.10.jar
+44718184374	Download	kotlin-build-statistics-2.2.10.pom	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-build-statistics/2.2.10/kotlin-build-statistics-2.2.10.pom
+44718184374	Download	kotlin-build-tools-api-2.2.10.jar	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-build-tools-api/2.2.10/kotlin-build-tools-api-2.2.10.jar
+44718184374	Download	kotlin-build-tools-api-2.2.10.pom	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-build-tools-api/2.2.10/kotlin-build-tools-api-2.2.10.pom
+44718184374	Download	kotlin-build-tools-impl-2.2.10.jar	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-build-tools-impl/2.2.10/kotlin-build-tools-impl-2.2.10.jar
+44718184374	Download	kotlin-build-tools-impl-2.2.10.pom	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-build-tools-impl/2.2.10/kotlin-build-tools-impl-2.2.10.pom
+44718184374	Download	kotlin-compiler-embeddable-2.2.10.jar	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-compiler-embeddable/2.2.10/kotlin-compiler-embeddable-2.2.10.jar
+44718184374	Download	kotlin-compiler-embeddable-2.2.10.pom	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-compiler-embeddable/2.2.10/kotlin-compiler-embeddable-2.2.10.pom
+44718184374	Download	kotlin-compiler-runner-2.2.10.jar	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-compiler-runner/2.2.10/kotlin-compiler-runner-2.2.10.jar
+44718184374	Download	kotlin-compiler-runner-2.2.10.pom	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-compiler-runner/2.2.10/kotlin-compiler-runner-2.2.10.pom
+44718184374	Download	kotlin-daemon-client-2.2.10.jar	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-daemon-client/2.2.10/kotlin-daemon-client-2.2.10.jar
+44718184374	Download	kotlin-daemon-client-2.2.10.pom	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-daemon-client/2.2.10/kotlin-daemon-client-2.2.10.pom
+44718184374	Download	kotlin-daemon-embeddable-2.2.10.jar	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/2.2.10/kotlin-daemon-embeddable-2.2.10.jar
+44718184374	Download	kotlin-daemon-embeddable-2.2.10.pom	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/2.2.10/kotlin-daemon-embeddable-2.2.10.pom
+44718184374	Download	kotlin-gradle-plugin-annotations-2.2.10.jar	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-gradle-plugin-annotations/2.2.10/kotlin-gradle-plugin-annotations-2.2.10.jar
+44718184374	Download	kotlin-gradle-plugin-annotations-2.2.10.pom	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-gradle-plugin-annotations/2.2.10/kotlin-gradle-plugin-annotations-2.2.10.pom
+44718184374	Download	kotlin-gradle-plugin-api-2.2.10-gradle813.jar	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-gradle-plugin-api/2.2.10/kotlin-gradle-plugin-api-2.2.10-gradle813.jar
+44718184374	Download	kotlin-gradle-plugin-api-2.2.10.jar	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-gradle-plugin-api/2.2.10/kotlin-gradle-plugin-api-2.2.10.jar
+44718184374	Download	kotlin-gradle-plugin-api-2.2.10.module	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-gradle-plugin-api/2.2.10/kotlin-gradle-plugin-api-2.2.10.module
+44718184374	Download	kotlin-gradle-plugin-api-2.2.10.pom	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-gradle-plugin-api/2.2.10/kotlin-gradle-plugin-api-2.2.10.pom
+44718184374	Download	kotlin-gradle-plugin-idea-proto-2.2.10.jar	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-gradle-plugin-idea-proto/2.2.10/kotlin-gradle-plugin-idea-proto-2.2.10.jar
+44718184374	Download	kotlin-gradle-plugin-idea-proto-2.2.10.pom	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-gradle-plugin-idea-proto/2.2.10/kotlin-gradle-plugin-idea-proto-2.2.10.pom
+44718184374	Download	kotlin-gradle-plugin-idea-2.2.10.jar	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-gradle-plugin-idea/2.2.10/kotlin-gradle-plugin-idea-2.2.10.jar
+44718184374	Download	kotlin-gradle-plugin-idea-2.2.10.module	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-gradle-plugin-idea/2.2.10/kotlin-gradle-plugin-idea-2.2.10.module
+44718184374	Download	kotlin-gradle-plugin-idea-2.2.10.pom	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-gradle-plugin-idea/2.2.10/kotlin-gradle-plugin-idea-2.2.10.pom
+44718184374	Download	kotlin-gradle-plugin-model-2.2.10.jar	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-gradle-plugin-model/2.2.10/kotlin-gradle-plugin-model-2.2.10.jar
+44718184374	Download	kotlin-gradle-plugin-model-2.2.10.module	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-gradle-plugin-model/2.2.10/kotlin-gradle-plugin-model-2.2.10.module
+44718184374	Download	kotlin-gradle-plugin-model-2.2.10.pom	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-gradle-plugin-model/2.2.10/kotlin-gradle-plugin-model-2.2.10.pom
+44718184374	Download	kotlin-gradle-plugin-2.2.10-gradle813.jar	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-gradle-plugin/2.2.10/kotlin-gradle-plugin-2.2.10-gradle813.jar
+44718184374	Download	kotlin-gradle-plugin-2.2.10.module	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-gradle-plugin/2.2.10/kotlin-gradle-plugin-2.2.10.module
+44718184374	Download	kotlin-gradle-plugin-2.2.10.pom	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-gradle-plugin/2.2.10/kotlin-gradle-plugin-2.2.10.pom
+44718184374	Download	kotlin-gradle-plugins-bom-2.2.10.module	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-gradle-plugins-bom/2.2.10/kotlin-gradle-plugins-bom-2.2.10.module
+44718184374	Download	kotlin-gradle-plugins-bom-2.2.10.pom	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-gradle-plugins-bom/2.2.10/kotlin-gradle-plugins-bom-2.2.10.pom
+44718184374	Download	kotlin-klib-commonizer-api-2.2.10.jar	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-klib-commonizer-api/2.2.10/kotlin-klib-commonizer-api-2.2.10.jar
+44718184374	Download	kotlin-klib-commonizer-api-2.2.10.pom	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-klib-commonizer-api/2.2.10/kotlin-klib-commonizer-api-2.2.10.pom
+44718184374	Download	kotlin-native-utils-2.2.10.jar	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-native-utils/2.2.10/kotlin-native-utils-2.2.10.jar
+44718184374	Download	kotlin-native-utils-2.2.10.pom	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-native-utils/2.2.10/kotlin-native-utils-2.2.10.pom
+44718184374	Download	kotlin-reflect-1.6.10.jar	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-reflect/1.6.10/kotlin-reflect-1.6.10.jar
+44718184374	Download	kotlin-reflect-1.6.10.pom	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-reflect/1.6.10/kotlin-reflect-1.6.10.pom
+44718184374	Download	kotlin-reflect-2.2.10.jar	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-reflect/2.2.10/kotlin-reflect-2.2.10.jar
+44718184374	Download	kotlin-reflect-2.2.10.pom	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-reflect/2.2.10/kotlin-reflect-2.2.10.pom
+44718184374	Download	kotlin-script-runtime-2.2.10.jar	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-script-runtime/2.2.10/kotlin-script-runtime-2.2.10.jar
+44718184374	Download	kotlin-script-runtime-2.2.10.pom	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-script-runtime/2.2.10/kotlin-script-runtime-2.2.10.pom
+44718184374	Download	kotlin-scripting-common-2.2.10.jar	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-common/2.2.10/kotlin-scripting-common-2.2.10.jar
+44718184374	Download	kotlin-scripting-common-2.2.10.pom	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-common/2.2.10/kotlin-scripting-common-2.2.10.pom
+44718184374	Download	kotlin-scripting-compiler-embeddable-2.2.10.jar	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-embeddable/2.2.10/kotlin-scripting-compiler-embeddable-2.2.10.jar
+44718184374	Download	kotlin-scripting-compiler-embeddable-2.2.10.pom	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-embeddable/2.2.10/kotlin-scripting-compiler-embeddable-2.2.10.pom
+44718184374	Download	kotlin-scripting-compiler-impl-embeddable-2.2.10.jar	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-impl-embeddable/2.2.10/kotlin-scripting-compiler-impl-embeddable-2.2.10.jar
+44718184374	Download	kotlin-scripting-compiler-impl-embeddable-2.2.10.pom	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-impl-embeddable/2.2.10/kotlin-scripting-compiler-impl-embeddable-2.2.10.pom
+44718184374	Download	kotlin-scripting-jvm-2.2.10.jar	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-jvm/2.2.10/kotlin-scripting-jvm-2.2.10.jar
+44718184374	Download	kotlin-scripting-jvm-2.2.10.pom	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-jvm/2.2.10/kotlin-scripting-jvm-2.2.10.pom
+44718184374	Download	kotlin-stdlib-common-2.2.10.module	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-common/2.2.10/kotlin-stdlib-common-2.2.10.module
+44718184374	Download	kotlin-stdlib-common-2.2.10.pom	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-common/2.2.10/kotlin-stdlib-common-2.2.10.pom
+44718184374	Download	kotlin-stdlib-jdk7-1.8.0.jar	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-jdk7/1.8.0/kotlin-stdlib-jdk7-1.8.0.jar
+44718184374	Download	kotlin-stdlib-jdk7-1.8.0.pom	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-jdk7/1.8.0/kotlin-stdlib-jdk7-1.8.0.pom
+44718184374	Download	kotlin-stdlib-jdk7-2.2.10.jar	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-jdk7/2.2.10/kotlin-stdlib-jdk7-2.2.10.jar
+44718184374	Download	kotlin-stdlib-jdk7-2.2.10.pom	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-jdk7/2.2.10/kotlin-stdlib-jdk7-2.2.10.pom
+44718184374	Download	kotlin-stdlib-jdk8-1.8.0.jar	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-jdk8/1.8.0/kotlin-stdlib-jdk8-1.8.0.jar
+44718184374	Download	kotlin-stdlib-jdk8-1.8.0.pom	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-jdk8/1.8.0/kotlin-stdlib-jdk8-1.8.0.pom
+44718184374	Download	kotlin-stdlib-jdk8-2.2.10.jar	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-jdk8/2.2.10/kotlin-stdlib-jdk8-2.2.10.jar
+44718184374	Download	kotlin-stdlib-jdk8-2.2.10.pom	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-jdk8/2.2.10/kotlin-stdlib-jdk8-2.2.10.pom
+44718184374	Download	kotlin-stdlib-2.2.10.jar	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/2.2.10/kotlin-stdlib-2.2.10.jar
+44718184374	Download	kotlin-stdlib-2.2.10.module	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/2.2.10/kotlin-stdlib-2.2.10.module
+44718184374	Download	kotlin-stdlib-2.2.10.pom	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/2.2.10/kotlin-stdlib-2.2.10.pom
+44718184374	Download	kotlin-tooling-core-2.2.10.jar	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-tooling-core/2.2.10/kotlin-tooling-core-2.2.10.jar
+44718184374	Download	kotlin-tooling-core-2.2.10.pom	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-tooling-core/2.2.10/kotlin-tooling-core-2.2.10.pom
+44718184374	Download	kotlin-util-io-2.2.10.jar	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-util-io/2.2.10/kotlin-util-io-2.2.10.jar
+44718184374	Download	kotlin-util-io-2.2.10.pom	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-util-io/2.2.10/kotlin-util-io-2.2.10.pom
+44718184374	Download	kotlin-util-klib-metadata-2.2.10.jar	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-util-klib-metadata/2.2.10/kotlin-util-klib-metadata-2.2.10.jar
+44718184374	Download	kotlin-util-klib-metadata-2.2.10.pom	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-util-klib-metadata/2.2.10/kotlin-util-klib-metadata-2.2.10.pom
+44718184374	Download	kotlin-util-klib-2.2.10.jar	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-util-klib/2.2.10/kotlin-util-klib-2.2.10.jar
+44718184374	Download	kotlin-util-klib-2.2.10.pom	https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-util-klib/2.2.10/kotlin-util-klib-2.2.10.pom
+44718184374	Download	kotlinx-coroutines-android-1.6.4.jar	https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-android/1.6.4/kotlinx-coroutines-android-1.6.4.jar
+44718184374	Download	kotlinx-coroutines-android-1.6.4.module	https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-android/1.6.4/kotlinx-coroutines-android-1.6.4.module
+44718184374	Download	kotlinx-coroutines-android-1.6.4.pom	https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-android/1.6.4/kotlinx-coroutines-android-1.6.4.pom
+44718184374	Download	kotlinx-coroutines-bom-1.6.4.pom	https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-bom/1.6.4/kotlinx-coroutines-bom-1.6.4.pom
+44718184374	Download	kotlinx-coroutines-bom-1.8.0.pom	https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-bom/1.8.0/kotlinx-coroutines-bom-1.8.0.pom
+44718184374	Download	kotlinx-coroutines-bom-1.9.0.pom	https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-bom/1.9.0/kotlinx-coroutines-bom-1.9.0.pom
+44718184374	Download	kotlinx-coroutines-core-jvm-1.6.4.jar	https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-core-jvm/1.6.4/kotlinx-coroutines-core-jvm-1.6.4.jar
+44718184374	Download	kotlinx-coroutines-core-jvm-1.6.4.module	https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-core-jvm/1.6.4/kotlinx-coroutines-core-jvm-1.6.4.module
+44718184374	Download	kotlinx-coroutines-core-jvm-1.6.4.pom	https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-core-jvm/1.6.4/kotlinx-coroutines-core-jvm-1.6.4.pom
+44718184374	Download	kotlinx-coroutines-core-jvm-1.8.0.jar	https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-core-jvm/1.8.0/kotlinx-coroutines-core-jvm-1.8.0.jar
+44718184374	Download	kotlinx-coroutines-core-jvm-1.8.0.module	https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-core-jvm/1.8.0/kotlinx-coroutines-core-jvm-1.8.0.module
+44718184374	Download	kotlinx-coroutines-core-jvm-1.8.0.pom	https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-core-jvm/1.8.0/kotlinx-coroutines-core-jvm-1.8.0.pom
+44718184374	Download	kotlinx-coroutines-core-jvm-1.9.0.jar	https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-core-jvm/1.9.0/kotlinx-coroutines-core-jvm-1.9.0.jar
+44718184374	Download	kotlinx-coroutines-core-jvm-1.9.0.module	https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-core-jvm/1.9.0/kotlinx-coroutines-core-jvm-1.9.0.module
+44718184374	Download	kotlinx-coroutines-core-jvm-1.9.0.pom	https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-core-jvm/1.9.0/kotlinx-coroutines-core-jvm-1.9.0.pom
+44718184374	Download	kotlinx-coroutines-core-1.6.4.module	https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-core/1.6.4/kotlinx-coroutines-core-1.6.4.module
+44718184374	Download	kotlinx-coroutines-core-1.6.4.pom	https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-core/1.6.4/kotlinx-coroutines-core-1.6.4.pom
+44718184374	Download	kotlinx-coroutines-core-1.9.0.module	https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-core/1.9.0/kotlinx-coroutines-core-1.9.0.module
+44718184374	Download	kotlinx-coroutines-core-1.9.0.pom	https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-core/1.9.0/kotlinx-coroutines-core-1.9.0.pom
+44718184374	Download	json-20160810.jar	https://repo.maven.apache.org/maven2/org/json/json/20160810/json-20160810.jar
+44718184374	Download	json-20160810.pom	https://repo.maven.apache.org/maven2/org/json/json/20160810/json-20160810.pom
+44718184374	Download	jspecify-1.0.0.jar	https://repo.maven.apache.org/maven2/org/jspecify/jspecify/1.0.0/jspecify-1.0.0.jar
+44718184374	Download	jspecify-1.0.0.module	https://repo.maven.apache.org/maven2/org/jspecify/jspecify/1.0.0/jspecify-1.0.0.module
+44718184374	Download	jspecify-1.0.0.pom	https://repo.maven.apache.org/maven2/org/jspecify/jspecify/1.0.0/jspecify-1.0.0.pom
+44718184374	Download	junit-bom-5.10.2.module	https://repo.maven.apache.org/maven2/org/junit/junit-bom/5.10.2/junit-bom-5.10.2.module
+44718184374	Download	junit-bom-5.10.2.pom	https://repo.maven.apache.org/maven2/org/junit/junit-bom/5.10.2/junit-bom-5.10.2.pom
+44718184374	Download	junit-bom-5.11.0-M2.module	https://repo.maven.apache.org/maven2/org/junit/junit-bom/5.11.0-M2/junit-bom-5.11.0-M2.module
+44718184374	Download	junit-bom-5.11.0-M2.pom	https://repo.maven.apache.org/maven2/org/junit/junit-bom/5.11.0-M2/junit-bom-5.11.0-M2.pom
+44718184374	Download	stax-ex-1.8.1.jar	https://repo.maven.apache.org/maven2/org/jvnet/staxex/stax-ex/1.8.1/stax-ex-1.8.1.jar
+44718184374	Download	stax-ex-1.8.1.pom	https://repo.maven.apache.org/maven2/org/jvnet/staxex/stax-ex/1.8.1/stax-ex-1.8.1.pom
+44718184374	Download	asm-analysis-9.9.jar	https://repo.maven.apache.org/maven2/org/ow2/asm/asm-analysis/9.9/asm-analysis-9.9.jar
+44718184374	Download	asm-analysis-9.9.pom	https://repo.maven.apache.org/maven2/org/ow2/asm/asm-analysis/9.9/asm-analysis-9.9.pom
+44718184374	Download	asm-commons-9.9.jar	https://repo.maven.apache.org/maven2/org/ow2/asm/asm-commons/9.9/asm-commons-9.9.jar
+44718184374	Download	asm-commons-9.9.pom	https://repo.maven.apache.org/maven2/org/ow2/asm/asm-commons/9.9/asm-commons-9.9.pom
+44718184374	Download	asm-tree-9.9.jar	https://repo.maven.apache.org/maven2/org/ow2/asm/asm-tree/9.9/asm-tree-9.9.jar
+44718184374	Download	asm-tree-9.9.pom	https://repo.maven.apache.org/maven2/org/ow2/asm/asm-tree/9.9/asm-tree-9.9.pom
+44718184374	Download	asm-util-9.9.jar	https://repo.maven.apache.org/maven2/org/ow2/asm/asm-util/9.9/asm-util-9.9.jar
+44718184374	Download	asm-util-9.9.pom	https://repo.maven.apache.org/maven2/org/ow2/asm/asm-util/9.9/asm-util-9.9.pom
+44718184374	Download	asm-9.9.jar	https://repo.maven.apache.org/maven2/org/ow2/asm/asm/9.9/asm-9.9.jar
+44718184374	Download	asm-9.9.pom	https://repo.maven.apache.org/maven2/org/ow2/asm/asm/9.9/asm-9.9.pom
+44718184374	Download	ow2-1.5.1.pom	https://repo.maven.apache.org/maven2/org/ow2/ow2/1.5.1/ow2-1.5.1.pom
+44718184374	Download	slf4j-api-1.7.30.jar	https://repo.maven.apache.org/maven2/org/slf4j/slf4j-api/1.7.30/slf4j-api-1.7.30.jar
+44718184374	Download	slf4j-api-1.7.30.pom	https://repo.maven.apache.org/maven2/org/slf4j/slf4j-api/1.7.30/slf4j-api-1.7.30.pom
+44718184374	Download	slf4j-parent-1.7.30.pom	https://repo.maven.apache.org/maven2/org/slf4j/slf4j-parent/1.7.30/slf4j-parent-1.7.30.pom
+44718184374	Download	oss-parent-7.pom	https://repo.maven.apache.org/maven2/org/sonatype/oss/oss-parent/7/oss-parent-7.pom
+44718184374	Download	oss-parent-9.pom	https://repo.maven.apache.org/maven2/org/sonatype/oss/oss-parent/9/oss-parent-9.pom
+44718184374	Download	tensorflow-lite-metadata-0.2.0.jar	https://repo.maven.apache.org/maven2/org/tensorflow/tensorflow-lite-metadata/0.2.0/tensorflow-lite-metadata-0.2.0.jar
+44718184374	Download	tensorflow-lite-metadata-0.2.0.pom	https://repo.maven.apache.org/maven2/org/tensorflow/tensorflow-lite-metadata/0.2.0/tensorflow-lite-metadata-0.2.0.pom
+44718184374	Download	gradle-9.5.0-bin.zip	https://services.gradle.org/distributions/gradle-9.5.0-bin.zip
+44718184374	Download	download	https://sourceforge.net/projects/giflib/files/giflib-6.1.3.tar.gz/download
+44718184374	Download (Briefcase pin)	Temurin JDK 17.0.17+10	https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.17+10/OpenJDK17U-jdk_x64_linux_hotspot_17.0.17_10.tar.gz
+44718184374	Download (bootstrap pin)	vcpkg-glibc 2026-09-26	https://github.com/microsoft/vcpkg-tool/releases/download/2026-09-26/vcpkg-glibc
+44718184374	Git	HeOCR checkout	https://github.com/HeOCR/heocr-desktop.git
+44718184374	Git	vcpkg @ 9eec002df1cd109f8f104cd966a763daf9751489	https://github.com/microsoft/vcpkg
+44718184374	Git	fdroidserver @ 8f52ae3ce287bc28964db544b970b88dce9c38bf	https://gitlab.com/fdroid/fdroidserver.git
+44718184374	Image	buildserver-trixie (amd64), sha256:1ea8bef1820bff06c2974e31b4fc4c79c364cd24231b86e71fa4b926797e0dac	https://registry.gitlab.com/v2/fdroid/fdroidserver/manifests/sha256:1ea8bef1820bff06c2974e31b4fc4c79c364cd24231b86e71fa4b926797e0dac
+44718184374	PyPI	h11-0.16.0-py3-none-any.whl	https://files.pythonhosted.org/packages/04/4b/29cac41a4d98d144bf5f6d33995617b185d14b22401f75ca86f384e87ff1/h11-0.16.0-py3-none-any.whl
+44718184374	PyPI	h11-0.16.0-py3-none-any.whl.metadata	https://files.pythonhosted.org/packages/04/4b/29cac41a4d98d144bf5f6d33995617b185d14b22401f75ca86f384e87ff1/h11-0.16.0-py3-none-any.whl.metadata
+44718184374	PyPI	pip-26.3-py3-none-any.whl	https://files.pythonhosted.org/packages/07/25/ee8c38ae72d66b844ce8eb9711ba905dba21ca1a8a0c960057c41cd23337/pip-26.3-py3-none-any.whl
+44718184374	PyPI	pip-26.3-py3-none-any.whl.metadata	https://files.pythonhosted.org/packages/07/25/ee8c38ae72d66b844ce8eb9711ba905dba21ca1a8a0c960057c41cd23337/pip-26.3-py3-none-any.whl.metadata
+44718184374	PyPI	tzdata-2026.6-py2.py3-none-any.whl	https://files.pythonhosted.org/packages/0a/66/9a06c2227fedfd4919f0eaaa8b94377d9730882a7e4f95823c9a331ab5e1/tzdata-2026.6-py2.py3-none-any.whl
+44718184374	PyPI	tzdata-2026.6-py2.py3-none-any.whl.metadata	https://files.pythonhosted.org/packages/0a/66/9a06c2227fedfd4919f0eaaa8b94377d9730882a7e4f95823c9a331ab5e1/tzdata-2026.6-py2.py3-none-any.whl.metadata
+44718184374	PyPI	cookiecutter-2.7.1-py3-none-any.whl	https://files.pythonhosted.org/packages/14/a9/8c855c14b401dc67d20739345295af5afce5e930a69600ab20f6cfa50b5c/cookiecutter-2.7.1-py3-none-any.whl
+44718184374	PyPI	cookiecutter-2.7.1-py3-none-any.whl.metadata	https://files.pythonhosted.org/packages/14/a9/8c855c14b401dc67d20739345295af5afce5e930a69600ab20f6cfa50b5c/cookiecutter-2.7.1-py3-none-any.whl.metadata
+44718184374	PyPI	xbuild-0.5.0-py3-none-any.whl	https://files.pythonhosted.org/packages/1b/72/76b579acb785339702c5f6566e766e17d8ea60d6cb97a3f4cabe752396b4/xbuild-0.5.0-py3-none-any.whl
+44718184374	PyPI	xbuild-0.5.0-py3-none-any.whl.metadata	https://files.pythonhosted.org/packages/1b/72/76b579acb785339702c5f6566e766e17d8ea60d6cb97a3f4cabe752396b4/xbuild-0.5.0-py3-none-any.whl.metadata
+44718184374	PyPI	httpcore2-2.16.2-py3-none-any.whl	https://files.pythonhosted.org/packages/2a/e8/009c347feac27f8960605aa98d55ed263b5870dd4fd80b82fd1d00d5716c/httpcore2-2.16.2-py3-none-any.whl
+44718184374	PyPI	httpcore2-2.16.2-py3-none-any.whl.metadata	https://files.pythonhosted.org/packages/2a/e8/009c347feac27f8960605aa98d55ed263b5870dd4fd80b82fd1d00d5716c/httpcore2-2.16.2-py3-none-any.whl.metadata
+44718184374	PyPI	wheel-0.48.0-py3-none-any.whl	https://files.pythonhosted.org/packages/2e/29/69cfbb602cd91690c55d38ba9fe53e6a7e76a6fa647bf38f19c138d25449/wheel-0.48.0-py3-none-any.whl
+44718184374	PyPI	wheel-0.48.0-py3-none-any.whl.metadata	https://files.pythonhosted.org/packages/2e/29/69cfbb602cd91690c55d38ba9fe53e6a7e76a6fa647bf38f19c138d25449/wheel-0.48.0-py3-none-any.whl.metadata
+44718184374	PyPI	python_dateutil-4.0.0-py3-none-any.whl	https://files.pythonhosted.org/packages/2f/a9/52b89563d154433d79b51ed1eb4842bf7334cb2696891a7fe135618853d7/python_dateutil-4.0.0-py3-none-any.whl
+44718184374	PyPI	python_dateutil-4.0.0-py3-none-any.whl.metadata	https://files.pythonhosted.org/packages/2f/a9/52b89563d154433d79b51ed1eb4842bf7334cb2696891a7fe135618853d7/python_dateutil-4.0.0-py3-none-any.whl.metadata
+44718184374	PyPI	click-8.5.1-py3-none-any.whl	https://files.pythonhosted.org/packages/31/7d/164b7ffc8624fe9efb4221bf9af485d5c1e41b9ae118045d2b6dc5457d8b/click-8.5.1-py3-none-any.whl
+44718184374	PyPI	click-8.5.1-py3-none-any.whl.metadata	https://files.pythonhosted.org/packages/31/7d/164b7ffc8624fe9efb4221bf9af485d5c1e41b9ae118045d2b6dc5457d8b/click-8.5.1-py3-none-any.whl.metadata
+44718184374	PyPI	certifi-2026.10.23-py3-none-any.whl	https://files.pythonhosted.org/packages/32/d1/a3652fe2c19134d0d15922177821d863cbd7e842d53a21bbe7e8e3a1b5ac/certifi-2026.10.23-py3-none-any.whl
+44718184374	PyPI	certifi-2026.10.23-py3-none-any.whl.metadata	https://files.pythonhosted.org/packages/32/d1/a3652fe2c19134d0d15922177821d863cbd7e842d53a21bbe7e8e3a1b5ac/certifi-2026.10.23-py3-none-any.whl.metadata
+44718184374	PyPI	pybind11-3.1.0-py3-none-any.whl	https://files.pythonhosted.org/packages/33/fd/8762f7ee3e4e4be6d1d846cffb4916dd9bb02b2f800d3603718a0efe494c/pybind11-3.1.0-py3-none-any.whl
+44718184374	PyPI	pybind11-3.1.0-py3-none-any.whl.metadata	https://files.pythonhosted.org/packages/33/fd/8762f7ee3e4e4be6d1d846cffb4916dd9bb02b2f800d3603718a0efe494c/pybind11-3.1.0-py3-none-any.whl.metadata
+44718184374	PyPI	pyelftools-0.33-py3-none-any.whl	https://files.pythonhosted.org/packages/46/2a/f9697576603dae937727827505a6126a066affb227034e77e6f9068910da/pyelftools-0.33-py3-none-any.whl
+44718184374	PyPI	pyelftools-0.33-py3-none-any.whl.metadata	https://files.pythonhosted.org/packages/46/2a/f9697576603dae937727827505a6126a066affb227034e77e6f9068910da/pyelftools-0.33-py3-none-any.whl.metadata
+44718184374	PyPI	typing_extensions-4.16.0-py3-none-any.whl	https://files.pythonhosted.org/packages/49/d3/b8441a820a491ddfc024b0b0cf0393375b75ea13866d9c66727e54c2fc80/typing_extensions-4.16.0-py3-none-any.whl
+44718184374	PyPI	typing_extensions-4.16.0-py3-none-any.whl.metadata	https://files.pythonhosted.org/packages/49/d3/b8441a820a491ddfc024b0b0cf0393375b75ea13866d9c66727e54c2fc80/typing_extensions-4.16.0-py3-none-any.whl.metadata
+44718184374	PyPI	charset_normalizer-3.5.2-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl	https://files.pythonhosted.org/packages/4b/85/41d27f234b82e47c167a5f6c0f62501dc0c640585ff4aba79e08a390336a/charset_normalizer-3.5.2-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl
+44718184374	PyPI	charset_normalizer-3.5.2-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata	https://files.pythonhosted.org/packages/4b/85/41d27f234b82e47c167a5f6c0f62501dc0c640585ff4aba79e08a390336a/charset_normalizer-3.5.2-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata
+44718184374	PyPI	truststore-0.10.5-py3-none-any.whl	https://files.pythonhosted.org/packages/51/e9/3a7820be2bb0fe53b6bc9c3be26d3d1158004e4c3ab953aa6840b955b1e9/truststore-0.10.5-py3-none-any.whl
+44718184374	PyPI	truststore-0.10.5-py3-none-any.whl.metadata	https://files.pythonhosted.org/packages/51/e9/3a7820be2bb0fe53b6bc9c3be26d3d1158004e4c3ab953aa6840b955b1e9/truststore-0.10.5-py3-none-any.whl.metadata
+44718184374	PyPI	idna-3.20-py3-none-any.whl	https://files.pythonhosted.org/packages/58/a2/bb081bab032533a855d44de1d56f8e8426114ff1ba5d1f07a438a0a654f8/idna-3.20-py3-none-any.whl
+44718184374	PyPI	idna-3.20-py3-none-any.whl.metadata	https://files.pythonhosted.org/packages/58/a2/bb081bab032533a855d44de1d56f8e8426114ff1ba5d1f07a438a0a654f8/idna-3.20-py3-none-any.whl.metadata
+44718184374	PyPI	platformdirs-4.14.8-py3-none-any.whl	https://files.pythonhosted.org/packages/5b/be/373cc7341f53bfd3acba3e5db62433fd960a45fcf73ad64a5f4d27e74910/platformdirs-4.14.8-py3-none-any.whl
+44718184374	PyPI	platformdirs-4.14.8-py3-none-any.whl.metadata	https://files.pythonhosted.org/packages/5b/be/373cc7341f53bfd3acba3e5db62433fd960a45fcf73ad64a5f4d27e74910/platformdirs-4.14.8-py3-none-any.whl.metadata
+44718184374	PyPI	jinja2-3.1.6-py3-none-any.whl	https://files.pythonhosted.org/packages/62/a1/3d680cbfd5f4b8f15abc1d571870c5fc3e594bb582bc3b64ea099db13e56/jinja2-3.1.6-py3-none-any.whl
+44718184374	PyPI	jinja2-3.1.6-py3-none-any.whl.metadata	https://files.pythonhosted.org/packages/62/a1/3d680cbfd5f4b8f15abc1d571870c5fc3e594bb582bc3b64ea099db13e56/jinja2-3.1.6-py3-none-any.whl.metadata
+44718184374	PyPI	packaging-26.3-py3-none-any.whl	https://files.pythonhosted.org/packages/63/34/ba1c580383c9eada3711951fef0795c80b829a078d72188184bcab9dd527/packaging-26.3-py3-none-any.whl
+44718184374	PyPI	packaging-26.3-py3-none-any.whl.metadata	https://files.pythonhosted.org/packages/63/34/ba1c580383c9eada3711951fef0795c80b829a078d72188184bcab9dd527/packaging-26.3-py3-none-any.whl.metadata
+44718184374	PyPI	markupsafe-3.0.4-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl	https://files.pythonhosted.org/packages/63/e0/cec6865dfe88cb48fedd4b20aed6af5158e41092adcbf3e028bcc6ec2108/markupsafe-3.0.4-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl
+44718184374	PyPI	markupsafe-3.0.4-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata	https://files.pythonhosted.org/packages/63/e0/cec6865dfe88cb48fedd4b20aed6af5158e41092adcbf3e028bcc6ec2108/markupsafe-3.0.4-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata
+44718184374	PyPI	gitpython-3.2.1-py3-none-any.whl	https://files.pythonhosted.org/packages/6b/50/2a923c4dc02522ff9567f07c67ed1deca6d5fa9474f4708168b8088dfa37/gitpython-3.2.1-py3-none-any.whl
+44718184374	PyPI	gitpython-3.2.1-py3-none-any.whl.metadata	https://files.pythonhosted.org/packages/6b/50/2a923c4dc02522ff9567f07c67ed1deca6d5fa9474f4708168b8088dfa37/gitpython-3.2.1-py3-none-any.whl.metadata
+44718184374	PyPI	pkgconf-3.0.7.post0-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl	https://files.pythonhosted.org/packages/6c/eb/4a4fe6c178d4447f3a3189b5fb740a76dc7ef8846a57886270315f22f7ee/pkgconf-3.0.7.post0-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl
+44718184374	PyPI	pkgconf-3.0.7.post0-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata	https://files.pythonhosted.org/packages/6c/eb/4a4fe6c178d4447f3a3189b5fb740a76dc7ef8846a57886270315f22f7ee/pkgconf-3.0.7.post0-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata
+44718184374	PyPI	pygments-2.21.0-py3-none-any.whl	https://files.pythonhosted.org/packages/71/46/17f022dd3e953bf20a04a028a21ec746d942f8d2af30fa0f124fa0e6a684/pygments-2.21.0-py3-none-any.whl
+44718184374	PyPI	pygments-2.21.0-py3-none-any.whl.metadata	https://files.pythonhosted.org/packages/71/46/17f022dd3e953bf20a04a028a21ec746d942f8d2af30fa0f124fa0e6a684/pygments-2.21.0-py3-none-any.whl.metadata
+44718184374	PyPI	pyyaml-6.0.3-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl	https://files.pythonhosted.org/packages/74/27/e5b8f34d02d9995b80abcef563ea1f8b56d20134d8f4e5e81733b1feceb2/pyyaml-6.0.3-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl
+44718184374	PyPI	pyyaml-6.0.3-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata	https://files.pythonhosted.org/packages/74/27/e5b8f34d02d9995b80abcef563ea1f8b56d20134d8f4e5e81733b1feceb2/pyyaml-6.0.3-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata
+44718184374	PyPI	httpx2-2.16.2-py3-none-any.whl	https://files.pythonhosted.org/packages/77/de/8c4306a3d6aa2495111986addf33a9e561eff4c47552e4c4b9251160d0ad/httpx2-2.16.2-py3-none-any.whl
+44718184374	PyPI	httpx2-2.16.2-py3-none-any.whl.metadata	https://files.pythonhosted.org/packages/77/de/8c4306a3d6aa2495111986addf33a9e561eff4c47552e4c4b9251160d0ad/httpx2-2.16.2-py3-none-any.whl.metadata
+44718184374	PyPI	auditwheel-6.8.2-py3-none-any.whl	https://files.pythonhosted.org/packages/78/33/475398f5eb069aa20910ec8486bdc62a87deadd8229494cbc80a1ddbf740/auditwheel-6.8.2-py3-none-any.whl
+44718184374	PyPI	auditwheel-6.8.2-py3-none-any.whl.metadata	https://files.pythonhosted.org/packages/78/33/475398f5eb069aa20910ec8486bdc62a87deadd8229494cbc80a1ddbf740/auditwheel-6.8.2-py3-none-any.whl.metadata
+44718184374	PyPI	rich-15.0.0-py3-none-any.whl	https://files.pythonhosted.org/packages/82/3b/64d4899d73f91ba49a8c18a8ff3f0ea8f1c1d75481760df8c68ef5235bf5/rich-15.0.0-py3-none-any.whl
+44718184374	PyPI	rich-15.0.0-py3-none-any.whl.metadata	https://files.pythonhosted.org/packages/82/3b/64d4899d73f91ba49a8c18a8ff3f0ea8f1c1d75481760df8c68ef5235bf5/rich-15.0.0-py3-none-any.whl.metadata
+44718184374	PyPI	pyproject_hooks-1.3.3-py3-none-any.whl	https://files.pythonhosted.org/packages/85/11/044d1ae1b4ec0d7af88ee5bc91e081be1022533032b906a7bdabdbb60977/pyproject_hooks-1.3.3-py3-none-any.whl
+44718184374	PyPI	pyproject_hooks-1.3.3-py3-none-any.whl.metadata	https://files.pythonhosted.org/packages/85/11/044d1ae1b4ec0d7af88ee5bc91e081be1022533032b906a7bdabdbb60977/pyproject_hooks-1.3.3-py3-none-any.whl.metadata
+44718184374	PyPI	briefcase-0.4.7-py3-none-any.whl	https://files.pythonhosted.org/packages/8a/61/6a8a602090c1b253ca79667b9b54610192538ba1475a79f7c9ccf3149bc4/briefcase-0.4.7-py3-none-any.whl
+44718184374	PyPI	briefcase-0.4.7-py3-none-any.whl.metadata	https://files.pythonhosted.org/packages/8a/61/6a8a602090c1b253ca79667b9b54610192538ba1475a79f7c9ccf3149bc4/briefcase-0.4.7-py3-none-any.whl.metadata
+44718184374	PyPI	filelock-4.2.12-py3-none-any.whl	https://files.pythonhosted.org/packages/8a/c9/eb6b6528c7edb958d4c24ac47a8b94113d9de36e4cfc6eecd599b1a4f349/filelock-4.2.12-py3-none-any.whl
+44718184374	PyPI	filelock-4.2.12-py3-none-any.whl.metadata	https://files.pythonhosted.org/packages/8a/c9/eb6b6528c7edb958d4c24ac47a8b94113d9de36e4cfc6eecd599b1a4f349/filelock-4.2.12-py3-none-any.whl.metadata
+44718184374	PyPI	urllib3-2.8.0-py3-none-any.whl	https://files.pythonhosted.org/packages/92/9d/c4e665119135114480843e7ab388fa94d8480650450e6f8e26b70d323a4c/urllib3-2.8.0-py3-none-any.whl
+44718184374	PyPI	urllib3-2.8.0-py3-none-any.whl.metadata	https://files.pythonhosted.org/packages/92/9d/c4e665119135114480843e7ab388fa94d8480650450e6f8e26b70d323a4c/urllib3-2.8.0-py3-none-any.whl.metadata
+44718184374	PyPI	gitdb-4.0.12-py3-none-any.whl	https://files.pythonhosted.org/packages/a0/61/5c78b91c3143ed5c14207f463aecfc8f9dbb5092fb2869baf37c273b2705/gitdb-4.0.12-py3-none-any.whl
+44718184374	PyPI	gitdb-4.0.12-py3-none-any.whl.metadata	https://files.pythonhosted.org/packages/a0/61/5c78b91c3143ed5c14207f463aecfc8f9dbb5092fb2869baf37c273b2705/gitdb-4.0.12-py3-none-any.whl.metadata
+44718184374	PyPI	requests-2.34.2-py3-none-any.whl	https://files.pythonhosted.org/packages/a0/f4/c67b0b3f1b9245e8d266f0f112c500d50e5b4e83cb6f3b71b6528104182a/requests-2.34.2-py3-none-any.whl
+44718184374	PyPI	requests-2.34.2-py3-none-any.whl.metadata	https://files.pythonhosted.org/packages/a0/f4/c67b0b3f1b9245e8d266f0f112c500d50e5b4e83cb6f3b71b6528104182a/requests-2.34.2-py3-none-any.whl.metadata
+44718184374	PyPI	dependency_groups-1.3.2-py3-none-any.whl	https://files.pythonhosted.org/packages/a1/e4/da5f2f176050efcfb9222a76a3e81c41f69f775be8e563b76ca4292a134f/dependency_groups-1.3.2-py3-none-any.whl
+44718184374	PyPI	dependency_groups-1.3.2-py3-none-any.whl.metadata	https://files.pythonhosted.org/packages/a1/e4/da5f2f176050efcfb9222a76a3e81c41f69f775be8e563b76ca4292a134f/dependency_groups-1.3.2-py3-none-any.whl.metadata
+44718184374	PyPI	text_unidecode-1.3-py2.py3-none-any.whl	https://files.pythonhosted.org/packages/a6/a5/c0b6468d3824fe3fde30dbb5e1f687b291608f9473681bbf7dabbf5a87d7/text_unidecode-1.3-py2.py3-none-any.whl
+44718184374	PyPI	text_unidecode-1.3-py2.py3-none-any.whl.metadata	https://files.pythonhosted.org/packages/a6/a5/c0b6468d3824fe3fde30dbb5e1f687b291608f9473681bbf7dabbf5a87d7/text_unidecode-1.3-py2.py3-none-any.whl.metadata
+44718184374	PyPI	anyio-4.16.0-py3-none-any.whl	https://files.pythonhosted.org/packages/a9/16/7757fb84c819accc7d7e9af5291b261e4abb8627ee040f99e7d35ef2457a/anyio-4.16.0-py3-none-any.whl
+44718184374	PyPI	anyio-4.16.0-py3-none-any.whl.metadata	https://files.pythonhosted.org/packages/a9/16/7757fb84c819accc7d7e9af5291b261e4abb8627ee040f99e7d35ef2457a/anyio-4.16.0-py3-none-any.whl.metadata
+44718184374	PyPI	build-1.6.1-py3-none-any.whl	https://files.pythonhosted.org/packages/ad/9b/9fb3585dabcd73a1b2a6267f63f62649347c9e6d072c9fde365b105abb2c/build-1.6.1-py3-none-any.whl
+44718184374	PyPI	build-1.6.1-py3-none-any.whl.metadata	https://files.pythonhosted.org/packages/ad/9b/9fb3585dabcd73a1b2a6267f63f62649347c9e6d072c9fde365b105abb2c/build-1.6.1-py3-none-any.whl.metadata
+44718184374	PyPI	mdurl-0.1.2-py3-none-any.whl	https://files.pythonhosted.org/packages/b3/38/89ba8ad64ae25be8de66a6d463314cf1eb366222074cfda9ee839c56a4b4/mdurl-0.1.2-py3-none-any.whl
+44718184374	PyPI	mdurl-0.1.2-py3-none-any.whl.metadata	https://files.pythonhosted.org/packages/b3/38/89ba8ad64ae25be8de66a6d463314cf1eb366222074cfda9ee839c56a4b4/mdurl-0.1.2-py3-none-any.whl.metadata
+44718184374	PyPI	psutil-7.2.2-cp36-abi3-manylinux2010_x86_64.manylinux_2_12_x86_64.manylinux_2_28_x86_64.whl	https://files.pythonhosted.org/packages/b5/70/5d8df3b09e25bce090399cf48e452d25c935ab72dad19406c77f4e828045/psutil-7.2.2-cp36-abi3-manylinux2010_x86_64.manylinux_2_12_x86_64.manylinux_2_28_x86_64.whl
+44718184374	PyPI	psutil-7.2.2-cp36-abi3-manylinux2010_x86_64.manylinux_2_12_x86_64.manylinux_2_28_x86_64.whl.metadata	https://files.pythonhosted.org/packages/b5/70/5d8df3b09e25bce090399cf48e452d25c935ab72dad19406c77f4e828045/psutil-7.2.2-cp36-abi3-manylinux2010_x86_64.manylinux_2_12_x86_64.manylinux_2_28_x86_64.whl.metadata
+44718184374	PyPI	smmap-5.0.3-py3-none-any.whl	https://files.pythonhosted.org/packages/c1/d4/59e74daffcb57a07668852eeeb6035af9f32cbfd7a1d2511f17d2fe6a738/smmap-5.0.3-py3-none-any.whl
+44718184374	PyPI	smmap-5.0.3-py3-none-any.whl.metadata	https://files.pythonhosted.org/packages/c1/d4/59e74daffcb57a07668852eeeb6035af9f32cbfd7a1d2511f17d2fe6a738/smmap-5.0.3-py3-none-any.whl.metadata
+44718184374	PyPI	tomli_w-1.2.0-py3-none-any.whl	https://files.pythonhosted.org/packages/c7/18/c86eb8e0202e32dd3df50d43d7ff9854f8e0603945ff398974c1d91ac1ef/tomli_w-1.2.0-py3-none-any.whl
+44718184374	PyPI	tomli_w-1.2.0-py3-none-any.whl.metadata	https://files.pythonhosted.org/packages/c7/18/c86eb8e0202e32dd3df50d43d7ff9854f8e0603945ff398974c1d91ac1ef/tomli_w-1.2.0-py3-none-any.whl.metadata
+44718184374	PyPI	markdown_it_py-4.3.0-py3-none-any.whl	https://files.pythonhosted.org/packages/c9/31/5f0ac2f1a1c67423c995c731a11cd4ad05d081a2be969d74f868bdb9cc70/markdown_it_py-4.3.0-py3-none-any.whl
+44718184374	PyPI	markdown_it_py-4.3.0-py3-none-any.whl.metadata	https://files.pythonhosted.org/packages/c9/31/5f0ac2f1a1c67423c995c731a11cd4ad05d081a2be969d74f868bdb9cc70/markdown_it_py-4.3.0-py3-none-any.whl.metadata
+44718184374	PyPI	chardet-7.7.0-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl	https://files.pythonhosted.org/packages/ca/04/0b5fd38375ae182cec6446dd3121aaff5ae18fd12b98b10161a58b720db9/chardet-7.7.0-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl
+44718184374	PyPI	chardet-7.7.0-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata	https://files.pythonhosted.org/packages/ca/04/0b5fd38375ae182cec6446dd3121aaff5ae18fd12b98b10161a58b720db9/chardet-7.7.0-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata
+44718184374	PyPI	binaryornot-0.6.0-py3-none-any.whl	https://files.pythonhosted.org/packages/cd/0c/31cfaa6b56fe23488ecb993bc9fc526c0d84d89607decdf2a10776426c2e/binaryornot-0.6.0-py3-none-any.whl
+44718184374	PyPI	binaryornot-0.6.0-py3-none-any.whl.metadata	https://files.pythonhosted.org/packages/cd/0c/31cfaa6b56fe23488ecb993bc9fc526c0d84d89607decdf2a10776426c2e/binaryornot-0.6.0-py3-none-any.whl.metadata
+44718184374	PyPI	tenacity-9.2.1-py3-none-any.whl	https://files.pythonhosted.org/packages/d6/26/1ff2b0721ac66a3ec5b1402b333110b352ab0a8724052ac279a7b82d40c4/tenacity-9.2.1-py3-none-any.whl
+44718184374	PyPI	tenacity-9.2.1-py3-none-any.whl.metadata	https://files.pythonhosted.org/packages/d6/26/1ff2b0721ac66a3ec5b1402b333110b352ab0a8724052ac279a7b82d40c4/tenacity-9.2.1-py3-none-any.whl.metadata
+44718184374	PyPI	patchelf-0.19.1.0-py3-none-manylinux1_x86_64.manylinux_2_5_x86_64.musllinux_1_1_x86_64.whl	https://files.pythonhosted.org/packages/e7/03/afd9bdd2ba5f96997196109f25dadbe5141bc6e70dffd85f3f84cc85d69c/patchelf-0.19.1.0-py3-none-manylinux1_x86_64.manylinux_2_5_x86_64.musllinux_1_1_x86_64.whl
+44718184374	PyPI	patchelf-0.19.1.0-py3-none-manylinux1_x86_64.manylinux_2_5_x86_64.musllinux_1_1_x86_64.whl.metadata	https://files.pythonhosted.org/packages/e7/03/afd9bdd2ba5f96997196109f25dadbe5141bc6e70dffd85f3f84cc85d69c/patchelf-0.19.1.0-py3-none-manylinux1_x86_64.manylinux_2_5_x86_64.musllinux_1_1_x86_64.whl.metadata
+44718184374	PyPI	arrow-1.4.0-py3-none-any.whl	https://files.pythonhosted.org/packages/ed/c9/d7977eaacb9df673210491da99e6a247e93df98c715fc43fd136ce1d3d33/arrow-1.4.0-py3-none-any.whl
+44718184374	PyPI	arrow-1.4.0-py3-none-any.whl.metadata	https://files.pythonhosted.org/packages/ed/c9/d7977eaacb9df673210491da99e6a247e93df98c715fc43fd136ce1d3d33/arrow-1.4.0-py3-none-any.whl.metadata
+44718184374	PyPI	setuptools-84.2.1-py3-none-any.whl	https://files.pythonhosted.org/packages/ef/55/6dc6d6bb953bdfc52519a0059592c52b6e3b8ad51cf8256dffceb55b0610/setuptools-84.2.1-py3-none-any.whl
+44718184374	PyPI	setuptools-84.2.1-py3-none-any.whl.metadata	https://files.pythonhosted.org/packages/ef/55/6dc6d6bb953bdfc52519a0059592c52b6e3b8ad51cf8256dffceb55b0610/setuptools-84.2.1-py3-none-any.whl.metadata
+44718184374	PyPI	python_slugify-9.2.0-py3-none-any.whl	https://files.pythonhosted.org/packages/fe/ef/ba954e68262a1f658d0e127ecb0282c737ad18b215baf686e6a0e60a9bf8/python_slugify-9.2.0-py3-none-any.whl
+44718184374	PyPI	python_slugify-9.2.0-py3-none-any.whl.metadata	https://files.pythonhosted.org/packages/fe/ef/ba954e68262a1f658d0e127ecb0282c737ad18b215baf686e6a0e60a9bf8/python_slugify-9.2.0-py3-none-any.whl.metadata
+44718184374	PyPI (filename matched to release)	humanize-4.17.0-py3-none-any.whl	https://files.pythonhosted.org/packages/0c/74/bb970f876202aa0e8c4a1e9904f0b3482e73c752512962b7e957091d5acf/humanize-4.17.0-py3-none-any.whl
+44718184374	PyPI (filename matched to release)	humanize-4.17.0-py3-none-any.whl.metadata	https://files.pythonhosted.org/packages/0c/74/bb970f876202aa0e8c4a1e9904f0b3482e73c752512962b7e957091d5acf/humanize-4.17.0-py3-none-any.whl.metadata
+44718184374	PyPI (filename matched to release)	bracex-3.2.3-py3-none-any.whl	https://files.pythonhosted.org/packages/c8/42/f5d49972873bd3fff36e736ad1fcb36f9fdadb1ad577dfcfa17777dc84f0/bracex-3.2.3-py3-none-any.whl
+44718184374	PyPI (filename matched to release)	bracex-3.2.3-py3-none-any.whl.metadata	https://files.pythonhosted.org/packages/c8/42/f5d49972873bd3fff36e736ad1fcb36f9fdadb1ad577dfcfa17777dc84f0/bracex-3.2.3-py3-none-any.whl.metadata
+44718184374	PyPI (filename matched to release)	cibuildwheel-4.3.5-py3-none-any.whl	https://files.pythonhosted.org/packages/c9/ad/ebdaf81b0f29b86906a6c4ad0253796204853111fdd3a1d041d7b1bf92d0/cibuildwheel-4.3.5-py3-none-any.whl
+44718184374	PyPI (filename matched to release)	cibuildwheel-4.3.5-py3-none-any.whl.metadata	https://files.pythonhosted.org/packages/c9/ad/ebdaf81b0f29b86906a6c4ad0253796204853111fdd3a1d041d7b1bf92d0/cibuildwheel-4.3.5-py3-none-any.whl.metadata
+44718184374	PyPI (filename matched to release)	bashlex-0.18-py2.py3-none-any.whl	https://files.pythonhosted.org/packages/f4/be/6985abb1011fda8a523cfe21ed9629e397d6e06fb5bae99750402b25c95b/bashlex-0.18-py2.py3-none-any.whl
+44718184374	PyPI (filename matched to release)	bashlex-0.18-py2.py3-none-any.whl.metadata	https://files.pythonhosted.org/packages/f4/be/6985abb1011fda8a523cfe21ed9629e397d6e06fb5bae99750402b25c95b/bashlex-0.18-py2.py3-none-any.whl.metadata
+44718184374	PyPI (recipe hash pin)	defusedxml-0.7.1-py2.py3-none-any.whl	https://files.pythonhosted.org/packages/07/6c/aa3f2f849e01cb6a001cd8554a88d4c77c5c1a31c95bdf1cf9301e6d9ef4/defusedxml-0.7.1-py2.py3-none-any.whl
+44718184374	PyPI (recipe hash pin)	toga_android-0.5.7-py3-none-any.whl	https://files.pythonhosted.org/packages/30/13/69c037b0df220bb6f584d75888d51c1aab372fe2b749ce3a540bb10426ca/toga_android-0.5.7-py3-none-any.whl
+44718184374	PyPI (recipe hash pin)	travertino-0.5.7-py3-none-any.whl	https://files.pythonhosted.org/packages/61/eb/daf19ae19480c908facff6c828b3f2d4086747bf7db8da0d7a8315a0e793/travertino-0.5.7-py3-none-any.whl
+44718184374	PyPI (recipe hash pin)	toga_core-0.5.7-py3-none-any.whl	https://files.pythonhosted.org/packages/67/fb/e9f7d4aa837411a02e67f51538529f7a54f79f2ba1d9b338ce988212e44d/toga_core-0.5.7-py3-none-any.whl
+44718184374	PyPI (recipe hash pin)	pypdfium2-5.15.2-py3-none-android_23_arm64_v8a.whl	https://files.pythonhosted.org/packages/73/cf/a4adc114427c7e72716aaa487ddff7d085791dbe5ac830f2345f61814f3c/pypdfium2-5.15.2-py3-none-android_23_arm64_v8a.whl
+44718184374	PyPI (recipe hash pin)	heocr-0.2.0-py3-none-any.whl	https://files.pythonhosted.org/packages/e6/63/432f33f95e85e94102320a82dfd0aa8fd6af9d51c0f6fd4add5d59567206/heocr-0.2.0-py3-none-any.whl
+44718184374	SDK install (archive inferred)	Android NDK r27d	https://dl.google.com/android/repository/android-ndk-r27d-linux.zip
+44718184374	SDK install (archive inferred)	Android SDK Build-Tools 36.0.0	https://dl.google.com/android/repository/build-tools_r36_linux.zip
+44718184374	SDK install (archive inferred)	Android SDK Platform 36 rev. 2	https://dl.google.com/android/repository/platform-36_r02.zip
+44718184374	Template	briefcase-android-gradle-template.git	https://github.com/beeware/briefcase-android-gradle-template.git
