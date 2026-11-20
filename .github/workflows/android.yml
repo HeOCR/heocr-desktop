@@ -101,6 +101,28 @@ jobs:
         with:
           distribution: temurin
           java-version: "17"
+      # Gradle's downloads survive from run to run, and a second copy of Maven Central (Google's
+      # mirror) answers when Maven Central itself does not: a run should not depend on one server.
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ runner.os }}-${{ hashFiles('pyproject.toml') }}
+          restore-keys: gradle-${{ runner.os }}-
+      - name: A second copy of Maven Central for Gradle
+        run: |
+          mkdir -p ~/.gradle/init.d
+          cat > ~/.gradle/init.d/heocr-mirror.gradle <<'GRADLE'
+          def mirror = "https://maven-central.storage-download.googleapis.com/maven2/"
+          settingsEvaluated { settings ->
+              settings.pluginManagement.repositories { maven { url = mirror } }
+          }
+          allprojects {
+              buildscript { repositories { maven { url = mirror } } }
+              repositories { maven { url = mirror } }
+          }
+          GRADLE
       - uses: actions/download-artifact@v4
         with:
           name: tesseract-android-arm64
