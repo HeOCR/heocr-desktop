@@ -62,11 +62,11 @@ jobs:
           briefcase build macOS -a heocr_desktop --no-input
       - name: Smoke-test the packaged app (one fixture per type), arm64
         env:
-          HEOCR_SMOKE_MODEL: heocr_modern_v1  # heocr 0.2's own model, never the stock fallback
+          HEOCR_SMOKE_MODEL: heb
         run: python scripts/smoke_app.py macos
       - name: Smoke-test the packaged app, x86_64 under Rosetta (Intel coverage)
         env:
-          HEOCR_SMOKE_MODEL: heocr_modern_v1
+          HEOCR_SMOKE_MODEL: heb
         run: |
           softwareupdate --install-rosetta --agree-to-license >/dev/null 2>&1 || true
           python scripts/smoke_app.py macos-x86_64
@@ -113,7 +113,7 @@ jobs:
           briefcase build windows -a heocr_desktop --no-input
       - name: Smoke-test the built app (one fixture per type)
         env:
-          HEOCR_SMOKE_MODEL: heocr_modern_v1  # heocr 0.2's own model, never the stock fallback
+          HEOCR_SMOKE_MODEL: heb
         run: python scripts/smoke_app.py windows
       - name: Package the MSI (unsigned)
         run: briefcase package windows -a heocr_desktop --adhoc-sign --no-input
@@ -122,7 +122,7 @@ jobs:
       - name: Install the MSI and smoke-test the installed app
         shell: pwsh
         env:
-          HEOCR_SMOKE_MODEL: heocr_modern_v1
+          HEOCR_SMOKE_MODEL: heb
         run: |
           $msi = Get-ChildItem dist\*.msi | Select-Object -First 1
           $p = Start-Process msiexec.exe -ArgumentList "/i `"$($msi.FullName)`" /qn /norestart /l*v msi-install.log" -Wait -PassThru

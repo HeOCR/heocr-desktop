@@ -137,7 +137,7 @@ jobs:
           cp -R tests/fixtures android/tests/fixtures
       - name: An invented iText-style bill, and how heocr reads it on this host (the device must match)
         run: |
-          python -m pip install fonttools heocr==0.2.1 pypdfium2==5.15.2 Pillow==13.0.0 defusedxml==0.7.1
+          python -m pip install fonttools 'heocr @ git+https://github.com/HeOCR/heocr.git@fd2ef3e405f6042abe7cfc27fc21830e49cf349b' pypdfium2==5.15.2 Pillow==13.0.0 defusedxml==0.7.1
           font=/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf
           [ -f "$font" ] || { sudo apt-get update -q && sudo apt-get install -y -q fonts-dejavu-core; }
           python scripts/make_itext_style_pdf.py --font "$font" android/tests/fixtures/itext-style.pdf

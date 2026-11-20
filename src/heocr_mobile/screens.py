@@ -283,7 +283,6 @@ def about(t: dict, lang: str, versions: dict[str, str], back: str = "home") -> s
 <div class="fact" style="border: 0; padding: 0">{ico("private")}<p>{t["privacy"]}</p></div>
 <p class="sectionhead">{t["accuracy_h"]}</p>
 <p>{t["accuracy"]}</p>
-<p>{t["niqqud"]}</p>
 <p class="sectionhead">{t["version_h"]}</p>
 <dl class="kv">{kv}</dl>
 <p class="sectionhead">{t["licences_h"]}</p>

@@ -50,25 +50,16 @@ def tesseract_version() -> str:
 
 
 def bundled_models() -> list[dict]:
-    """List the licensed models present in the installed heocr and app resources."""
-    from heocr.models import MODELS, bundled_dir
-
-    directory = bundled_dir()
-    models = [
-        {"name": model.name, "origin": "", "licence": model.licence}
-        for model in MODELS.values()
-        if model.bundled and (directory / f"{model.name}.traineddata").is_file()
-    ]
+    """List the licensed stock models in the app resources."""
     try:
         info = json.loads((engine.RESOURCES / "BUILD_INFO.json").read_text("utf-8"))
         files = info["tessdata"]["files"]
     except (OSError, ValueError, KeyError):
-        return models
-    models.extend(
+        return []
+    return [
         {"name": Path(name).stem, "origin": pin.get("origin", ""), "licence": "Apache-2.0"}
         for name, pin in sorted(files.items())
-    )
-    return models
+    ]
 
 
 def page_html(language: str) -> str:
