@@ -10,6 +10,14 @@ PKG=io.github.heocr.heocr_mobile
 mkdir -p "dist/ui-smoke${AVD_SUFFIX:-}"
 AVD="${AVD:-heocrPhone}"
 OUT="dist/ui-smoke${AVD_SUFFIX:-}"
+# One emulator at a time: the previous step's emulator may still be shutting down, and adb would then
+# see two devices. Stop it and wait until adb lists none.
+for _ in $(seq 1 30); do
+  "$ADB" devices | grep -q "^emulator-" || break
+  "$ADB" emu kill >/dev/null 2>&1 || true
+  sleep 2
+done
+"$ADB" devices | grep -q "^emulator-" && { echo "an earlier emulator is still running"; "$ADB" devices; exit 1; }
 "$SDK/emulator/emulator" -avd "$AVD" -no-window -no-snapshot -no-audio -no-boot-anim > "dist/ui-smoke-emulator-$AVD.log" 2>&1 &
 trap '"$ADB" emu kill >/dev/null 2>&1 || true' EXIT  # one emulator at a time
 # A deadline on each wait: an emulator that never starts fails the step instead of the job's timeout.
