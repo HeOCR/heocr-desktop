@@ -1,0 +1,102 @@
+{
+ "open-file": {
+  "mirrors_in_rtl": false,
+  "use": "Open a file",
+  "from": "android"
+ },
+ "copy": {
+  "mirrors_in_rtl": false,
+  "use": "Copy",
+  "from": "android"
+ },
+ "save": {
+  "mirrors_in_rtl": false,
+  "use": "Save",
+  "from": "android"
+ },
+ "word-doc": {
+  "mirrors_in_rtl": false,
+  "use": "Word document",
+  "from": "android"
+ },
+ "text-file": {
+  "mirrors_in_rtl": false,
+  "use": "Text file",
+  "from": "android"
+ },
+ "info": {
+  "mirrors_in_rtl": false,
+  "use": "About / info",
+  "from": "android"
+ },
+ "close": {
+  "mirrors_in_rtl": false,
+  "use": "Close / cancel",
+  "from": "android"
+ },
+ "warning": {
+  "mirrors_in_rtl": false,
+  "use": "Warning",
+  "from": "android"
+ },
+ "check": {
+  "mirrors_in_rtl": false,
+  "use": "Check / done",
+  "from": "android"
+ },
+ "external": {
+  "mirrors_in_rtl": true,
+  "use": "Opens in the browser",
+  "from": "android"
+ },
+ "private": {
+  "mirrors_in_rtl": false,
+  "use": "Stays on the phone",
+  "from": "android"
+ },
+ "image-file": {
+  "mirrors_in_rtl": false,
+  "use": "Image file",
+  "from": "android"
+ },
+ "retry": {
+  "mirrors_in_rtl": false,
+  "use": "Read again",
+  "from": "android"
+ },
+ "camera": {
+  "mirrors_in_rtl": false,
+  "use": "Take a photo",
+  "from": "android"
+ },
+ "drop": {
+  "mirrors_in_rtl": false,
+  "use": "Drop a file here",
+  "from": "desktop"
+ },
+ "language": {
+  "mirrors_in_rtl": false,
+  "use": "Interface language",
+  "from": "desktop"
+ },
+ "zoom-in": {
+  "mirrors_in_rtl": false,
+  "use": "Larger text",
+  "from": "desktop"
+ },
+ "zoom-out": {
+  "mirrors_in_rtl": false,
+  "use": "Smaller text",
+  "from": "desktop"
+ },
+ "json-file": {
+  "mirrors_in_rtl": false,
+  "use": "JSON record",
+  "from": "desktop"
+ },
+ "markdown-file": {
+  "mirrors_in_rtl": false,
+  "use": "Markdown file",
+  "from": "desktop"
+ }
+}

@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self' 'unsafe-inline'; font-src data:; img-src data:">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HeOCR</title>
+<link rel="stylesheet" href="../../css/tokens.css">
+<link rel="stylesheet" href="../../css/fonts-embedded.css">
+<link rel="stylesheet" href="../../css/result.css">
+<link rel="stylesheet" href="../../css/desktop.css">
+</head>
+<body class="hw mac is-result">
+<header class="bar"><span class="lockup" aria-label="HeOCR"><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="7" y="7" width="34" height="34" class="lg-box"/><rect x="4" y="4" width="6" height="6" class="lg-h"/><rect x="38" y="4" width="6" height="6" class="lg-h"/><rect x="4" y="38" width="6" height="6" class="lg-h"/><rect x="38" y="38" width="6" height="6" class="lg-h"/><path d="M16 18H32V32.5M16 24.5V32.5" class="lg-ink"/></svg><span>He<b>OCR</b></span></span><span class="spacer"></span>
+<button type="button" class="btn quiet" id="lang"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17"/><path d="M3.5 12h17M12 3.5v17"/></svg>עברית</button><button type="button" class="btn quiet" id="about-open"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17"/><path d="M12 11v6"/><path d="M12 7v1"/></svg>About</button></header>
+<main>
+<section id="view-start" class="view" aria-labelledby="start-title"><div class="start">
+<h1 id="start-title">Hebrew text out of any document</h1><p class="lede">Drop a file into the window and get its text out: headings, paragraphs, lists and tables.</p>
+<div class="dropzone" id="dropzone"><svg class="ico lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M12 10v7M9 14l3 3 3-3"/></svg><strong>Drop a file here</strong><span class="or">or</span>
+<button type="button" class="btn primary large" id="open">Open file… <kbd class="k-mac">⌘O</kbd><kbd class="k-win">Ctrl+O</kbd></button><p class="hint">PDF, Word (DOCX), images, Excel (XLSX), PowerPoint (PPTX) and saved web pages (HTML)</p></div>
+<p class="promise"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><span><strong>Works fully offline.</strong> Your files never leave this computer: no network, no telemetry.</span></p>
+</div></section>
+
+<section id="view-reading" class="view" aria-live="polite"><div class="work">
+<div class="filecard"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M9 12h6M9 15h6M9 18h3"/></svg><div><div class="fname" id="work-name"><bdi>עלון-ספרייה.pdf</bdi></div><div class="meta">PDF · 3 pages</div></div></div>
+<div class="scan" aria-hidden="true"><div class="sheet-lines"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><div class="read"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="cursor"></div></div></div>
+<div class="progressline" role="status"><strong id="work-status">Page 2 of 3</strong><span class="num" aria-label="Time so far">0:24</span></div>
+<div class="pages" id="meter"><i class="done"></i><i class="now"></i><i></i></div>
+<p class="hint" style="color:var(--muted);font-size:13.5px">The reading happens on this computer. A scanned page can take a few seconds.</p>
+<div class="rowend"><button type="button" class="btn" id="cancel">Cancel <kbd class="k-mac">Esc</kbd><kbd class="k-win">Esc</kbd></button></div>
+</div></section>
+
+<section id="view-result" class="view">
+<div class="toolbar"><div class="filemeta"><div class="fname" id="result-name"><bdi>עלון-ספרייה.pdf</bdi></div>
+<div class="chips" id="chips"><span class="chip">3 pages</span><span class="chip">41.2 s</span></div></div>
+<div class="actions"><button type="button" class="btn" id="copy" title="Copy all text (⇧⌘C)"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 9h11v11H9z"/><path d="M15 9V4H4v11h5"/></svg>Copy</button>
+<div class="menuwrap"><button type="button" class="btn primary" id="save" aria-haspopup="menu" aria-expanded="false" title="Save (⌘S)"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10.5l5 5 5-5M4 20h16"/></svg>Save<i class="caret"></i></button>
+<div class="menu" role="menu" aria-label="Save as…"><button type="button" role="menuitem" class=hot><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M9 12h6M9 15h6M9 18h3"/></svg><span>Text (TXT)</span><small></small></button><button type="button" role="menuitem"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M8.5 18v-6l2 3 2-3v6M15.5 12v6"/></svg><span>Markdown (MD), tables kept</span><small></small></button><button type="button" role="menuitem"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M10.5 11H9v3l-1 1 1 1v3h1.5M13.5 11H15v3l1 1-1 1v3h-1.5"/></svg><span>Full JSON record</span><small></small></button></div></div>
+<button type="button" class="btn quiet" id="again" title="Open file… (⌘O)"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h7l2 3h9v11H3z"/></svg><span class="lbl-long">Another file</span></button></div></div>
+<div class="viewbar"><div class="seg" role="tablist"><button type="button" role="tab" data-view="formatted" aria-selected="false">Formatted</button><button type="button" role="tab" data-view="text" aria-selected="true">Text</button><button type="button" role="tab" data-view="markdown" aria-selected="false">Markdown</button></div>
+<div class="zoom"><button type="button" class="iconbtn" aria-label="Smaller text" title="Smaller text (⌘−)"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="12" height="12"/><path d="M15 15l6 6M7 10h6"/></svg></button><span class="num">100%</span><button type="button" class="iconbtn" aria-label="Larger text" title="Larger text (⌘+)"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="12" height="12"/><path d="M15 15l6 6M10 7v6M7 10h6"/></svg></button></div>
+<span class="how">How it was read: <span class="chip">OCR</span></span></div>
+<div class="split"><nav class="index" aria-label="Pages"><div class="lab">Pages</div><button type="button" aria-current=true class=""><span class=num>1</span><span dir="auto">ספריית השכונה: סדרי החורף</span></button><button type="button" class="sub"><span dir="auto">מה משתנה</span></button><button type="button" class="sub"><span dir="auto">שעות הפתיחה</span></button><button type="button" class=""><span class=num>2</span><span dir="auto">השאלה והחזרה</span></button><button type="button" class=""><span class=num>3</span><span dir="auto">איך מגיעים</span></button></nav>
+<div class="reader" tabindex="0"><div class="inner"><div class="notes" id="notes"><div class="notice"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5L21.5 20h-19z"/><path d="M12 10v4.5"/><path d="M12 17v.5"/></svg><p><strong>1 part not read:</strong> a picture on page 3. Details are in the JSON record.</p></div></div>
+<article class="doc" dir="rtl" id="doc-formatted" hidden>
+<p class="note" dir="auto">Text read by OCR may have mistakes. Check it before you rely on it.</p>
+<div class="page-break" data-i18n="page_n" data-n="1">Page 1</div>
+<h1 dir="rtl" class="block ocr">ספריית השכונה: סדרי החורף</h1>
+<p dir="rtl" class="block ocr">החל מהשבוע הבא הספרייה עוברת לשעות החורף. האולם הגדול ייפתח מוקדם יותר בימי שלישי, ופינת הקריאה לילדים תישאר פתוחה גם אחר הצהריים.</p>
+<h2 dir="rtl" class="block ocr">מה משתנה</h2>
+<p dir="rtl" class="block list-item ocr"><span class="label">1.</span> אפשר להשאיל ספרים עד רבע שעה לפני הסגירה.</p>
+<p dir="rtl" class="block list-item ocr"><span class="label">2.</span> ספרים מחזירים בתיבה שליד הכניסה, בכל שעה.</p>
+<p dir="rtl" class="block list-item ocr"><span class="label">3.</span> שעת הסיפור עוברת ליום רביעי אחר הצהריים.</p>
+<h2 dir="rtl" class="block ocr">שעות הפתיחה</h2>
+<div class="table-wrap"><table dir="rtl"><tr><td dir="auto" class="cell">יום</td><td dir="auto" class="cell">בוקר</td><td dir="auto" class="cell">אחר הצהריים</td><td dir="auto" class="cell">הערות</td></tr>
+<tr><td dir="auto" class="cell">ראשון</td><td dir="auto" class="cell">9:00–12:30</td><td dir="auto" class="cell">16:00–19:00</td><td dir="auto" class="cell">האולם הגדול בלבד</td></tr>
+<tr><td dir="auto" class="cell">שלישי</td><td dir="auto" class="cell">8:30–12:30</td><td dir="auto" class="cell">16:00–20:00</td><td dir="auto" class="cell">כולל פינת הילדים</td></tr>
+<tr><td dir="auto" class="cell">רביעי</td><td dir="auto" class="cell">סגור</td><td dir="auto" class="cell flagged">16:00–19:00</td><td dir="auto" class="cell">שעת סיפור ב־17:00</td></tr>
+<tr><td dir="auto" class="cell">שישי</td><td dir="auto" class="cell">9:00–12:00</td><td dir="auto" class="cell">סגור</td><td dir="auto" class="cell"></td></tr></table></div>
+<div class="page-break" data-i18n="page_n" data-n="2">Page 2</div>
+<h2 dir="rtl" class="block ocr">השאלה והחזרה</h2>
+<p dir="rtl" class="block ocr">כל קוראת וכל קורא יכולים להשאיל עד ארבעה ספרים לשלושה שבועות.<sup class="note-id">1</sup> את ההשאלה אפשר להאריך פעם אחת, כל עוד אף אחד לא מחכה לספר.</p>
+<p dir="rtl" class="block list-item ocr"><span class="label">א.</span> ספרי עיון: עד שבועיים.</p>
+<p dir="rtl" class="block list-item ocr"><span class="label">ב.</span> ספרי ילדים: עד שישה ספרים בכל פעם.</p>
+<div class="page-break" data-i18n="page_n" data-n="3">Page 3</div>
+<h2 dir="rtl" class="block ocr">איך מגיעים</h2>
+<p class="figure" data-i18n="figure_not_read">[picture not read]</p>
+<p dir="rtl" class="block ocr">הכניסה לספרייה היא מהחצר הפנימית. לשאלות אפשר לפנות לדלפק בשעות הפתיחה.</p>
+<h2 class="section" data-i18n="section_footnote">Footnotes</h2>
+<p dir="rtl" class="block ocr"><sup class="note-id">1</sup> בחופשות ייתכנו שינויים; הודעה תיתלה על דלת הספרייה.</p>
+<h2 class="section" data-i18n="section_header">Headers</h2>
+<p dir="rtl" class="block ocr">ספריית השכונה · עלון חורף</p>
+<h2 class="section" data-i18n="section_footer">Footers</h2>
+<p dir="rtl" class="block ocr">עמוד 1 מתוך 3</p>
+</article>
+<pre class="doc plain" id="doc-text" dir="rtl">ספריית השכונה: סדרי החורף
+
+החל מהשבוע הבא הספרייה עוברת לשעות החורף. האולם הגדול ייפתח מוקדם יותר בימי שלישי, ופינת הקריאה לילדים תישאר פתוחה גם אחר הצהריים.
+
+מה משתנה
+
+1. אפשר להשאיל ספרים עד רבע שעה לפני הסגירה.
+2. ספרים מחזירים בתיבה שליד הכניסה, בכל שעה.
+3. שעת הסיפור עוברת ליום רביעי אחר הצהריים.
+
+שעות הפתיחה
+
+יום	בוקר	אחר הצהריים	הערות
+ראשון	9:00–12:30	16:00–19:00	האולם הגדול בלבד
+שלישי	8:30–12:30	16:00–20:00	כולל פינת הילדים
+רביעי	סגור	16:00–19:00	שעת סיפור ב־17:00
+שישי	9:00–12:00	סגור	
+
+השאלה והחזרה
+
+כל קוראת וכל קורא יכולים להשאיל עד ארבעה ספרים לשלושה שבועות.</pre>
+<pre class="doc plain mono" id="doc-markdown" dir="rtl" hidden># ספריית השכונה: סדרי החורף
+
+החל מהשבוע הבא הספרייה עוברת לשעות החורף. האולם הגדול ייפתח מוקדם יותר בימי שלישי, ופינת הקריאה לילדים תישאר פתוחה גם אחר הצהריים.
+
+## מה משתנה
+
+1. אפשר להשאיל ספרים עד רבע שעה לפני הסגירה.
+2. ספרים מחזירים בתיבה שליד הכניסה, בכל שעה.
+3. שעת הסיפור עוברת ליום רביעי אחר הצהריים.
+
+## שעות הפתיחה
+
+| יום | בוקר | אחר הצהריים | הערות |
+|---|---|---|---|
+| ראשון | 9:00–12:30 | 16:00–19:00 | האולם הגדול בלבד |
+| שלישי | 8:30–12:30 | 16:00–20:00 | כולל פינת הילדים |
+| רביעי | סגור | 16:00–19:00 | שעת סיפור ב־17:00 |
+| שישי | 9:00–12:00 | סגור | |
+
+## השאלה והחזרה
+
+כל קוראת וכל קורא יכולים להשאיל עד ארבעה ספרים לשלושה שבועות.</pre>
+</div></div></div>
+</section>
+
+<section id="view-message" class="view" role="alert"><div class="message"><div class="mark"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M8.5 11.5l1.3 5.5 2.2-4 2.2 4 1.3-5.5"/></svg></div><div class="fname"><bdi>מכתב-ישן.doc</bdi></div><h2 id="message-title">This file needs converting first</h2><p id="message-text" class="selectable">Older Word files (.doc), RTF and OpenDocument files aren't supported yet: reading them needs LibreOffice, which this app does not include. Open the file in Word or LibreOffice, save it as .docx or PDF, and drop that here.</p><div class="row"><button type="button" class="btn primary" id="message-again"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h7l2 3h9v11H3z"/></svg>Choose another file…</button></div></div></section>
+</main>
+
+<div class="dropveil" aria-hidden="true"><div class="frame"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M12 10v7M9 14l3 3 3-3"/></svg><strong>Drop to read the file</strong><span>Anywhere in the window</span></div></div>
+<div class="toast" id="toast" role="status" aria-live="polite"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12.5l5 5L19.5 7"/></svg><div>Saved<small><bdi>עלון-ספרייה.txt</bdi></small></div><button type="button">Show in folder</button></div>
+
+<div class="scrim"></div>
+<dialog id="about" aria-labelledby="about-title">
+<h2 id="about-title" dir="ltr"><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="7" y="7" width="34" height="34" class="lg-box"/><rect x="4" y="4" width="6" height="6" class="lg-h"/><rect x="38" y="4" width="6" height="6" class="lg-h"/><rect x="4" y="38" width="6" height="6" class="lg-h"/><rect x="38" y="38" width="6" height="6" class="lg-h"/><path d="M16 18H32V32.5M16 24.5V32.5" class="lg-ink"/></svg><span>He<b>OCR</b></span></h2>
+<p class="muted" id="about-version">Version 0.1.0 (heocr 0.1.2, Tesseract 5.5.3)</p>
+<p>HeOCR reads Hebrew text out of PDFs, Word files and images, with the open-source heocr pipeline and Tesseract OCR. It runs entirely on this computer and never connects to the internet. Free and open source under the Apache License 2.0.</p>
+<p class="promise"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><span><strong>Works fully offline.</strong> Your files never leave this computer: no network, no telemetry.</span></p>
+<h3>Links (open in your browser)</h3>
+<div class="rows"><div><a href="https://heocr.org" dir="ltr">heocr.org <svg class="ico flip" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5H5v14h14v-6"/><path d="M14 4h6v6M20 4l-9 9"/></svg></a></div><div><a href="https://github.com/HeOCR/heocr-desktop" dir="ltr">github.com/HeOCR/heocr-desktop <svg class="ico flip" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5H5v14h14v-6"/><path d="M14 4h6v6M20 4l-9 9"/></svg></a></div></div>
+<h3>Licence</h3>
+<div class="rows"><div><span dir="ltr">HeOCR</span><span class="end">Apache-2.0</span></div></div>
+<h3 class="about-h">OCR models</h3>
+<div class="rows" id="models"><div><span dir="ltr">heb · tessdata_best 4.1.0</span><span class="end">Apache-2.0</span></div><div><span dir="ltr">eng · tessdata_fast 4.1.0</span><span class="end">Apache-2.0</span></div></div>
+<details><summary>Included components and their licences</summary><pre id="third-party" dir="ltr">heocr 0.1.2 · Apache-2.0
+Tesseract OCR 5.5.3 · Apache-2.0
+Leptonica 1.87.0 · BSD-2-Clause
+pypdfium2 5.15.2 / PDFium · Apache-2.0 / BSD-3-Clause
+Pillow 13.0.0 · MIT-CMU
+defusedxml 0.7.1 · PSF-2.0
+pywebview 6.2.1 · BSD-3-Clause
+Python 3.12 · PSF-2.0
+Noto Sans Hebrew, JetBrains Mono · OFL-1.1</pre></details>
+<div class="dialog-actions"><button type="button" class="btn primary" id="about-close">Close <kbd class="k-mac">Esc</kbd><kbd class="k-win">Esc</kbd></button></div>
+</dialog>
+</body>
+</html>

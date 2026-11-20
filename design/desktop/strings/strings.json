@@ -1,0 +1,487 @@
+{
+ "_note": "Every string in the mockups. source: 'app' = already in src/heocr_desktop/i18n.py and unchanged; 'android' = from design/android/strings/strings.json; 'new' = written for this design, and its Hebrew needs the owner's review. Sample values (page counts, versions, times) stand in for the app's placeholders.",
+ "strings": {
+  "tagline": {
+   "he": "טקסט עברי מכל מסמך",
+   "en": "Hebrew text out of any document",
+   "source": "app"
+  },
+  "lede": {
+   "he": "גוררים קובץ לחלון, ומקבלים את הטקסט שבו: כותרות, פסקאות, רשימות וטבלאות.",
+   "en": "Drop a file into the window and get its text out: headings, paragraphs, lists and tables.",
+   "source": "new"
+  },
+  "drop": {
+   "he": "גררו קובץ לכאן",
+   "en": "Drop a file here",
+   "source": "app"
+  },
+  "or": {
+   "he": "או",
+   "en": "or",
+   "source": "app"
+  },
+  "open": {
+   "he": "פתיחת קובץ…",
+   "en": "Open file…",
+   "source": "app"
+  },
+  "drop_hint": {
+   "he": "PDF, וורד (DOCX), תמונות, אקסל (XLSX), פאוורפוינט (PPTX) ודפי אינטרנט שמורים (HTML)",
+   "en": "PDF, Word (DOCX), images, Excel (XLSX), PowerPoint (PPTX) and saved web pages (HTML)",
+   "source": "new"
+  },
+  "offline_a": {
+   "he": "עובד במלואו ללא חיבור לרשת.",
+   "en": "Works fully offline.",
+   "source": "app"
+  },
+  "offline_b": {
+   "he": "הקבצים שלכם לא יוצאים מהמחשב: בלי רשת, בלי טלמטריה.",
+   "en": "Your files never leave this computer: no network, no telemetry.",
+   "source": "app"
+  },
+  "lang_toggle": {
+   "he": "English",
+   "en": "עברית",
+   "source": "app"
+  },
+  "about": {
+   "he": "אודות",
+   "en": "About",
+   "source": "app"
+  },
+  "close": {
+   "he": "סגירה",
+   "en": "Close",
+   "source": "app"
+  },
+  "drop_now": {
+   "he": "שחררו כדי לקרוא את הקובץ",
+   "en": "Drop to read the file",
+   "source": "new"
+  },
+  "drop_sub": {
+   "he": "אפשר לשחרר בכל מקום בחלון",
+   "en": "Anywhere in the window",
+   "source": "new"
+  },
+  "reading": {
+   "he": "קורא…",
+   "en": "Reading…",
+   "source": "app"
+  },
+  "page_of": {
+   "he": "עמוד 2 מתוך 3",
+   "en": "Page 2 of 3",
+   "source": "app"
+  },
+  "cancel": {
+   "he": "ביטול",
+   "en": "Cancel",
+   "source": "app"
+  },
+  "elapsed": {
+   "he": "זמן שעבר",
+   "en": "Time so far",
+   "source": "android"
+  },
+  "reading_hint": {
+   "he": "הקריאה נעשית במחשב הזה. עמוד סרוק יכול לקחת כמה שניות.",
+   "en": "The reading happens on this computer. A scanned page can take a few seconds.",
+   "source": "new"
+  },
+  "copy": {
+   "he": "העתקה",
+   "en": "Copy",
+   "source": "app"
+  },
+  "copy_all": {
+   "he": "העתקת כל הטקסט",
+   "en": "Copy all text",
+   "source": "new"
+  },
+  "copied": {
+   "he": "הועתק",
+   "en": "Copied",
+   "source": "app"
+  },
+  "save": {
+   "he": "שמירה",
+   "en": "Save",
+   "source": "new"
+  },
+  "save_as": {
+   "he": "שמירה בשם…",
+   "en": "Save as…",
+   "source": "new"
+  },
+  "save_docx": {
+   "he": "קובץ וורד (DOCX)",
+   "en": "Word file (DOCX)",
+   "source": "new"
+  },
+  "save_txt": {
+   "he": "טקסט (TXT)",
+   "en": "Text (TXT)",
+   "source": "new"
+  },
+  "save_md": {
+   "he": "Markdown (MD), עם הטבלאות",
+   "en": "Markdown (MD), tables kept",
+   "source": "new"
+  },
+  "save_json": {
+   "he": "רשומת JSON מלאה",
+   "en": "Full JSON record",
+   "source": "new"
+  },
+  "saved": {
+   "he": "נשמר",
+   "en": "Saved",
+   "source": "app"
+  },
+  "show_file": {
+   "he": "הצגה בתיקייה",
+   "en": "Show in folder",
+   "source": "new"
+  },
+  "new_file": {
+   "he": "קובץ אחר",
+   "en": "Another file",
+   "source": "app"
+  },
+  "view_formatted": {
+   "he": "מעוצב",
+   "en": "Formatted",
+   "source": "app"
+  },
+  "view_text": {
+   "he": "טקסט",
+   "en": "Text",
+   "source": "app"
+  },
+  "view_markdown": {
+   "he": "Markdown",
+   "en": "Markdown",
+   "source": "app"
+  },
+  "route": {
+   "he": "איך נקרא",
+   "en": "How it was read",
+   "source": "app"
+  },
+  "route_text_layer": {
+   "he": "שכבת טקסט",
+   "en": "text layer",
+   "source": "app"
+  },
+  "route_ocr": {
+   "he": "OCR",
+   "en": "OCR",
+   "source": "app"
+  },
+  "route_office": {
+   "he": "קובץ מסמך",
+   "en": "document file",
+   "source": "app"
+  },
+  "pages": {
+   "he": "3 עמודים",
+   "en": "3 pages",
+   "source": "app"
+  },
+  "seconds": {
+   "he": "41.2 שנ׳",
+   "en": "41.2 s",
+   "source": "app"
+  },
+  "ocr_note": {
+   "he": "טקסט שנקרא ב-OCR עלול לכלול טעויות. כדאי לבדוק אותו לפני שמסתמכים עליו.",
+   "en": "Text read by OCR may have mistakes. Check it before you rely on it.",
+   "source": "app"
+  },
+  "unread": {
+   "he": "<strong>חלק אחד לא נקרא:</strong> תמונה בעמוד 3. הפרטים ברשומת ה־JSON.",
+   "en": "<strong>1 part not read:</strong> a picture on page 3. Details are in the JSON record.",
+   "source": "new"
+  },
+  "index": {
+   "he": "עמודים",
+   "en": "Pages",
+   "source": "new"
+  },
+  "page": {
+   "he": "עמוד",
+   "en": "Page",
+   "source": "app"
+  },
+  "zoom_in": {
+   "he": "הגדלת הטקסט",
+   "en": "Larger text",
+   "source": "new"
+  },
+  "zoom_out": {
+   "he": "הקטנת הטקסט",
+   "en": "Smaller text",
+   "source": "new"
+  },
+  "zoom_reset": {
+   "he": "גודל רגיל",
+   "en": "Actual size",
+   "source": "new"
+  },
+  "m_unsupported_t": {
+   "he": "הקובץ הזה צריך המרה",
+   "en": "This file needs converting first",
+   "source": "new"
+  },
+  "needs_converter": {
+   "he": "קובצי וורד ישנים (‎.doc), ‏RTF וקובצי OpenDocument עדיין לא נתמכים: קריאתם דורשת את LibreOffice, שלא כלול ביישום. פתחו את הקובץ בוורד או ב-LibreOffice, שמרו אותו כ-‎.docx או כ-PDF, וגררו לכאן את הקובץ החדש.",
+   "en": "Older Word files (.doc), RTF and OpenDocument files aren't supported yet: reading them needs LibreOffice, which this app does not include. Open the file in Word or LibreOffice, save it as .docx or PDF, and drop that here.",
+   "source": "app"
+  },
+  "m_damaged_t": {
+   "he": "לא ניתן היה לקרוא את הקובץ",
+   "en": "This file could not be read",
+   "source": "new"
+  },
+  "unreadable": {
+   "he": "לא ניתן היה לקרוא את הקובץ. ייתכן שהוא פגום, מוגן בסיסמה, או בפורמט ש-HeOCR עדיין לא קורא.",
+   "en": "This file could not be read. It may be damaged, password-protected, or a format HeOCR does not read yet.",
+   "source": "app"
+  },
+  "m_empty_t": {
+   "he": "לא נמצא טקסט",
+   "en": "No text found",
+   "source": "new"
+  },
+  "empty": {
+   "he": "לא נמצא טקסט בקובץ.",
+   "en": "No text was found in this file.",
+   "source": "app"
+  },
+  "m_empty_hint": {
+   "he": "אם זה צילום, כדאי לנסות תמונה חדה יותר, ישרה ובאור טוב.",
+   "en": "If it is a photo, try a sharper one, straight on and in good light.",
+   "source": "new"
+  },
+  "m_cancelled_t": {
+   "he": "הקריאה הופסקה",
+   "en": "Reading stopped",
+   "source": "new"
+  },
+  "cancelled": {
+   "he": "הופסק.",
+   "en": "Stopped.",
+   "source": "app"
+  },
+  "m_cancelled_b": {
+   "he": "הפסקת את הקריאה אחרי עמוד 2 מתוך 3. שום דבר לא נשמר.",
+   "en": "You stopped the reading after page 2 of 3. Nothing was saved.",
+   "source": "new"
+  },
+  "read_again": {
+   "he": "קריאה מחדש",
+   "en": "Read it again",
+   "source": "new"
+  },
+  "choose_other": {
+   "he": "בחירת קובץ אחר…",
+   "en": "Choose another file…",
+   "source": "new"
+  },
+  "about_body": {
+   "he": "HeOCR קורא טקסט עברי מקובצי PDF, וורד ותמונות, בעזרת צינור העיבוד הפתוח heocr ו-Tesseract OCR. הוא פועל כולו על המחשב הזה ולעולם לא מתחבר לאינטרנט. חינמי וקוד פתוח, ברישיון Apache 2.0.",
+   "en": "HeOCR reads Hebrew text out of PDFs, Word files and images, with the open-source heocr pipeline and Tesseract OCR. It runs entirely on this computer and never connects to the internet. Free and open source under the Apache License 2.0.",
+   "source": "app"
+  },
+  "version": {
+   "he": "גרסה 0.1.0 (heocr 0.1.2,‏ Tesseract 5.5.3)",
+   "en": "Version 0.1.0 (heocr 0.1.2, Tesseract 5.5.3)",
+   "source": "app"
+  },
+  "about_models": {
+   "he": "מודלי OCR",
+   "en": "OCR models",
+   "source": "app"
+  },
+  "about_components": {
+   "he": "רכיבים כלולים והרישיונות שלהם",
+   "en": "Included components and their licences",
+   "source": "app"
+  },
+  "about_links": {
+   "he": "קישורים (נפתחים בדפדפן)",
+   "en": "Links (open in your browser)",
+   "source": "new"
+  },
+  "licence": {
+   "he": "רישיון",
+   "en": "Licence",
+   "source": "new"
+  }
+ },
+ "menus": {
+  "app (macOS only)": {
+   "label": {
+    "he": "HeOCR",
+    "en": "HeOCR"
+   },
+   "items": [
+    {
+     "he": "אודות HeOCR",
+     "en": "About HeOCR",
+     "mac": "",
+     "windows": ""
+    },
+    {
+     "he": "יציאה מ-HeOCR",
+     "en": "Quit HeOCR",
+     "mac": "⌘Q",
+     "windows": ""
+    }
+   ]
+  },
+  "file": {
+   "label": {
+    "he": "קובץ",
+    "en": "File"
+   },
+   "items": [
+    {
+     "he": "פתיחה…",
+     "en": "Open…",
+     "mac": "⌘O",
+     "windows": "Ctrl+O"
+    },
+    {
+     "he": "שמירה",
+     "en": "Save",
+     "mac": "⌘S",
+     "windows": "Ctrl+S"
+    },
+    {
+     "he": "שמירה בשם…",
+     "en": "Save As…",
+     "mac": "⇧⌘S",
+     "windows": "Ctrl+Shift+S"
+    },
+    {
+     "he": "סגירת הקובץ",
+     "en": "Close File",
+     "mac": "⌘W",
+     "windows": "Ctrl+W"
+    },
+    {
+     "he": "יציאה",
+     "en": "Exit",
+     "mac": "",
+     "windows": "Alt+F4"
+    }
+   ]
+  },
+  "edit": {
+   "label": {
+    "he": "עריכה",
+    "en": "Edit"
+   },
+   "items": [
+    {
+     "he": "העתקה",
+     "en": "Copy",
+     "mac": "⌘C",
+     "windows": "Ctrl+C"
+    },
+    {
+     "he": "העתקת כל הטקסט",
+     "en": "Copy All Text",
+     "mac": "⇧⌘C",
+     "windows": "Ctrl+Shift+C"
+    },
+    {
+     "he": "בחירת הכול",
+     "en": "Select All",
+     "mac": "⌘A",
+     "windows": "Ctrl+A"
+    }
+   ]
+  },
+  "view": {
+   "label": {
+    "he": "תצוגה",
+    "en": "View"
+   },
+   "items": [
+    {
+     "he": "מעוצב",
+     "en": "Formatted",
+     "mac": "⌘1",
+     "windows": "Ctrl+1"
+    },
+    {
+     "he": "טקסט",
+     "en": "Text",
+     "mac": "⌘2",
+     "windows": "Ctrl+2"
+    },
+    {
+     "he": "Markdown",
+     "en": "Markdown",
+     "mac": "⌘3",
+     "windows": "Ctrl+3"
+    },
+    {
+     "he": "הגדלת הטקסט",
+     "en": "Larger Text",
+     "mac": "⌘+",
+     "windows": "Ctrl++"
+    },
+    {
+     "he": "הקטנת הטקסט",
+     "en": "Smaller Text",
+     "mac": "⌘−",
+     "windows": "Ctrl+−"
+    },
+    {
+     "he": "גודל רגיל",
+     "en": "Actual Size",
+     "mac": "⌘0",
+     "windows": "Ctrl+0"
+    },
+    {
+     "he": "English",
+     "en": "עברית",
+     "mac": "",
+     "windows": ""
+    }
+   ]
+  },
+  "help": {
+   "label": {
+    "he": "עזרה",
+    "en": "Help"
+   },
+   "items": [
+    {
+     "he": "האתר של HeOCR",
+     "en": "HeOCR Website",
+     "mac": "",
+     "windows": ""
+    },
+    {
+     "he": "HeOCR ב-GitHub",
+     "en": "HeOCR on GitHub",
+     "mac": "",
+     "windows": ""
+    },
+    {
+     "he": "אודות HeOCR",
+     "en": "About HeOCR",
+     "mac": "",
+     "windows": ""
+    }
+   ]
+  }
+ }
+}
