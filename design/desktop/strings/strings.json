@@ -1,5 +1,5 @@
 {
- "_note": "Every string in the mockups. source: 'app' = already in src/heocr_desktop/i18n.py and unchanged; 'android' = from design/android/strings/strings.json; 'new' = written for this design, and its Hebrew needs the owner's review. Sample values (page counts, versions, times) stand in for the app's placeholders.",
+ "_note": "Every string in the mockups. source: 'app' = already in src/heocr_desktop/i18n.py and unchanged; 'android' = from design/android/strings/strings.json; 'new' = written for this design. Sample values stand in for the app's placeholders.",
  "strings": {
   "tagline": {
    "he": "טקסט עברי מכל מסמך",
@@ -202,8 +202,8 @@
    "source": "app"
   },
   "unread": {
-   "he": "<strong>חלק אחד לא נקרא:</strong> תמונה בעמוד 3. הפרטים ברשומת ה־JSON.",
-   "en": "<strong>1 part not read:</strong> a picture on page 3. Details are in the JSON record.",
+   "he": "<strong>חלק {n} לא נקרא:</strong> תמונה בעמוד {page}. הפרטים ברשומת ה־JSON.",
+   "en": "<strong>{n} part not read:</strong> a picture on page {page}. Details are in the JSON record.",
    "source": "new"
   },
   "index": {
@@ -277,8 +277,8 @@
    "source": "app"
   },
   "m_cancelled_b": {
-   "he": "הפסקת את הקריאה אחרי עמוד 2 מתוך 3. שום דבר לא נשמר.",
-   "en": "You stopped the reading after page 2 of 3. Nothing was saved.",
+   "he": "הפסקת את הקריאה אחרי עמוד {done} מתוך {total}. שום דבר לא נשמר.",
+   "en": "You stopped the reading after page {done} of {total}. Nothing was saved.",
    "source": "new"
   },
   "read_again": {
@@ -336,7 +336,7 @@
      "windows": ""
     },
     {
-     "he": "יציאה מ-HeOCR",
+     "he": "יציאה מ־HeOCR",
      "en": "Quit HeOCR",
      "mac": "⌘Q",
      "windows": ""
@@ -470,7 +470,7 @@
      "windows": ""
     },
     {
-     "he": "HeOCR ב-GitHub",
+     "he": "HeOCR ב־GitHub",
      "en": "HeOCR on GitHub",
      "mac": "",
      "windows": ""
@@ -483,5 +483,6 @@
     }
    ]
   }
- }
+ },
+ "_reviewed": "2026-11-20: Shay approved all 53 desktop design strings (\"הכל מאושר\"), through the lead."
 }
