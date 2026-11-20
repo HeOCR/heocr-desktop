@@ -101,6 +101,28 @@ jobs:
         with:
           distribution: temurin
           java-version: "17"
+      # Gradle's downloads survive from run to run, and a second copy of Maven Central (Google's
+      # mirror) answers when Maven Central itself does not: a run should not depend on one server.
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ runner.os }}-${{ hashFiles('pyproject.toml') }}
+          restore-keys: gradle-${{ runner.os }}-
+      - name: A second copy of Maven Central for Gradle
+        run: |
+          mkdir -p ~/.gradle/init.d
+          cat > ~/.gradle/init.d/heocr-mirror.gradle <<'GRADLE'
+          def mirror = "https://maven-central.storage-download.googleapis.com/maven2/"
+          settingsEvaluated { settings ->
+              settings.pluginManagement.repositories { maven { url = mirror } }
+          }
+          allprojects {
+              buildscript { repositories { maven { url = mirror } } }
+              repositories { maven { url = mirror } }
+          }
+          GRADLE
       - uses: actions/download-artifact@v4
         with:
           name: tesseract-android-arm64
@@ -150,6 +172,23 @@ jobs:
           g=build/heocr_mobile/android/gradle
           cat $g/gradle.properties 2>/dev/null || true
           grep -n -A6 "repositories\|pluginManagement" $g/build.gradle $g/settings.gradle 2>/dev/null || true
+      # Maven Central now and then refuses a download (the Chaquopy Gradle plugin, twice in a day), which
+      # fails the build before anything runs. Resolve Gradle's plugins and dependencies first, with retries;
+      # the builds below then find them in the cache.
+      # `help` resolves the plugins first; evaluating the app project then fails until Briefcase's own
+      # build writes extract-packages.txt, which is expected here. Only a failed download is retried.
+      - name: Gradle's plugins and dependencies, with retries
+        run: |
+          cd build/heocr_mobile/android/gradle
+          for i in 1 2 3; do
+            ./gradlew --no-daemon help > gradle-warm.log 2>&1 || true
+            if ! grep -qiE "could not (get|head|resolve|download)|received status code|connect timed out|connection reset" gradle-warm.log; then
+              echo "Gradle's plugins resolved (try $i)"; exit 0
+            fi
+            grep -iE "could not (get|head|resolve|download)|status code" gradle-warm.log | head -3
+            echo "a download failed (try $i); retrying"; sleep $((20 * i))
+          done
+          exit 1
       - name: On-device tests in the emulator (x86_64 image, arm64 app through Android's ARM translation)
         run: >
           briefcase run android -a heocr_mobile --test -r --no-input -v
