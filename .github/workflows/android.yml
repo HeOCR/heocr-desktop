@@ -153,12 +153,18 @@ jobs:
       # Maven Central now and then refuses a download (the Chaquopy Gradle plugin, twice in a day), which
       # fails the build before anything runs. Resolve Gradle's plugins and dependencies first, with retries;
       # the builds below then find them in the cache.
+      # `help` resolves the plugins first; evaluating the app project then fails until Briefcase's own
+      # build writes extract-packages.txt, which is expected here. Only a failed download is retried.
       - name: Gradle's plugins and dependencies, with retries
         run: |
           cd build/heocr_mobile/android/gradle
           for i in 1 2 3; do
-            ./gradlew --no-daemon help > /dev/null && exit 0
-            echo "Gradle could not resolve its plugins (try $i); retrying"; sleep $((20 * i))
+            ./gradlew --no-daemon help > gradle-warm.log 2>&1 || true
+            if ! grep -qiE "could not (get|head|resolve|download)|received status code|connect timed out|connection reset" gradle-warm.log; then
+              echo "Gradle's plugins resolved (try $i)"; exit 0
+            fi
+            grep -iE "could not (get|head|resolve|download)|status code" gradle-warm.log | head -3
+            echo "a download failed (try $i); retrying"; sleep $((20 * i))
           done
           exit 1
       - name: On-device tests in the emulator (x86_64 image, arm64 app through Android's ARM translation)
