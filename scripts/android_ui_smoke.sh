@@ -87,11 +87,19 @@ sys.exit(0 if ok else 1)
 PY
 }
 # The page's scale, as the app logs it on each load, must be the screen density: no page zoom.
-scale_ok() {  # scale_ok <what>
-  local want got
-  want=$("$ADB" shell wm density | grep -o '[0-9]*' | tail -1)
-  got=$("$ADB" logcat -d | grep -o "HeOCR loaded home: scale=[0-9.]*" | tail -1 | grep -o '[0-9.]*$' || true)
-  python3 -c "import sys; w=int('$want')/160; g=float('${got:-0}'); print(f'page scale on $1: {g} (density {w})'); sys.exit(0 if abs(g-w) < 0.05 else 1)"
+scale_ok() {  # scale_ok <what>: the page's own zoom is 1 and its width is the screen's width in dp
+  local line px dpi
+  line=$("$ADB" logcat -d | grep -o "HeOCR page home: .*" | tail -1 || true)
+  px=$("$ADB" shell wm size | grep -o '[0-9]*x[0-9]*' | tail -1); dpi=$("$ADB" shell wm density | grep -o '[0-9]*' | tail -1)
+  python3 - "$line" "${px%x*}" "$dpi" "$1" <<'PY'
+import re, sys
+line, px, dpi, what = sys.argv[1], int(sys.argv[2]), int(sys.argv[3]), sys.argv[4]
+z = re.search(r"zoom=([0-9.]+)", line); w = re.search(r"width=([0-9.]+)", line)
+want = px / (dpi / 160)
+ok = bool(z and w) and abs(float(z[1]) - 1) < 0.02 and abs(float(w[1]) - want) < want * 0.05
+print(f"page on {what}: {line or 'not measured'} (want zoom=1 width~{want:.0f})", "ok" if ok else "ZOOMED")
+sys.exit(0 if ok else 1)
+PY
 }
 scale_ok "first start" || fail "Home loaded zoomed on the first start"
 home_fits || { sleep 5; home_fits; } || fail "Home is not at phone scale: its buttons are off screen (zoomed page)"

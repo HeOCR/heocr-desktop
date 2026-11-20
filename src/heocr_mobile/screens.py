@@ -66,11 +66,17 @@ def strings(lang: str) -> dict:
     return UI[lang]
 
 
-def html(lang: str, body: str) -> str:
+# The app's screens never zoom (one CSS pixel per dp, whatever the WebView's own heuristics decide); the
+# reading itself can be pinch-zoomed up to five times, never below its width.
+VIEWPORT_FIXED = "width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"
+VIEWPORT_ZOOM = "width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=5"
+
+
+def html(lang: str, body: str, zoom: bool = False) -> str:
     direction = "rtl" if lang == "he" else "ltr"
     return (
         f'<!doctype html><html lang="{lang}" dir="{direction}"><head><meta charset="utf-8">'
-        '<meta name="viewport" content="width=device-width, initial-scale=1">'
+        f'<meta name="viewport" content="{VIEWPORT_ZOOM if zoom else VIEWPORT_FIXED}">'
         f'<meta http-equiv="Content-Security-Policy" content="{CSP}">'
         f'<style>{CSS}</style></head><body class="app">{body}</body></html>'
     )
@@ -216,7 +222,7 @@ def result(t: dict, d: dict, lang: str, doc, name: str, pages: int, seconds: flo
 <div class="chips">{chips_html}</div>
 {document(doc, d, t["ocr_note"] if ocr else None)}
 </main>
-{bar}{more_sheet(t, formats)}''')
+{bar}{more_sheet(t, formats)}''', zoom=True)
 
 
 def toast(text: str, sub: str = "", low: bool = False) -> str:
@@ -325,4 +331,4 @@ def licences(t: dict, lang: str, markdown: str) -> str:
                 flush()
             para.append(line.replace("|", " "))
     flush()
-    return html(lang, appbar_back(t, t["lic_all"], about=False, back="about") + f'<main class="screen result"><article class="doc" dir="ltr">{"".join(out)}</article></main>')
+    return html(lang, appbar_back(t, t["lic_all"], about=False, back="about") + f'<main class="screen result"><article class="doc" dir="ltr">{"".join(out)}</article></main>', zoom=True)

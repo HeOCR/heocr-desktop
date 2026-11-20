@@ -96,12 +96,19 @@ class HeOCR(toga.App):
         print(f"HeOCR screen {screen}", flush=True)
 
     def loaded(self, widget, **kwargs):
-        """Each page load: the WebView's scale in device pixels per CSS pixel (the density, unless zoomed)."""
+        """Each page load: the page's own zoom and width in CSS pixels, measured in the page (for CI)."""
+        screen = self.screen
+
+        def report(result):
+            print(f"HeOCR page {screen}: {result}", flush=True)
+
         try:
-            native = self.webview._impl.native
-            print(f"HeOCR loaded {self.screen}: scale={native.getScale():.3f} width={native.getWidth()}", flush=True)
-        except Exception:  # noqa: BLE001 - diagnostics only
-            pass
+            self.webview.evaluate_javascript(
+                "'zoom=' + (window.visualViewport ? visualViewport.scale : 0) + ' width=' + innerWidth + ' dpr=' + devicePixelRatio",
+                on_result=report,
+            )
+        except Exception as exc:  # noqa: BLE001 - diagnostics only
+            print(f"HeOCR page {screen}: not measured ({type(exc).__name__})", flush=True)
 
     def js(self, code: str):
         """Change the page in place (a toast, the sheet, the elapsed time): the page itself has no script."""

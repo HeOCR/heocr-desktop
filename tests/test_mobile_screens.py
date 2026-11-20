@@ -112,3 +112,11 @@ def test_strings_are_the_reviewed_design_strings():
 def test_ocr_models_come_from_the_record():
     d = SimpleNamespace(components={"tesseract:heocr_modern_v1.traineddata": "sha256:x", "tesseract:eng.traineddata": "sha256:y", "Pillow": "13.0.0"})
     assert view.ocr_models(d) == {"heocr_modern_v1", "eng"}
+
+
+def test_app_screens_never_zoom_and_the_reading_can(monkeypatch):
+    t, d = screens.strings("en"), i18n.STRINGS["en"]
+    assert screens.VIEWPORT_FIXED in screens.home(t, "en", word=False)
+    assert screens.VIEWPORT_FIXED in screens.about(t, "en", {"app": "1", "heocr": "2", "tesseract": "3"})
+    page = screens.result(t, d, "en", doc(monkeypatch), "a.pdf", 1, 1.0, False, ["txt"])
+    assert screens.VIEWPORT_ZOOM in page and "maximum-scale=1" not in page
