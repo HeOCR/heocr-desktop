@@ -55,8 +55,23 @@ PY
 cp "metadata/$app_id.yml" /evidence/probe-metadata.yml
 chown -R vagrant:vagrant "$work"
 
+# The production host stages the app checkout before starting the guest build.
+# The pinned fdroidserver reads SOURCE_DATE_EPOCH from it before preparing sources.
+sudo --user vagrant --set-home env PYTHONPATH="$fdroidserver" \
+  python3 - "$app_id" "$commit" <<'PY'
+import sys
+
+from fdroidserver import common, metadata
+
+app_id, commit = sys.argv[1:]
+common.read_config()
+app = metadata.read_metadata()[app_id]
+vcs = common.getvcs(app.RepoType, app.Repo, common.get_build_dir(app))
+vcs.gotorevision(commit)
+PY
+
 # As in fdroiddata CI, let fdroid run the recipe's sudo phase and drop sudo
 # before scanning and building. The workspace is inside this one-shot container.
 sudo --user vagrant --set-home env \
   PATH="$PATH" ANDROID_HOME="$ANDROID_HOME" PYTHONUNBUFFERED=1 \
-  fdroid build --verbose --test --on-server --refresh-scanner --no-tarball "$app_id"
+  fdroid build --verbose --test --on-server --refresh-scanner --no-tarball --no-refresh "$app_id"
