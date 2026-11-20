@@ -132,15 +132,19 @@
 
 <section id="view-message" class="view" role="alert">
 <div class="message">
-<div class="mark"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M8.5 11.5l1.3 5.5 2.2-4 2.2 4 1.3-5.5"/></svg>
+<div class="mark" aria-hidden="true">
+  <svg class="ico" data-message-mark="converter" viewBox="0 0 24 24" hidden><path d="M6 3h8l4 4v14H6zM14 3v4h4M8.5 11.5l1.3 5.5 2.2-4 2.2 4 1.3-5.5"/></svg>
+  <svg class="ico" data-message-mark="warning" viewBox="0 0 24 24" hidden><path d="M12 3.5 21.5 20h-19zM12 10v4.5m0 2.5v.5"/></svg>
+  <svg class="ico" data-message-mark="image" viewBox="0 0 24 24" hidden><path d="M4 5h16v14H4zM4 16l5-5 4 4 3-3 4 4"/><circle cx="15.5" cy="9" r="1"/></svg>
+  <svg class="ico" data-message-mark="stopped" viewBox="0 0 24 24" hidden><path d="m6 6 12 12M18 6 6 18"/></svg>
 </div>
 <div class="fname"><bdi id="message-name"></bdi>
 </div>
-<h2 id="message-title" hidden>
-</h2>
-<p id="message-text" class="selectable">
-</p>
+<h2 id="message-title"></h2>
+<p id="message-text" class="selectable"></p>
+<p id="message-hint" class="hint" hidden></p>
 <div class="row">
+<button type="button" class="btn primary" id="message-retry" hidden><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 11a7 7 0 1 0-1.5 5M19 5v6h-6"/></svg><span data-i18n="read_again"></span></button>
 <button type="button" class="btn primary" id="message-again"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h7l2 3h9v11H3z"/></svg><span data-i18n="choose_other"></span>
 </button>
 </div>

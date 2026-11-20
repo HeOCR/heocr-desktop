@@ -20,7 +20,7 @@ import re
 import sys
 from pathlib import Path
 
-from heocr_desktop import engine
+from heocr_desktop import engine, licences
 
 _MODEL = re.compile(r"^tesseract:(.+)\.traineddata$")
 
@@ -43,7 +43,12 @@ def run(folder: str) -> int:
     }
     want_model = os.environ.get("HEOCR_SMOKE_MODEL")
     report["want_model"] = want_model
-    failures = 0
+    missing = [
+        name for name, filename in licences.FONT_NOTICES.items()
+        if not (engine.RESOURCES / "licenses" / filename).is_file()
+    ]
+    report["missing_font_licences"] = missing
+    failures = len(missing)
     for name, want in sorted(expect.items()):
         entry: dict = {"want": want}
         try:

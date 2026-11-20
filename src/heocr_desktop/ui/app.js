@@ -9,7 +9,7 @@
   var readingStarted;
   var elapsedTimer;
   var progress = null;
-  var messageKey;
+  var currentMessage;
   var readingId = 0;
   var indexRows = [];
   var activeIndexRow = null;
@@ -36,7 +36,7 @@
       el.setAttribute("aria-label", t(el.dataset.label));
     });
     if (working) showProgress(progress);
-    if (messageKey) $("message-text").textContent = t(messageKey);
+    if (currentMessage) localizeMessage();
     setShortcutTitles();
     $("about-version").textContent = t("version", { v: BOOT.version, h: BOOT.heocr, t: BOOT.tesseract });
     if (current) {
@@ -231,11 +231,34 @@
     setView("formatted");
   }
 
-  function message(key) {
+  var messages = {
+    needs_converter: { title: "m_unsupported_t", mark: "converter", body: "needs_converter" },
+    unreadable: { title: "m_damaged_t", mark: "warning", body: "unreadable" },
+    error: { title: "m_damaged_t", mark: "warning", body: "error" },
+    empty: { title: "m_empty_t", mark: "image", body: "empty", hint: "m_empty_hint" },
+    cancelled: { title: "m_cancelled_t", mark: "stopped", body: "nothing_saved", retry: true }
+  };
+
+  function localizeMessage() {
+    var state = currentMessage.state;
+    var progress = currentMessage.progress;
+    $("message-title").textContent = t(state.title);
+    $("message-text").textContent = progress ? t("m_cancelled_b", progress) : t(state.body);
+    $("message-hint").textContent = state.hint ? t(state.hint) : "";
+  }
+
+  function message(kind, stopped) {
     current = null;
-    messageKey = key;
+    var state = messages[kind] || messages.unreadable;
+    currentMessage = { state: state, progress: stopped && stopped.total && stopped.done > 0 ? stopped : null };
     $("message-name").textContent = $("work-name").textContent;
-    $("message-text").textContent = t(key);
+    document.querySelectorAll("[data-message-mark]").forEach(function (icon) {
+      icon.toggleAttribute("hidden", icon.dataset.messageMark !== state.mark);
+    });
+    $("message-hint").hidden = !state.hint;
+    $("message-retry").hidden = !state.retry;
+    $("message-again").classList.toggle("primary", !state.retry);
+    localizeMessage();
     show("message");
   }
 
@@ -271,7 +294,7 @@
       readingId++;
       working = true;
       current = null;
-      messageKey = null;
+      currentMessage = null;
       progress = null;
       $("work-name").textContent = p.name;
       readingStarted = Date.now();
@@ -288,9 +311,7 @@
     finished: function (p) {
       working = false;
       clearInterval(elapsedTimer);
-      if (p.kind === "cancelled") { show("start"); toast(t("cancelled")); return; }
-      if (p.kind === "error") { message("error"); return; }
-      if (p.kind !== "ok") { message(p.kind); return; }
+      if (p.kind !== "ok") { message(p.kind, p.kind === "cancelled" ? p : null); return; }
       var finishedId = readingId;
       api().result().then(function (result) {
         if (readingId === finishedId && result.kind === "ok") render(result);
@@ -335,9 +356,9 @@
   }
 
   function closeFile() {
-    if (working || (!current && !messageKey)) return;
+    if (working || (!current && !currentMessage)) return;
     current = null;
-    messageKey = null;
+    currentMessage = null;
     show("start");
     $("open").focus();
   }
@@ -496,6 +517,9 @@
     $("open").addEventListener("click", openFile);
     $("again").addEventListener("click", openFile);
     $("message-again").addEventListener("click", openFile);
+    $("message-retry").addEventListener("click", function () {
+      if (!working && api()) api().retry();
+    });
     $("cancel").addEventListener("click", function () { if (api()) api().cancel(); });
     $("copy").addEventListener("click", copyAll);
     $("save").addEventListener("click", function () {

@@ -18,7 +18,7 @@ from importlib import metadata
 from pathlib import Path
 from uuid import uuid4
 
-from heocr_desktop import engine, exports, i18n, menus, render, reveal
+from heocr_desktop import engine, exports, i18n, licences, menus, render, reveal
 
 UI = Path(__file__).resolve().parent / "ui"
 APP_NAME = "HeOCR"
@@ -136,6 +136,9 @@ class Api:
     def cancel(self) -> None:
         self._cancel.set()
 
+    def retry(self) -> bool:
+        return self.start(str(self._source)) if self._source is not None else False
+
     def result(self) -> dict:
         r = self._result
         if r is None or r.doc is None:
@@ -205,11 +208,7 @@ class Api:
         return False
 
     def third_party(self) -> str:
-        path = Path(__file__).resolve().parent / "resources" / "THIRD_PARTY_LICENSES.md"
-        try:
-            return path.read_text("utf-8")
-        except OSError:
-            return ""
+        return licences.about_text(engine.RESOURCES)
 
     # -- app -> page -------------------------------------------------------------------
 
@@ -226,10 +225,14 @@ class Api:
 
     def _run(self, path: Path) -> None:
         try:
-            self._result = engine.convert(path, report=self._progress, cancel=self._cancel)
-            self._push("heocr.finished", {"kind": self._result.kind})
-        except engine.Cancelled:
-            self._push("heocr.finished", {"kind": "cancelled"})
+            result = engine.convert(path, report=self._progress, cancel=self._cancel)
+            if self._cancel.is_set():
+                # Unpaginated formats may complete without reaching a cancel checkpoint.
+                raise engine.Cancelled()
+            self._result = result
+            self._push("heocr.finished", {"kind": result.kind})
+        except engine.Cancelled as stopped:
+            self._push("heocr.finished", {"kind": "cancelled", "done": stopped.done, "total": stopped.total})
         except Exception:  # noqa: BLE001 - shown to the user, never crashes the window
             traceback.print_exc()
             self._push("heocr.finished", {"kind": "error"})

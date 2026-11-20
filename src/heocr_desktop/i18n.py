@@ -15,6 +15,14 @@ from pathlib import Path
 
 STRINGS: dict[str, dict[str, str]] = {
     "en": {
+        "m_unsupported_t": "This file needs converting first",
+        "m_damaged_t": "This file could not be read",
+        "m_empty_t": "No text found",
+        "m_empty_hint": "If it is a photo, try a sharper one, straight on and in good light.",
+        "m_cancelled_t": "Reading stopped",
+        "m_cancelled_b": "You stopped the reading after page {done} of {total}. Nothing was saved.",
+        "read_again": "Read it again",
+        "nothing_saved": "Nothing was saved.",
         "zoom_in": "Larger text",
         "zoom_out": "Smaller text",
         "show_file": "Show in folder",
@@ -94,6 +102,14 @@ STRINGS: dict[str, dict[str, str]] = {
         "licence": "Licence",
     },
     "he": {
+        "m_unsupported_t": "הקובץ הזה צריך המרה",
+        "m_damaged_t": "לא ניתן היה לקרוא את הקובץ",
+        "m_empty_t": "לא נמצא טקסט",
+        "m_empty_hint": "אם זה צילום, כדאי לנסות תמונה חדה יותר, ישרה ובאור טוב.",
+        "m_cancelled_t": "הקריאה הופסקה",
+        "m_cancelled_b": "הפסקת את הקריאה אחרי עמוד {done} מתוך {total}. שום דבר לא נשמר.",
+        "read_again": "קריאה מחדש",
+        "nothing_saved": "שום דבר לא נשמר.",
         "zoom_in": "הגדלת הטקסט",
         "zoom_out": "הקטנת הטקסט",
         "show_file": "הצגה בתיקייה",
