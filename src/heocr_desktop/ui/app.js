@@ -5,6 +5,11 @@
   var current = null; // the last result
   var view = "formatted";
   var working = false;
+  var readingStarted;
+  var elapsedTimer;
+  var progress = null;
+  var messageKey;
+  document.body.classList.add(BOOT.platform === "darwin" ? "mac" : "win");
 
   function $(id) { return document.getElementById(id); }
   function t(key, vars) {
@@ -23,12 +28,18 @@
       var n = el.getAttribute("data-n");
       el.textContent = t(key, n !== null ? { n: n } : null);
     });
+    document.querySelectorAll("[data-label]").forEach(function (el) {
+      el.setAttribute("aria-label", t(el.dataset.label));
+    });
+    if (working) showProgress(progress);
+    if (messageKey) $("message-text").textContent = t(messageKey);
     $("about-version").textContent = t("version", { v: BOOT.version, h: BOOT.heocr, t: BOOT.tesseract });
     if (current) showChips(current);
   }
 
   function show(name) {
-    ["drop", "work", "result", "message"].forEach(function (v) {
+    setSaveMenu(false);
+    ["start", "reading", "result", "message"].forEach(function (v) {
       $("view-" + v).classList.toggle("active", v === name);
     });
   }
@@ -42,9 +53,9 @@
     toastTimer = setTimeout(function () { el.classList.remove("show"); }, 1600);
   }
 
-  function chip(text, cls) {
+  function chip(text) {
     var el = document.createElement("span");
-    el.className = "chip" + (cls ? " " + cls : "");
+    el.className = "chip";
     el.textContent = text;
     return el;
   }
@@ -53,37 +64,43 @@
     var box = $("chips");
     box.textContent = "";
     if (r.pages) box.appendChild(chip(r.pages === 1 ? t("page") : t("pages", { n: r.pages })));
+    var routeBox = $("routes");
+    routeBox.textContent = "";
     var routes = r.routes || {};
     var names = { text_layer: "route_text_layer", ocr: "route_ocr", none: "route_none" };
     var shown = false;
     Object.keys(routes).forEach(function (k) {
       var label = names[k] ? t(names[k]) : k;
       // The page count only when there is more than one page: "OCR (12)".
-      box.appendChild(chip(t("route") + ": " + label + (r.pages > 1 ? " (" + routes[k] + ")" : ""), "route"));
+      routeBox.appendChild(chip(label + (r.pages > 1 ? " (" + routes[k] + ")" : "")));
       shown = true;
     });
     if (!shown) {
       var sources = r.sources || {};
       var office = Object.keys(sources).some(function (s) { return s !== "ocr"; });
-      if (office) box.appendChild(chip(t("route") + ": " + t("route_office"), "route"));
-      if (sources.ocr) box.appendChild(chip(t("route") + ": " + t("route_ocr"), "route"));
+      if (office) routeBox.appendChild(chip(t("route_office")));
+      if (sources.ocr) routeBox.appendChild(chip(t("route_ocr")));
     }
     box.appendChild(chip(t("seconds", { s: r.seconds })));
+    $("how").hidden = !routeBox.childElementCount;
     var notes = $("notes");
     notes.textContent = "";
-    function note(text) { var d = document.createElement("div"); d.className = "note"; d.textContent = text; notes.appendChild(d); }
-    if (r.ocr_blocks) note(t("ocr_note"));
+    function note(text) { var d = document.createElement("div"); d.className = "notice"; d.textContent = text; notes.appendChild(d); }
     if (!r.ocr_available) note(t("no_ocr"));
     (r.notes || []).forEach(function (n) { note(t("note_" + n)); });
     if (r.unread) note(r.unread === 1 ? t("unread_1") : t("unread_n", { n: r.unread }));
+    notes.hidden = !notes.childElementCount;
   }
 
   function setView(name) {
     view = name;
-    document.querySelectorAll(".tab").forEach(function (b) { b.classList.toggle("active", b.getAttribute("data-view") === name); });
+    document.querySelectorAll("[data-view]").forEach(function (b) {
+      b.setAttribute("aria-selected", String(b.dataset.view === name));
+    });
     $("doc-formatted").hidden = name !== "formatted";
     $("doc-text").hidden = name !== "text";
     $("doc-markdown").hidden = name !== "markdown";
+    $("reader").scrollTop = 0;
   }
 
   function render(r) {
@@ -91,6 +108,13 @@
     $("result-name").textContent = $("work-name").textContent;
     ["doc-formatted", "doc-text", "doc-markdown"].forEach(function (id) { $(id).dir = r.direction || "auto"; });
     $("doc-formatted").innerHTML = r.html; // built by Python from the record, every text escaped
+    if (r.ocr_blocks) {
+      var caution = document.createElement("p");
+      caution.className = "note";
+      caution.dir = "auto";
+      caution.dataset.i18n = "ocr_note";
+      $("doc-formatted").prepend(caution);
+    }
     $("doc-text").textContent = r.text;
     $("doc-markdown").textContent = r.markdown;
     // Save offers what the installed heocr can write: Word first when it can.
@@ -99,13 +123,39 @@
     applyLanguage(); // fills the page and section labels inside the document
     setView("formatted");
     show("result");
-    $("doc-formatted").scrollTop = 0;
   }
 
   function message(key) {
+    messageKey = key;
     $("message-name").textContent = $("work-name").textContent;
     $("message-text").textContent = t(key);
     show("message");
+  }
+
+  function showElapsed() {
+    var seconds = Math.floor((Date.now() - readingStarted) / 1000);
+    $("work-elapsed").textContent = Math.floor(seconds / 60) + ":" + String(seconds % 60).padStart(2, "0");
+  }
+
+  function showProgress(p) {
+    var status = "reading";
+    var total = p && p.total > 0 ? p.total : 0;
+    if (p && p.stage === "pages") status = total ? "page_of" : "page_n_progress";
+    if (p && p.stage === "finishing") status = "finishing";
+    $("work-status").textContent = t(status, p && { done: total ? Math.min(p.done + 1, total) : p.done + 1, total: total });
+    var type = $("work-name").textContent.match(/\.([^.]+)$/);
+    var meta = type ? type[1].toUpperCase() : "";
+    if (total) meta += (meta ? " · " : "") + (total === 1 ? t("page") : t("pages", { n: total }));
+    $("work-meta").textContent = meta;
+    // Fit long PDFs into one row while preserving individual segments for short readings.
+    var count = Math.min(total || 1, 60);
+    var done = status === "finishing" ? count : total ? Math.floor(p.done * count / total) : 0;
+    var meter = $("meter");
+    while (meter.childElementCount > count) meter.lastElementChild.remove();
+    while (meter.childElementCount < count) meter.appendChild(document.createElement("i"));
+    Array.prototype.forEach.call(meter.children, function (segment, i) {
+      segment.className = i < done ? "done" : i === Math.min(done, count - 1) ? "now" : "";
+    });
   }
 
   // -- called by Python ------------------------------------------------------------------
@@ -113,29 +163,24 @@
     started: function (p) {
       working = true;
       current = null;
+      messageKey = null;
+      progress = null;
       $("work-name").textContent = p.name;
-      $("meter").style.width = "0";
-      $("meter").parentNode.classList.add("indeterminate");
-      $("work-status").textContent = t("reading");
-      show("work");
+      readingStarted = Date.now();
+      clearInterval(elapsedTimer);
+      elapsedTimer = setInterval(showElapsed, 1000);
+      showElapsed();
+      showProgress(null);
+      show("reading");
     },
     progress: function (p) {
-      var meter = $("meter");
-      if (p.stage === "pages" && p.total) {
-        meter.parentNode.classList.remove("indeterminate");
-        meter.style.width = Math.max(2, Math.round(100 * p.done / p.total)) + "%";
-        $("work-status").textContent = t("page_of", { done: Math.min(p.done + 1, p.total), total: p.total });
-      } else if (p.stage === "pages") {
-        $("work-status").textContent = t("page_n_progress", { done: p.done + 1 });
-      } else if (p.stage === "finishing") {
-        meter.parentNode.classList.remove("indeterminate");
-        meter.style.width = "100%";
-        $("work-status").textContent = t("finishing");
-      }
+      progress = p;
+      showProgress(p);
     },
     finished: function (p) {
       working = false;
-      if (p.kind === "cancelled") { show("drop"); toast(t("cancelled")); return; }
+      clearInterval(elapsedTimer);
+      if (p.kind === "cancelled") { show("start"); toast(t("cancelled")); return; }
       if (p.kind === "error") { message("error"); return; }
       if (p.kind !== "ok") { message(p.kind); return; }
       api().result().then(render);
@@ -163,21 +208,46 @@
     }
   }
 
+  function setSaveMenu(open, returnFocus) {
+    document.body.classList.toggle("menu-open", open);
+    $("save").setAttribute("aria-expanded", String(open));
+    if (open) {
+      var first = $("save-menu").querySelector("button:not([hidden])");
+      if (first) first.focus();
+    } else if (returnFocus) {
+      $("save").focus();
+    }
+  }
+
   function bind() {
     $("open").addEventListener("click", function () { if (!working && api()) api().open_file(); });
-    $("again").addEventListener("click", function () { show("drop"); });
-    $("message-again").addEventListener("click", function () { show("drop"); });
+    $("again").addEventListener("click", function () { show("start"); });
+    $("message-again").addEventListener("click", function () {
+      if (!working && api()) api().open_file();
+    });
     $("cancel").addEventListener("click", function () { if (api()) api().cancel(); });
     $("copy").addEventListener("click", function () {
       if (!current) return;
       copyText(view === "markdown" ? current.markdown : current.text);
     });
+    $("save").addEventListener("click", function () {
+      setSaveMenu($("save").getAttribute("aria-expanded") !== "true");
+    });
+    document.addEventListener("click", function (event) {
+      if (!event.target.closest(".menuwrap")) setSaveMenu(false);
+    });
+    $("save-menu").addEventListener("keydown", function (event) {
+      if (event.key === "Escape") setSaveMenu(false, true);
+    });
     document.querySelectorAll("[data-save]").forEach(function (b) {
       b.addEventListener("click", function () {
-        api().save(b.getAttribute("data-save")).then(function (name) { if (name) toast(t("saved") + ": " + name); });
+        setSaveMenu(false, true);
+        if (api()) api().save(b.dataset.save).then(function (name) {
+          if (name) toast(t("saved") + ": " + name);
+        });
       });
     });
-    document.querySelectorAll(".tab").forEach(function (b) {
+    document.querySelectorAll("[data-view]").forEach(function (b) {
       b.addEventListener("click", function () { setView(b.getAttribute("data-view")); });
     });
     $("lang").addEventListener("click", function () {
@@ -200,7 +270,8 @@
   }
 
   (BOOT.models || []).forEach(function (m) {
-    var li = document.createElement("li");
+    var li = document.createElement("div");
+    li.dir = "ltr";
     li.textContent = m.name + " — " + m.origin + " — sha256 " + m.sha256;
     $("models").appendChild(li);
   });
