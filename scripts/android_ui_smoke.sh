@@ -194,6 +194,40 @@ logged "HeOCR copied" || fail "Copy did nothing"
 sleep 1
 seen "text copied" || fail "the copied toast did not show (evaluate_javascript)"
 "$ADB" exec-out screencap -p > $OUT/7-copied.png
+# Share: the system share sheet with the text (it is its own confirmation); Back returns to the reading.
+sleep 4
+tap_retry "^share$" || fail "no Share button"
+logged "HeOCR share: chars=" || fail "Share did nothing"
+sleep 3
+"$ADB" exec-out screencap -p > $OUT/7b-share.png
+"$ADB" shell input keyevent 4
+sleep 2
+alive || fail "the app stopped after Share"
+# Save as text: the system save screen (starting in Downloads), Save, then the saved toast, and Open
+# when the phone has an app for text files.
+"$ADB" logcat -c
+tap_retry "^more actions$" || fail "no More button before Save"
+sleep 1
+tap_retry "^save as text" || fail "no Save as text row in the sheet"
+sleep 5
+"$ADB" exec-out screencap -p > $OUT/7c-save-picker.png
+tap_retry "^save$" || fail "the save screen had no Save button"
+logged "HeOCR saved txt" || fail "Save as text wrote nothing"
+"$ADB" logcat -d | grep -o "HeOCR saved txt: .*" | tail -1
+sleep 1
+seen "saved to downloads|saved" || fail "the saved toast did not show"
+"$ADB" exec-out screencap -p > $OUT/7d-saved.png
+if "$ADB" logcat -d | grep -q "HeOCR saved txt: .*viewer=True"; then
+  tap_retry "^open$" || fail "the saved toast had no Open, though a viewer exists"
+  logged "HeOCR open saved: viewer=True" || fail "Open did nothing"
+  sleep 4
+  "$ADB" exec-out screencap -p > $OUT/7e-opened.png
+  "$ADB" shell input keyevent 4
+  sleep 2
+else
+  echo "no app for text files on this phone: the saved toast shows no Open (as designed)"
+fi
+alive || fail "the app stopped after saving"
 # More: the sheet opens in place; Back closes it, and Back again goes Home.
 sleep 4
 tap_retry "^more actions$" || fail "no More button"
@@ -242,4 +276,4 @@ fi
 "$ADB" logcat -d | grep -o "HeOCR text zoom: .*" | tail -1 || true
 "$ADB" shell cmd uimode night no >/dev/null
 "$ADB" shell settings put system font_scale 1.0
-echo "UI smoke passed: started, read the sample, read shared PDFs (*/* and application/pdf), opened one with the picker, copied, the sheet and Back, About, diagnostics, night and 200% text"
+echo "UI smoke passed: started, read the sample, read shared PDFs (*/* and application/pdf), opened one with the picker, copied, shared, saved as text (and opened it), the sheet and Back, About, diagnostics, night and 200% text"

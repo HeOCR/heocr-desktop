@@ -216,7 +216,8 @@ def result(t: dict, d: dict, lang: str, doc, name: str, pages: int, seconds: flo
         lead = f'<a class="btn" href="heocr:save-docx" role="button">{ico("word-doc")}{t["save_word"]}</a><a class="iconbtn framed" href="heocr:copy" role="button" aria-label="{t["copy"]}">{ico("copy")}</a>'
     else:
         lead = f'<a class="btn" href="heocr:copy" role="button">{ico("copy")}{t["copy"]}</a>'
-    bar = f'<footer class="actionbar">{lead}<a class="iconbtn framed" href="heocr:more" role="button" aria-label="{t["more"]}">{ico("more")}</a></footer>'
+    share = f'<a class="iconbtn framed" href="heocr:share" role="button" aria-label="{t["share"]}">{ico("share")}</a>'
+    bar = f'<footer class="actionbar">{lead}{share}<a class="iconbtn framed" href="heocr:more" role="button" aria-label="{t["more"]}">{ico("more")}</a></footer>'
     return html(lang, appbar_back(t, escape(name), file=True) + f'''
 <main class="screen result">
 <div class="chips">{chips_html}</div>
@@ -225,11 +226,13 @@ def result(t: dict, d: dict, lang: str, doc, name: str, pages: int, seconds: flo
 {bar}{more_sheet(t, formats)}''', zoom=True)
 
 
-def toast(text: str, sub: str = "", low: bool = False) -> str:
-    """A confirmation (8.10), inserted into the page from outside and removed after 4 seconds."""
+def toast(text: str, sub: str = "", low: bool = False, action: tuple[str, str] | None = None) -> str:
+    """A confirmation (8.10), inserted into the page from outside and removed after 4 seconds (8 with an
+    action). ``action`` is (label, app address), e.g. Open for the saved file."""
     small = f'<small dir="auto">{sub}</small>' if sub else ""
     cls = "toast low" if low else "toast"
-    return f'<div class="{cls}" role="status" id="toast">{ico("check")}<div>{text}{small}</div></div>'
+    link = f'<a href="heocr:{action[1]}" role="button">{action[0]}</a>' if action else ""
+    return f'<div class="{cls}" role="status" id="toast">{ico("check")}<div>{text}{small}</div>{link}</div>'
 
 
 # The four problem states (8.11): engine kind -> (strings, icon, primary, secondary).

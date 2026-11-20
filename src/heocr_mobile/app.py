@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import asyncio
 import functools
+import threading
 import json
 import time
 import traceback
@@ -30,8 +31,10 @@ ACTIONS = {
     "home": "go_home", "back": "on_back", "about": "show_about", "save-docx": "save_docx", "save-txt": "save_txt",
     "copy": "copy", "diagnostics": "copy_diagnostics", "licences": "show_licences",
     "more": "open_sheet", "dismiss": "close_sheet", "next": "next_step",
+    "share": "share", "open-saved": "open_saved", "retry": "retry",
 }
 TOAST_SECONDS = 4
+TOAST_ACTION_SECONDS = 8  # a toast with an action (Open) stays longer (SPEC 8.10)
 
 
 def guarded(handler):
@@ -69,6 +72,8 @@ class HeOCR(toga.App):
         self.sheet = False
         self.result_page = ""
         self.toast_id = 0
+        self.saved = None  # (address, MIME type) of the last saved file, for Open
+        self.stop = None  # the threading.Event that stops the reading in progress
         self.webview = toga.WebView(style=Pack(flex=1), on_navigation_starting=self.navigate, on_webview_load=self.loaded)
         self.main_window = toga.MainWindow(title=self.formal_name, on_gain_focus=self.on_focus)
         self.main_window.content = self.webview
@@ -146,16 +151,17 @@ class HeOCR(toga.App):
             return False
         return True
 
-    def toast(self, text: str, sub: str = ""):
-        """A confirmation over the page (SPEC 8.10), gone after four seconds. ``text`` and ``sub`` are markup."""
+    def toast(self, text: str, sub: str = "", action: tuple[str, str] | None = None):
+        """A confirmation over the page (SPEC 8.10), gone after four seconds, eight with an action.
+        ``text`` and ``sub`` are markup; ``action`` is (label, app address)."""
         self.toast_id += 1
         mine = self.toast_id
-        markup = screens.toast(text, sub, low=self.screen != "result")
+        markup = screens.toast(text, sub, low=self.screen != "result", action=action)
         self.js("(function(){var o=document.getElementById('toast');if(o)o.remove();"
                 f"document.body.insertAdjacentHTML('beforeend',{json.dumps(markup)});}})()")
 
         async def leave():
-            await asyncio.sleep(TOAST_SECONDS)
+            await asyncio.sleep(TOAST_ACTION_SECONDS if action else TOAST_SECONDS)
             if self.toast_id == mine:
                 self.js("(function(){var o=document.getElementById('toast');if(o)o.remove();})()")
 
@@ -271,16 +277,26 @@ class HeOCR(toga.App):
     # -- reading ---------------------------------------------------------------------------
 
     def cancel(self):
-        """Stop waiting for the reading and go Home. heocr finishes in the background; its result is dropped."""
+        """Stop the reading at the next page and go Home (SPEC 3.5: no question asked)."""
         if self.reading is not None:
             print("HeOCR read: cancelled", flush=True)
+            if self.stop is not None:
+                self.stop.set()
         self.go_home()
+
+    def retry(self):
+        """Read the last file again from the start (SPEC 9, heocr:retry)."""
+        if self.source is None:
+            return None
+        path, name, photo = self.source
+        return self.read(path, name, photo=photo)
 
     async def read(self, path: Path, name: str, copied: int | None = None, declared: int | None = None,
                    shared: bool = False, photo: bool = False):
         if self.reading is not None:
             return
         token = self.reading = object()
+        stop = self.stop = threading.Event()
         self.source = (path, name, photo)
         self.last_error = None
         loop = asyncio.get_running_loop()
@@ -310,7 +326,9 @@ class HeOCR(toga.App):
         render()
         ticker = loop.create_task(tick())
         try:
-            result = await loop.run_in_executor(None, engine.convert, path, report)
+            result = await loop.run_in_executor(None, engine.convert, path, report, stop)
+        except engine.Cancelled:
+            return  # the user is already at Home
         except Exception as exc:  # noqa: BLE001 - shown to the user; details stay on the phone
             if self.reading is token:
                 self.last_error = f"read:{type(exc).__name__}"
@@ -359,8 +377,32 @@ class HeOCR(toga.App):
         if uri is None:
             return
         device.write_to(uri, exports.export(self.doc, kind))
-        print(f"HeOCR saved {kind}", flush=True)
-        self.toast(escape(self.d["saved"]), f"<bdi>{escape(file_name)}</bdi>")
+        shown = device.display_name(uri)
+        shown = file_name if shown == "document" else shown
+        self.saved = (uri, exports.MIME[kind])
+        viewer = device.view_intent(uri, exports.MIME[kind]) is not None
+        print(f"HeOCR saved {kind}: downloads={device.in_downloads(uri)} viewer={viewer}", flush=True)
+        # "Saved to Downloads" only when it is there; the user may pick another folder.
+        text = self.t["saved"] if device.in_downloads(uri) else escape(self.d["saved"])
+        self.toast(text, f"<bdi>{escape(shown)}</bdi>", action=(self.t["open_it"], "open-saved") if viewer else None)
+
+    def open_saved(self):
+        """Open the file just saved, in the phone's app for its type (shown only when one exists)."""
+        if self.saved is None:
+            return
+        intent = device.view_intent(*self.saved)
+        print(f"HeOCR open saved: viewer={intent is not None}", flush=True)
+        if intent is not None:
+            self._impl.native.startActivity(intent)
+
+    def share(self):
+        """The system share sheet with the reading's text (SPEC 9). It confirms itself: no toast."""
+        if self.doc is None:
+            return
+        self.close_sheet()
+        intent = device.share_intent(self.doc.text, self.name, Path(self.paths.cache))
+        print(f"HeOCR share: chars={len(self.doc.text)}", flush=True)
+        self._impl.native.startActivity(intent)
 
     def copy(self):
         if self.doc is not None:

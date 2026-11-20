@@ -150,6 +150,20 @@ android_manifest_activity_extra_content = """
     <data android:mimeType="image/*" />
 </intent-filter>
 """
+# "Open" on the saved toast (SPEC 8.10, heocr:open-saved) shows only when an app can open the file. Since
+# Android 11 the app sees only the viewers it declares here: one per type it saves.
+android_manifest_extra_content = """
+<queries>
+    <intent>
+        <action android:name="android.intent.action.VIEW" />
+        <data android:mimeType="text/plain" />
+    </intent>
+    <intent>
+        <action android:name="android.intent.action.VIEW" />
+        <data android:mimeType="application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
+    </intent>
+</queries>
+"""
 # No network at all: Briefcase adds these two by default; false leaves them out of the manifest,
 # so Android itself refuses every socket the app opens.
 permission."android.permission.INTERNET" = false

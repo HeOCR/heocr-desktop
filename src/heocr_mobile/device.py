@@ -167,7 +167,23 @@ def create_document_intent(name: str, mime: str):
     intent.setType(mime)
     # A typed Java String: Chaquopy cannot always choose an Intent.putExtra overload for a Python value.
     intent.putExtra(Intent.EXTRA_TITLE, _jclass("java.lang.String")(name))
+    # Start in Downloads (SPEC 3.9). The picker treats it as a hint and falls back to its own choice.
+    downloads = _jclass("android.provider.DocumentsContract").buildDocumentUri(
+        "com.android.externalstorage.documents", "primary:Download")
+    intent.putExtra(_jclass("android.provider.DocumentsContract").EXTRA_INITIAL_URI, downloads)
     return intent
+
+
+def in_downloads(uri) -> bool:
+    """True when a saved document's address is in the Downloads folder (for "Saved to Downloads")."""
+    authority = str(uri.getAuthority() or "")
+    if authority == "com.android.providers.downloads.documents":
+        return True
+    try:
+        doc_id = str(_jclass("android.provider.DocumentsContract").getDocumentId(uri))
+    except Exception:  # noqa: BLE001 - not a documents-provider address
+        return False
+    return authority == "com.android.externalstorage.documents" and doc_id.startswith("primary:Download/")
 
 
 def write_to(uri, data: bytes) -> None:
@@ -255,3 +271,42 @@ def phone() -> dict:
     """The Android version and phone model, for "Copy technical details" (never anything personal)."""
     Build = _jclass("android.os.Build")
     return {"android": str(Build.VERSION.RELEASE), "sdk": int(Build.VERSION.SDK_INT), "model": str(Build.MODEL)}
+
+
+# -- share and open (design/android/SPEC.md, section 9: heocr:share, heocr:open-saved) ----------
+
+SHARE_TEXT_LIMIT = 100_000  # characters; longer text goes as a .txt file (an intent extra has a size limit)
+
+
+def share_intent(text: str, name: str, cache: Path):
+    """The system share sheet with the reading's text: as text, or as a .txt file when it is long."""
+    Intent = _jclass("android.content.Intent")
+    String = _jclass("java.lang.String")
+    send = Intent(Intent.ACTION_SEND)
+    send.setType("text/plain")
+    if len(text) <= SHARE_TEXT_LIMIT:
+        send.putExtra(Intent.EXTRA_TEXT, String(text))
+    else:
+        # The "shared" folder in the app's cache is the one Briefcase's FileProvider serves (as for photos).
+        folder = cache / "shared"
+        folder.mkdir(parents=True, exist_ok=True)
+        path = folder / f"{name}.txt"
+        path.write_text(text, encoding="utf-8")
+        context = _android_context()
+        uri = _jclass("androidx.core.content.FileProvider").getUriForFile(
+            context, f"{context.getPackageName()}.fileprovider", _jclass("java.io.File")(str(path)))
+        send.putExtra(Intent.EXTRA_STREAM, uri)
+        send.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+    return Intent.createChooser(send, None)
+
+
+def view_intent(uri, mime: str):
+    """Open a saved document in the phone's app for its type; None when no app can open it."""
+    Intent = _jclass("android.content.Intent")
+    view = Intent(Intent.ACTION_VIEW)
+    view.setDataAndType(uri, mime)
+    view.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+    # The manifest's <queries> lets the app see the viewers for its two types (Android 11 and later).
+    if _android_context().getPackageManager().queryIntentActivities(view, 0).isEmpty():
+        return None
+    return view
