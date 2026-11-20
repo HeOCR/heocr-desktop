@@ -80,6 +80,16 @@ FreeType (inside PDFium and Pillow):
 
 > Portions of this software are copyright © 2025 The FreeType Project (www.freetype.org). All rights reserved.
 
+## App typefaces
+
+The desktop and Android apps embed these WOFF2 subsets in their stylesheets and
+ship the corresponding SIL Open Font License 1.1 texts in their resources.
+
+| Font | Weights in the design | Licence text in the source tree |
+|---|---|---|
+| Noto Sans Hebrew | 400, 500, 700 | `third_party/fonts/OFL-NotoSansHebrew.txt` |
+| JetBrains Mono | 500, 700 | `third_party/fonts/OFL-JetBrainsMono.txt` |
+
 ## Android app
 
 The Android app (`heocr_mobile`) bundles the same pipeline and OCR components (with Pillow built for Android by `scripts/build_pillow_android.py`), plus:
@@ -87,8 +97,6 @@ The Android app (`heocr_mobile`) bundles the same pipeline and OCR components (w
 | Component | Version | Licence | Notes |
 |---|---|---|---|
 | HeOCR models `heocr_modern_v1`, `heocr_oldprint_v1` | 2026-11 (inside heocr 0.2.1, in both apps) | Apache-2.0 | Zenodo 10.5281/zenodo.24372349 and 10.5281/zenodo.24372352; their NOTICE files ship in heocr's `models_data/` |
-| Noto Sans Hebrew | 400, 500, 700 (subset) | SIL OFL 1.1 | The design's typeface, embedded as WOFF2 in the result stylesheet (`design/android/fonts/`); `third_party/fonts/OFL-NotoSansHebrew.txt` ships in the app |
-| JetBrains Mono | 500, 700 (subset) | SIL OFL 1.1 | As above; `third_party/fonts/OFL-JetBrainsMono.txt` ships in the app |
 | Chaquopy runtime | 17.2.0 | MIT | Python on Android, from Maven Central (Briefcase's Android template) |
 | Toga (toga-core, toga-android) | 0.5.7 | BSD-3-Clause | The native shell |
 | cpu_features (ndk_compat) | 0.11.0 | Apache-2.0 | Static, inside the Android Tesseract (its CPU detection) |

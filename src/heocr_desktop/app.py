@@ -70,6 +70,7 @@ def page_html(language: str) -> str:
     }
     html = (UI / "index.html").read_text("utf-8")
     html = html.replace("/*STYLE*/", (UI / "app.css").read_text("utf-8"))
+    html = html.replace("/*APP_STYLE*/", (UI / "runtime.css").read_text("utf-8"))
     html = html.replace("/*SCRIPT*/", (UI / "app.js").read_text("utf-8"))
     return html.replace("/*BOOT*/", "window.HEOCR_BOOT = " + json.dumps(boot, ensure_ascii=False) + ";")
 
