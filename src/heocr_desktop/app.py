@@ -263,11 +263,11 @@ class Api:
             result = batch.convert_folder(folder, self._start_batch_file, self._progress, self._cancel)
             files = [item["output"] for item in result.items if "output" in item]
             token = None
-            if files and result.directory is not None:
-                first = reveal.local_file(result.directory / files[0])
-                if first is not None:
-                    token = uuid4().hex
-                    self._saved = (token, first)
+            target = result.directory / files[0] if files and result.directory is not None else result.report
+            first = reveal.local_file(target) if target is not None else None
+            if first is not None:
+                token = uuid4().hex
+                self._saved = (token, first)
             payload = {
                 "kind": "batch",
                 "name": folder.name or folder.anchor,
@@ -276,6 +276,7 @@ class Api:
                 "saved": len(files),
                 "cancelled": result.cancelled,
                 "directory": result.directory.name if result.directory is not None else None,
+                "report_error": result.report is None,
                 "reveal": token,
             }
         except Exception:

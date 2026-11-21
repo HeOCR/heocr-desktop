@@ -308,6 +308,7 @@
     $("batch-name").textContent = result.name;
     $("batch-directory").hidden = !result.directory;
     $("batch-directory").firstElementChild.textContent = result.directory || "";
+    $("batch-report-error").hidden = !result.report_error;
     $("batch-reveal").hidden = !result.reveal;
     var list = $("batch-items");
     list.replaceChildren();

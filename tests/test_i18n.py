@@ -8,6 +8,8 @@ def test_english_fallback_is_limited_to_strings_awaiting_hebrew_approval():
         "open_folder", "batch_start", "batch_hint", "batch_done", "batch_saved", "batch_file",
         "batch_empty", "batch_read_error", "batch_write_error", "file_dialog_documents",
         "file_dialog_all_files", "unsupported_title", "unsupported", "unreadable",
+        "batch_report_title", "batch_report_read", "batch_report_pages", "batch_report_remaining",
+        "batch_report_failures", "batch_report_write_error",
     }
     en, he = i18n.STRINGS["en"], i18n.STRINGS["he"]
     assert set(he) <= set(en)

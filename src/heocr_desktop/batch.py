@@ -1,7 +1,8 @@
-"""Read the regular files directly inside one folder and save Word copies."""
+"""Read the regular files directly inside one folder and save Word copies and a report."""
 
 from __future__ import annotations
 
+import json
 import threading
 import traceback
 from dataclasses import dataclass
@@ -9,7 +10,9 @@ from itertools import count
 from pathlib import Path
 from typing import Callable
 
-from heocr_desktop import engine, exports
+from heocr_desktop import engine, exports, i18n
+
+REPORT_NAME = "batch-report.txt"
 
 
 @dataclass
@@ -18,6 +21,7 @@ class BatchResult:
     items: list[dict]
     total: int
     cancelled: bool
+    report: Path | None
 
 
 def _new_directory(folder: Path) -> Path:
@@ -30,21 +34,46 @@ def _new_directory(folder: Path) -> Path:
             continue
 
 
+def _write_new_file(target: Path, data: bytes) -> None:
+    stream = target.open("xb")
+    try:
+        with stream:
+            stream.write(data)
+    except OSError:
+        target.unlink(missing_ok=True)
+        raise
+
+
 def _write_word(directory: Path, source: Path, data: bytes) -> str:
     for n in count(1):
         stem = source.stem if n == 1 else f"{source.stem} ({n})"
         target = directory / f"{stem}.docx"
         try:
-            stream = target.open("xb")
+            _write_new_file(target, data)
         except FileExistsError:
             continue
-        try:
-            with stream:
-                stream.write(data)
-        except OSError:
-            target.unlink(missing_ok=True)
-            raise
         return target.name
+
+
+def _report_bytes(items: list[dict], total: int, cancelled: bool) -> bytes:
+    strings = i18n.STRINGS["en"]
+    read = [item for item in items if item["kind"] in ("ok", "batch_write_error")]
+    failures = [item for item in items if item["kind"] != "ok"]
+    lines = [
+        strings["batch_report_title"],
+        strings["m_cancelled_t" if cancelled else "batch_done"],
+        "",
+        strings["batch_report_read"].format(read=len(read), total=total),
+        strings["batch_saved"].format(saved=len(items) - len(failures), total=total),
+        strings["batch_report_pages"].format(pages=sum(item["pages"] for item in read)),
+    ]
+    if cancelled:
+        lines.append(strings["batch_report_remaining"].format(n=total - len(items)))
+    lines.extend(("", strings["batch_report_failures"].format(n=len(failures))))
+    for item in failures:
+        name = json.dumps(item["name"], ensure_ascii=False)
+        lines.append(f"- {name}: {strings.get(item['kind'], strings['error'])}")
+    return ("\n".join(lines) + "\n").encode("utf-8-sig", errors="backslashreplace")
 
 
 def convert_folder(
@@ -75,8 +104,10 @@ def convert_folder(
             break
         item = {"name": path.name, "kind": result.kind, "unread": result.unread}
         if result.kind == "ok":
+            doc = result.doc
+            item["pages"] = doc.page_count if doc.page_count is not None else len(doc.pages)
             try:
-                data = exports.export(result.doc, "docx")
+                data = exports.export(doc, "docx")
                 if cancel.is_set():
                     break
                 if directory is None:
@@ -86,4 +117,14 @@ def convert_folder(
                 traceback.print_exc()
                 item["kind"] = "batch_write_error"
         items.append(item)
-    return BatchResult(directory, items, len(files), cancel.is_set() and len(items) < len(files))
+    cancelled = cancel.is_set() and len(items) < len(files)
+    report_path = None
+    try:
+        if directory is None:
+            directory = _new_directory(folder)
+        target = directory / REPORT_NAME
+        _write_new_file(target, _report_bytes(items, len(files), cancelled))
+        report_path = target
+    except OSError:
+        traceback.print_exc()
+    return BatchResult(directory, items, len(files), cancelled, report_path)
