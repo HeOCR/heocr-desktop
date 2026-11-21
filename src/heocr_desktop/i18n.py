@@ -120,7 +120,6 @@ STRINGS: dict[str, dict[str, str]] = {
         "licence": "Licence",
     },
     "he": {
-        # Copy awaiting Hebrew approval is provided by the English fallback.
         "unread_picture_title": "חלק {n} לא נקרא:",
         "unread_picture_body": "תמונה בעמוד {page}. הפרטים ברשומת ה־JSON.",
         "unread_details": "הפרטים ברשומת ה־JSON.",
@@ -142,6 +141,23 @@ STRINGS: dict[str, dict[str, str]] = {
         "drop": "גררו קובץ לכאן",
         "drop_hint": "PDF, וורד (DOCX), תמונות, אקסל (XLSX), פאוורפוינט (PPTX) ודפי אינטרנט שמורים (HTML)",
         "open": "פתיחת קובץ…",
+        "open_folder": "פתיחת תיקייה…",
+        "batch_start": "קריאת תיקייה",
+        "batch_hint": "HeOCR יקרא את הקבצים שבתיקייה וישמור עותקים בפורמט וורד בתיקיית HeOCR חדשה. תיקיות משנה לא ייקראו.",
+        "batch_done": "קריאת התיקייה הושלמה",
+        "batch_saved": "קבצים שנשמרו: {saved} מתוך {total}.",
+        "batch_file": "קובץ {current} מתוך {total}",
+        "batch_empty": "אין בתיקייה הזו קבצים לקריאה.",
+        "batch_read_error": "לא ניתן היה לקרוא את התיקייה.",
+        "batch_write_error": "לא ניתן היה לשמור את קובץ הוורד.",
+        "batch_report_title": "דוח קריאת תיקייה ב־HeOCR",
+        "batch_report_read": "קבצים שנקראו: {read} מתוך {total}",
+        "batch_report_pages": "עמודים בקבצים שנקראו (כשמספרם ידוע): {pages}",
+        "batch_report_remaining": "קבצים שלא עובדו: {n}",
+        "batch_report_failures": "קבצים שנכשלו: {n}",
+        "batch_report_write_error": "לא ניתן היה לשמור את דוח קריאת התיקייה.",
+        "file_dialog_documents": "מסמכים",
+        "file_dialog_all_files": "כל הקבצים",
         "or": "או",
         "offline": "עובד במלואו ללא חיבור לרשת. הקבצים שלכם לא יוצאים מהמחשב: בלי רשת, בלי טלמטריה.",
         "reading": "קורא…",
@@ -176,6 +192,9 @@ STRINGS: dict[str, dict[str, str]] = {
         "unread_1": "חלק אחד לא נקרא.",
         "ocr_note": "טקסט שנקרא ב-OCR עלול לכלול טעויות. כדאי לבדוק אותו לפני שמסתמכים עליו.",
         "needs_converter": "קובצי וורד ישנים (‎.doc), ‏RTF וקובצי OpenDocument עדיין לא נתמכים: קריאתם דורשת את LibreOffice, שלא כלול ביישום. פתחו את הקובץ בוורד או ב-LibreOffice, שמרו אותו כ-‎.docx או כ-PDF, וגררו אותו לכאן.",
+        "unsupported_title": "סוג קובץ לא נתמך",
+        "unsupported": "HeOCR לא יכול לקרוא את סוג הקובץ הזה.",
+        "unreadable": "לא ניתן היה לקרוא את הקובץ. ייתכן שהוא פגום או מוגן בסיסמה.",
         "empty": "לא נמצא טקסט בקובץ.",
         "error": "משהו השתבש בזמן קריאת הקובץ.",
         "no_ocr": "OCR אינו זמין בגרסה זו, ולכן עמודים סרוקים לא נקראו.",
@@ -211,7 +230,7 @@ STRINGS: dict[str, dict[str, str]] = {
 
 
 def text(language: str, key: str) -> str:
-    """Look up a native UI string, using English for unapproved translations."""
+    """Look up a native UI string, falling back to English."""
     return STRINGS.get(language, {}).get(key, STRINGS["en"][key])
 
 

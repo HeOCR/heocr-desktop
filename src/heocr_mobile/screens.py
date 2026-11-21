@@ -241,7 +241,7 @@ def toast(text: str, sub: str = "", low: bool = False, action: tuple[str, str] |
 
 
 def desktop_copy(d: dict, lang: str, key: str) -> str:
-    """Use the desktop's English fallback for copy awaiting Hebrew approval."""
+    """Render shared desktop copy and mark any English fallback for the web view."""
     if key in d:
         return escape(d[key])
     return f'<span lang="en" dir="ltr">{escape(i18n.text(lang, key))}</span>'

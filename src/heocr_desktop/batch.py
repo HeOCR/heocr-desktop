@@ -55,8 +55,8 @@ def _write_word(directory: Path, source: Path, data: bytes) -> str:
         return target.name
 
 
-def _report_bytes(items: list[dict], total: int, cancelled: bool) -> bytes:
-    strings = i18n.STRINGS["en"]
+def _report_bytes(items: list[dict], total: int, cancelled: bool, language: str) -> bytes:
+    strings = i18n.STRINGS["en"] | i18n.STRINGS.get(language, {})
     read = [item for item in items if item["kind"] in ("ok", "batch_write_error")]
     failures = [item for item in items if item["kind"] != "ok"]
     lines = [
@@ -89,6 +89,8 @@ def convert_folder(
     start_file: Callable[[str, int, int], None],
     report: Callable[[engine.Progress], None],
     cancel: threading.Event,
+    *,
+    language: str = "en",
 ) -> BatchResult:
     files = sorted(
         (p for p in folder.iterdir() if not p.name.startswith(".") and not p.is_symlink() and p.is_file()),
@@ -131,7 +133,7 @@ def convert_folder(
         if directory is None:
             directory = _new_directory(folder)
         target = directory / REPORT_NAME
-        _write_new_file(target, _report_bytes(items, len(files), cancelled))
+        _write_new_file(target, _report_bytes(items, len(files), cancelled, language))
         report_path = target
     except OSError:
         traceback.print_exc()

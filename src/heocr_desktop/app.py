@@ -260,7 +260,9 @@ class Api:
     def _run_folder(self, folder: Path) -> None:
         payload = {"kind": "batch_read_error"}
         try:
-            result = batch.convert_folder(folder, self._start_batch_file, self._progress, self._cancel)
+            result = batch.convert_folder(
+                folder, self._start_batch_file, self._progress, self._cancel, language=self._language
+            )
             files = [item["output"] for item in result.items if "output" in item]
             token = None
             target = result.report
