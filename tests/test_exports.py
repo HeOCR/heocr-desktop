@@ -1,6 +1,7 @@
 """What Save writes: .txt carries a UTF-8 byte-order mark (Windows Notepad), the others plain UTF-8."""
 
 import json
+from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
@@ -35,3 +36,14 @@ def test_word_comes_first_only_when_heocr_can_write_it(monkeypatch):
     assert exports.formats()[0] == "docx"
     doc = SimpleNamespace(to_docx=lambda: b"PK\x03\x04")
     assert exports.export(doc, "docx") == b"PK\x03\x04"
+
+
+@pytest.mark.parametrize("name", ["garden.pdf", "garden.docx"])
+def test_word_export_keeps_fixture_structure(name):
+    from heocr_desktop import engine, smoke
+
+    fixtures = Path(__file__).resolve().parent / "fixtures"
+    expected = json.loads((fixtures / "expect.json").read_text("utf-8"))[name]
+    result = engine.convert(fixtures / name)
+    assert result.kind == "ok"
+    assert smoke.word_roundtrip_problems(result.doc, expected["docx_structure"], expected["contains"]) == []
