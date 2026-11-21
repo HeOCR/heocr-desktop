@@ -49,6 +49,15 @@ def test_doc_needs_a_converter_and_says_so():
     assert result.kind == "needs_converter"
 
 
+def test_unsupported_content_and_damaged_pdf_have_distinct_errors(tmp_path):
+    text = tmp_path / "unknown.bin"
+    text.write_bytes(b"invented contents")
+    pdf = tmp_path / "damaged.pdf"
+    pdf.write_bytes(b"%PDF-1.7\ncorrupt document\n")
+    assert engine.convert(text).kind == "unsupported"
+    assert engine.convert(pdf).kind == "unreadable"
+
+
 def test_progress_reports_pages_through_finishing(tmp_path):
     import pypdfium2
 

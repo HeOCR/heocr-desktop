@@ -24,8 +24,11 @@
 <p class="lede" data-i18n="lede">
 </p>
 <div class="dropzone" id="dropzone"><svg class="ico lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M12 10v7M9 14l3 3 3-3"/></svg><strong data-i18n="drop"></strong><span class="or" data-i18n="or"></span>
+<div class="start-actions">
 <button type="button" class="btn primary large" id="open" data-label="open"><span data-i18n="open"></span><kbd class="k-mac" aria-hidden="true">⌘O</kbd><kbd class="k-win" aria-hidden="true">Ctrl+O</kbd>
 </button>
+<button type="button" class="btn large" id="open-folder" data-i18n="open_folder"></button>
+</div>
 <p class="hint" data-i18n="drop_hint">
 </p>
 </div>
@@ -42,6 +45,7 @@
 </div>
 <div class="meta" id="work-meta" dir="ltr">
 </div>
+<div class="meta" id="work-batch" role="status" dir="auto" hidden></div>
 </div>
 </div>
 <div class="scan" aria-hidden="true">
@@ -140,13 +144,27 @@
 </div>
 <div class="fname"><bdi id="message-name"></bdi>
 </div>
-<h2 id="message-title" tabindex="-1"></h2>
-<p id="message-text" class="selectable"></p>
+<h2 id="message-title" tabindex="-1" dir="auto"></h2>
+<p id="message-text" class="selectable" dir="auto"></p>
 <p id="message-hint" class="hint" hidden></p>
 <div class="row">
 <button type="button" class="btn primary" id="message-retry" hidden><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 11a7 7 0 1 0-1.5 5M19 5v6h-6"/></svg><span data-i18n="read_again"></span></button>
 <button type="button" class="btn primary" id="message-again"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h7l2 3h9v11H3z"/></svg><span data-i18n="choose_other"></span>
 </button>
+</div>
+</div>
+</section>
+<section id="view-batch" class="view" aria-labelledby="batch-title">
+<div class="message">
+<div class="fname"><bdi id="batch-name"></bdi></div>
+<h2 id="batch-title" tabindex="-1" dir="auto"></h2>
+<p id="batch-summary" dir="auto"></p>
+<p id="batch-directory" hidden><bdi></bdi></p>
+<ul id="batch-items"></ul>
+<div class="row">
+<button type="button" class="btn primary" id="batch-reveal" data-i18n="show_file" hidden></button>
+<button type="button" class="btn" id="batch-again" data-i18n="open_folder"></button>
+<button type="button" class="btn" id="batch-close" data-i18n="close"></button>
 </div>
 </div>
 </section>
@@ -161,6 +179,16 @@
 <div><span id="toast-label"></span><small hidden><bdi id="toast-name"></bdi></small></div>
 <button type="button" id="toast-reveal" data-i18n="show_file" hidden></button>
 </div>
+
+<dialog id="batch-confirm" aria-labelledby="batch-confirm-title" aria-describedby="batch-confirm-hint">
+<h2 id="batch-confirm-title" data-i18n="open_folder" dir="auto"></h2>
+<p class="fname"><bdi id="batch-confirm-name"></bdi></p>
+<p id="batch-confirm-hint" data-i18n="batch_hint" dir="auto"></p>
+<form method="dialog" class="row">
+<button type="submit" class="btn" value="cancel" data-i18n="cancel" autofocus></button>
+<button type="submit" class="btn primary" value="read" data-i18n="batch_start"></button>
+</form>
+</dialog>
 
 <dialog id="about" aria-labelledby="about-title">
 <h2 id="about-title" dir="ltr"><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="7" y="7" width="34" height="34" class="lg-box"/><rect x="4" y="4" width="6" height="6" class="lg-h"/><rect x="38" y="4" width="6" height="6" class="lg-h"/><rect x="4" y="38" width="6" height="6" class="lg-h"/><rect x="38" y="38" width="6" height="6" class="lg-h"/><path d="M16 18H32V32.5M16 24.5V32.5" class="lg-ink"/></svg><span>He<b>OCR</b></span>
