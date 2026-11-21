@@ -1,7 +1,7 @@
 {
-  "garden.pdf": {"kind": "ok", "route": "text_layer", "contains": ["גינה קהילתית ברחוב הדקלים", "1,400"], "docx_structure": {"table": 1}},
-  "garden.docx": {"kind": "ok", "route": "office_xml", "contains": ["הצעדים הבאים", "An English summary"], "docx_structure": {"heading": 3, "table": 1}},
-  "garden.doc": {"kind": "needs_converter"},
+  "garden.pdf": {"kind": "ok", "route": "text_layer", "contains": ["גינה קהילתית ברחוב הדקלים", "1,400"], "docx_structure": {"table": 1}, "batch_name": "גינה.pdf"},
+  "garden.docx": {"kind": "ok", "route": "office_xml", "contains": ["הצעדים הבאים", "An English summary"], "docx_structure": {"heading": 3, "table": 1}, "batch_name": "גינה.docx"},
+  "garden.doc": {"kind": "needs_converter", "batch_name": "גינה.doc"},
   "garden-scan.pdf": {"kind": "ok", "route": "ocr", "contains": ["הדקלים"]},
   "garden-scan.png": {"kind": "ok", "route": "ocr", "contains": ["הדקלים"]},
   "garden-scan.jpg": {"kind": "ok", "route": "ocr", "contains": ["הדקלים"]},

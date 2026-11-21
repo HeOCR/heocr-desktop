@@ -10,6 +10,7 @@ Expectations come from ``expect.json`` in the folder: ``{"file": {"kind": "ok", 
 Every reading also records the Tesseract models it used and the document's flags. A document flagged
 ``bundled_model_unavailable`` (heocr's own model missing, stock Tesseract read instead) always fails.
 The structured PDF and Word fixtures also round-trip through the app's Word exporter.
+Fixtures with a ``batch_name`` also run together in a folder to check Word copies and the batch report.
 OCR must use the shipped stock ``heb`` model. ``eng`` may also be used for number checks.
 """
 
@@ -18,13 +19,16 @@ from __future__ import annotations
 import json
 import os
 import re
+import shutil
 import sys
+import tempfile
+import threading
 from collections import Counter
 from pathlib import Path
 
 import heocr
 
-from heocr_desktop import engine, exports, licences
+from heocr_desktop import batch, engine, exports, i18n, licences
 
 _MODEL = re.compile(r"^tesseract:(.+)\.traineddata$")
 
@@ -72,6 +76,36 @@ def word_roundtrip_problems(doc, expected: dict[str, int], contains: list[str]) 
     for needle in contains:
         if needle not in saved.text:
             problems.append(f"Word export missing {needle!r}")
+    return problems
+
+
+def _batch_problems(base: Path, fixtures: dict) -> list[str]:
+    problems = []
+    with tempfile.TemporaryDirectory(prefix="תיקייה ", dir=base) as directory:
+        folder = Path(directory)
+        expected = {}
+        for fixture, want in fixtures.items():
+            name = want["batch_name"]
+            shutil.copyfile(base / fixture, folder / name)
+            expected[name] = want.get("kind", "ok")
+
+        result = batch.convert_folder(folder, lambda *_: None, lambda _: None, threading.Event())
+        if {item["name"]: item["kind"] for item in result.items} != expected:
+            problems.append("folder results differ from the expected file and error types")
+        outputs = {item["output"] for item in result.items if "output" in item}
+        saved = sum(kind == "ok" for kind in expected.values())
+        if len(outputs) != saved or any(not (result.directory / name).is_file() for name in outputs):
+            problems.append("folder run is missing Word copies")
+        if result.report is None:
+            return [*problems, "folder run did not save its batch report"]
+        report = result.report.read_text("utf-8-sig")
+        strings = i18n.STRINGS["en"]
+        summary = strings["batch_saved"].format(saved=saved, total=len(expected))
+        if summary not in report:
+            problems.append("batch report has the wrong saved/total count")
+        for name, kind in expected.items():
+            if kind != "ok" and f"{json.dumps(name, ensure_ascii=False)}: {strings[kind]}" not in report:
+                problems.append(f"batch report is missing the failure reason for {name!r}")
     return problems
 
 
@@ -131,6 +165,13 @@ def run(folder: str, *, resources: Path | None = None) -> int:
         report["files"][name] = entry
         if sys.stdout is not None:  # a Windows GUI app may have no console at all
             print(name, "OK" if not entry["problems"] else entry["problems"], flush=True)
+    if batch_fixtures := {name: want for name, want in expect.items() if "batch_name" in want}:
+        try:
+            problems = _batch_problems(base, batch_fixtures)
+        except Exception as exc:  # Include diagnostics even if the folder setup or report read fails.
+            problems = [f"{type(exc).__name__}: {exc}"]
+        report["batch"] = {"ok": not problems, "problems": problems}
+        failures += bool(problems)
     report["ok"] = failures == 0
     out = base / "smoke-report.json"
     try:

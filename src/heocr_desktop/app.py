@@ -263,7 +263,9 @@ class Api:
             result = batch.convert_folder(folder, self._start_batch_file, self._progress, self._cancel)
             files = [item["output"] for item in result.items if "output" in item]
             token = None
-            target = result.directory / files[0] if files and result.directory is not None else result.report
+            target = result.report
+            if target is None and files and result.directory is not None:
+                target = result.directory / files[0]
             first = reveal.local_file(target) if target is not None else None
             if first is not None:
                 token = uuid4().hex
