@@ -7,6 +7,7 @@ The fixtures (invented text only) are copied here from ``tests/fixtures`` by the
 import json
 import socket
 import subprocess
+from collections import Counter
 from pathlib import Path
 
 import pytest
@@ -116,13 +117,17 @@ def test_save_intent_carries_its_file_name():
 
 @pytest.mark.parametrize("name", ("garden.pdf", "garden.docx"))
 def test_word_export_is_written_through_an_android_content_uri(name):
+    expected = json.loads((FIXTURES / "expect.json").read_text("utf-8"))[name]["docx_structure"]
     result = engine.convert(FIXTURES / name)
     assert result.kind == "ok" and "docx" in exports.formats()
     shared = Path(str(device._android_context().getCacheDir().getAbsolutePath())) / "shared"
     shared.mkdir(parents=True, exist_ok=True)
     path = shared / f"{name}.export.docx"
     path.touch()
-    device.write_to(_provider_uri(path), exports.export(result.doc, "docx"))
+    payload = exports.export(result.doc, "docx")
+    device.write_to(_provider_uri(path), payload)
+    assert path.read_bytes() == payload
     reread = engine.convert(path)
     assert reread.kind == "ok"
-    assert {"heading", "table"} <= {block.kind for block in reread.doc.blocks}
+    counts = Counter(block.kind for block in reread.doc.blocks)
+    assert {kind: counts[kind] for kind in expected} == expected
