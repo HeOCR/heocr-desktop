@@ -56,10 +56,13 @@ jobs:
       - run: |
           python -m pip install briefcase==0.4.7
           python scripts/prebuild_wheels.py
-      - name: Build the app (ad-hoc signed; release builds are signed locally with Developer ID)
+      - name: Build, trim and package the app (ad-hoc signed)
         run: |
           briefcase create macOS -a heocr_desktop --no-input
           briefcase build macOS -a heocr_desktop --no-input
+          python scripts/prune_desktop_bundle.py build/heocr_desktop/macos/app/HeOCR.app/Contents/Resources/app_packages
+          briefcase package macOS -a heocr_desktop --adhoc-sign --no-input
+          wc -c dist/*.dmg
       - name: Smoke-test the packaged app (one fixture per type), arm64
         env:
           HEOCR_SMOKE_MODEL: heb
@@ -70,8 +73,6 @@ jobs:
         run: |
           softwareupdate --install-rosetta --agree-to-license >/dev/null 2>&1 || true
           python scripts/smoke_app.py macos-x86_64
-      - name: Package a DMG (ad-hoc)
-        run: briefcase package macOS -a heocr_desktop --adhoc-sign --no-input
       - uses: actions/upload-artifact@v4
         with:
           name: heocr-macos-adhoc-dmg
@@ -111,12 +112,15 @@ jobs:
         run: |
           briefcase create windows -a heocr_desktop --no-input
           briefcase build windows -a heocr_desktop --no-input
+          python scripts/prune_desktop_bundle.py build/heocr_desktop/windows/app/src/app_packages
       - name: Smoke-test the built app (one fixture per type)
         env:
           HEOCR_SMOKE_MODEL: heb
         run: python scripts/smoke_app.py windows
       - name: Package the MSI (unsigned)
-        run: briefcase package windows -a heocr_desktop --adhoc-sign --no-input
+        run: |
+          briefcase package windows -a heocr_desktop --adhoc-sign --no-input
+          Get-ChildItem dist\*.msi | Select-Object Name,Length
       # Code signing slot. SignPath Foundation signs release builds only, after a manual approval
       # per release (docs/code-signing-policy.md); PR builds stay unsigned.
       - name: Install the MSI and smoke-test the installed app
