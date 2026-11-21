@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" dir="ltr">
+<html lang="he" dir="rtl">
 <head>
 <meta charset="utf-8">
 <!-- This page loads no network resources, files, or frames. Styles, fonts and script are embedded ('unsafe-eval' because pywebview passes calls from Python as script strings). -->
@@ -24,7 +24,7 @@
 <p class="lede" data-i18n="lede">
 </p>
 <div class="dropzone" id="dropzone"><svg class="ico lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M12 10v7M9 14l3 3 3-3"/></svg><strong data-i18n="drop"></strong><span class="or" data-i18n="or"></span>
-<button type="button" class="btn primary large" id="open"><span data-i18n="open"></span><kbd class="k-mac">⌘O</kbd><kbd class="k-win">Ctrl+O</kbd>
+<button type="button" class="btn primary large" id="open" data-label="open"><span data-i18n="open"></span><kbd class="k-mac" aria-hidden="true">⌘O</kbd><kbd class="k-win" aria-hidden="true">Ctrl+O</kbd>
 </button>
 <p class="hint" data-i18n="drop_hint">
 </p>
@@ -34,7 +34,7 @@
 </div>
 </section>
 
-<section id="view-reading" class="view" aria-live="polite">
+<section id="view-reading" class="view" aria-labelledby="work-name">
 <div class="work">
 <div class="filecard"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M9 12h6M9 15h6M9 18h3"/></svg>
 <div>
@@ -52,14 +52,14 @@
 </div>
 </div>
 </div>
-<div class="progressline" role="status"><strong id="work-status" data-i18n="reading"></strong><span class="num" id="work-elapsed" data-label="elapsed"></span>
+<div class="progressline"><strong id="work-status" role="status" data-i18n="reading"></strong><span class="num" id="work-elapsed" data-label="elapsed"></span>
 </div>
-<div class="pages" id="meter" aria-hidden="true">
+<div class="pages" id="meter" role="progressbar" aria-labelledby="work-status">
 </div>
 <p class="hint" data-i18n="reading_hint">
 </p>
 <div class="rowend">
-<button type="button" class="btn" id="cancel"><span data-i18n="cancel"></span><kbd class="k-mac">Esc</kbd><kbd class="k-win">Esc</kbd>
+<button type="button" class="btn" id="cancel" data-label="cancel"><span data-i18n="cancel"></span><kbd class="k-mac" aria-hidden="true">Esc</kbd><kbd class="k-win" aria-hidden="true">Esc</kbd>
 </button>
 </div>
 </div>
@@ -140,7 +140,7 @@
 </div>
 <div class="fname"><bdi id="message-name"></bdi>
 </div>
-<h2 id="message-title"></h2>
+<h2 id="message-title" tabindex="-1"></h2>
 <p id="message-text" class="selectable"></p>
 <p id="message-hint" class="hint" hidden></p>
 <div class="row">

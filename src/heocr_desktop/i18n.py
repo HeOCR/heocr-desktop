@@ -1,14 +1,12 @@
-"""Interface strings in Hebrew and English, and the OS language.
+"""Interface strings in Hebrew and English.
 
-The window starts in the OS language (Hebrew if the user's first preferred language is
-Hebrew, otherwise English) and has a toggle. The choice is kept in a small settings file in the
-user's own folder; nothing else is stored.
+The window starts in Hebrew until the user chooses English. The choice is kept in a small
+settings file in the user's own folder; nothing else is stored.
 """
 
 from __future__ import annotations
 
 import json
-import locale
 import os
 import sys
 from pathlib import Path
@@ -193,35 +191,6 @@ STRINGS: dict[str, dict[str, str]] = {
 }
 
 
-def os_language() -> str:
-    """``he`` when the user's first preferred OS language is Hebrew, else ``en``."""
-    codes: list[str] = []
-    try:
-        if sys.platform == "darwin":
-            from Foundation import NSLocale  # pyobjc, shipped with pywebview on macOS
-
-            codes = [str(c) for c in NSLocale.preferredLanguages()]
-        elif sys.platform == "win32":
-            import ctypes
-
-            lang_id = ctypes.windll.kernel32.GetUserDefaultUILanguage()
-            codes = ["he" if (lang_id & 0x3FF) == 0x0D else "en"]
-    except Exception:  # noqa: BLE001 - any failure falls back to the locale
-        codes = []
-    if not codes:
-        for var in ("LC_ALL", "LC_MESSAGES", "LANG"):
-            if os.environ.get(var):
-                codes = [os.environ[var]]
-                break
-    if not codes:
-        try:
-            codes = [locale.getlocale()[0] or ""]
-        except ValueError:
-            codes = []
-    first = (codes[0] if codes else "").lower()
-    return "he" if first.startswith(("he", "iw")) else "en"
-
-
 def settings_path() -> Path:
     if sys.platform == "darwin":
         base = Path.home() / "Library" / "Application Support"
@@ -242,7 +211,7 @@ def load_language() -> str:
             return saved
     except (OSError, ValueError, AttributeError):
         pass
-    return os_language()
+    return "he"
 
 
 def save_language(language: str) -> None:

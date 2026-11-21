@@ -261,7 +261,8 @@ def convert(
         _hook_state.report = None
         _hook_state.cancel = None
     if report:
-        report(Progress(stage="finishing"))
+        total = doc.page_count if doc.format == "pdf" else None
+        report(Progress(done=total or 0, total=total, stage="finishing"))
     seconds = time.monotonic() - started
     routes, sources = summarize(doc)
     document_unread = {u.reason for u in doc.unread if u.scope == "document"}

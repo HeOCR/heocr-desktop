@@ -95,6 +95,7 @@ class Api:
         self._cancel = threading.Event()
         self._busy = threading.Lock()
         self._last_push = 0.0
+        self._last_progress: engine.Progress | None = None
 
     # -- page -> app -------------------------------------------------------------------
 
@@ -117,6 +118,7 @@ class Api:
         if not path or not self._busy.acquire(blocking=False):
             return False
         self._cancel.clear()
+        self._last_progress = None
         self._source = Path(path)
         self._saved = None
         self._result = None
@@ -215,9 +217,12 @@ class Api:
 
     def _progress(self, progress: engine.Progress) -> None:
         now = time.monotonic()
-        if progress.stage == "pages" and now - self._last_push < 0.15:
-            return  # at most a few updates a second
+        previous = self._last_progress
+        if (previous is not None and previous.stage == progress.stage == "pages"
+                and progress.done + 1 != progress.total and now - self._last_push < 0.15):
+            return  # Always announce the first and last page, even for fast text-layer PDFs.
         self._last_push = now
+        self._last_progress = progress
         self._push("heocr.progress", {"stage": progress.stage, "done": progress.done, "total": progress.total})
 
     def _run(self, path: Path) -> None:

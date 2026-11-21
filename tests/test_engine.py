@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from heocr_desktop import engine
+from heocr_desktop import app, engine
 
 FIX = Path(__file__).resolve().parent / "fixtures"
 HAS_OCR = engine.tesseract_path() is not None and engine.tessdata_path() is not None
@@ -49,12 +49,29 @@ def test_doc_needs_a_converter_and_says_so():
     assert result.kind == "needs_converter"
 
 
-def test_progress_reports_pages():
+def test_progress_reports_pages_through_finishing(tmp_path):
+    import pypdfium2
+
+    path = tmp_path / "two-pages.pdf"
+    with pypdfium2.PdfDocument(FIX / "garden.pdf") as page, pypdfium2.PdfDocument.new() as document:
+        document.import_pages(page, [0, 0])
+        document.save(path)
     seen = []
-    engine.convert(FIX / "garden.pdf", report=seen.append)
-    stages = [p.stage for p in seen]
-    assert stages[0] == "reading" and "pages" in stages and stages[-1] == "finishing"
-    assert any(p.total == 1 for p in seen if p.stage == "pages")
+    engine.convert(path, report=seen.append)
+    assert [(p.stage, p.done, p.total) for p in seen] == [
+        ("reading", 0, None), ("pages", 0, 2), ("pages", 1, 2), ("finishing", 2, 2),
+    ]
+
+
+def test_api_does_not_throttle_the_first_or_last_page(monkeypatch):
+    api = app.Api()
+    seen = []
+    monkeypatch.setattr(api, "_push", lambda _, payload: seen.append(payload))
+    monkeypatch.setattr(app.time, "monotonic", lambda: 42.0)
+    for update in (engine.Progress(), engine.Progress(0, 3, "pages"), engine.Progress(1, 3, "pages"),
+                   engine.Progress(2, 3, "pages"), engine.Progress(3, 3, "finishing")):
+        api._progress(update)
+    assert [(p["stage"], p["done"]) for p in seen] == [("reading", 0), ("pages", 0), ("pages", 2), ("finishing", 3)]
 
 
 def test_cancel_stops_before_the_first_page():

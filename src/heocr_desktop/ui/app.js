@@ -1,7 +1,7 @@
 (function () {
   "use strict";
-  var BOOT = window.HEOCR_BOOT || { language: "en", strings: { en: {} } };
-  var lang = BOOT.language in BOOT.strings ? BOOT.language : "en";
+  var BOOT = window.HEOCR_BOOT || { language: "he", strings: { he: {} } };
+  var lang = BOOT.language in BOOT.strings ? BOOT.language : "he";
   var current = null; // the last result
   var view = "formatted";
   var zoom = 10;
@@ -278,6 +278,7 @@
     $("message-again").classList.toggle("primary", !state.retry);
     localizeMessage();
     show("message");
+    $("message-title").focus();
   }
 
   function showElapsed() {
@@ -290,7 +291,8 @@
     var total = p && p.total > 0 ? p.total : 0;
     if (p && p.stage === "pages") status = total ? "page_of" : "page_n_progress";
     if (p && p.stage === "finishing") status = "finishing";
-    $("work-status").textContent = t(status, p && { done: total ? Math.min(p.done + 1, total) : p.done + 1, total: total });
+    var label = t(status, p && { done: total ? Math.min(p.done + 1, total) : p.done + 1, total: total });
+    if ($("work-status").textContent !== label) $("work-status").textContent = label;
     var type = $("work-name").textContent.match(/\.([^.]+)$/);
     var meta = type ? type[1].toUpperCase() : "";
     if (total) meta += (meta ? " · " : "") + (total === 1 ? t("page") : t("pages", { n: total }));
@@ -299,6 +301,16 @@
     var count = Math.min(total || 1, 60);
     var done = status === "finishing" ? count : total ? Math.floor(p.done * count / total) : 0;
     var meter = $("meter");
+    if (total) {
+      meter.setAttribute("aria-valuemin", "0");
+      meter.setAttribute("aria-valuemax", String(total));
+      meter.setAttribute("aria-valuenow", String(p.done));
+      meter.setAttribute("aria-valuetext", label);
+    } else {
+      ["aria-valuemin", "aria-valuemax", "aria-valuenow", "aria-valuetext"].forEach(function (attr) {
+        meter.removeAttribute(attr);
+      });
+    }
     while (meter.childElementCount > count) meter.lastElementChild.remove();
     while (meter.childElementCount < count) meter.appendChild(document.createElement("i"));
     Array.prototype.forEach.call(meter.children, function (segment, i) {
@@ -321,6 +333,7 @@
       showElapsed();
       showProgress(null);
       show("reading");
+      $("cancel").focus();
     },
     progress: function (p) {
       progress = p;
