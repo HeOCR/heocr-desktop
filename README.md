@@ -6,7 +6,7 @@
 
 It is a window around [heocr](https://github.com/HeOCR/heocr), HeOCR's open pipeline for Hebrew documents, with Tesseract OCR and its Hebrew model built in.
 
-> Status: built from pinned heocr Git source. OCR uses the stock Tesseract Hebrew model.
+> Status: built from pinned heocr Git source. OCR uses the stock Tesseract Hebrew model. Word export uses the same headings and tables shown in the reading.
 
 ## What it does
 
@@ -18,7 +18,7 @@ It is a window around [heocr](https://github.com/HeOCR/heocr), HeOCR's open pipe
   - by OCR, for scans and photos;
   - from the document file itself, for Word, Excel and PowerPoint.
   It also says when parts could not be read (details in the JSON record), and marks OCR text as a reading that may have mistakes.
-- **Copies** the text, or **saves** it as `.txt`, `.md` (Markdown, tables kept) or `.json` (heocr's full `heocr_document.v1` record).
+- **Copies** the text, or **saves** it as Word (`.docx`), `.txt`, `.md` (Markdown, tables kept) or `.json` (heocr's full `heocr_document.v1` record).
 - **Progress:** page by page for long PDFs, with Cancel.
 - **Language:** Hebrew or English, following your system, with a toggle.
 
@@ -40,7 +40,7 @@ HeOCR does not transfer any information to other networked systems. Concretely:
 
 | Part | Version | Licence |
 |---|---|---|
-| [heocr](https://github.com/HeOCR/heocr) | Git commit `fd2ef3e405f6042abe7cfc27fc21830e49cf349b` (tag `v0.2.1`) | Apache-2.0 |
+| [heocr](https://github.com/HeOCR/heocr) | Git commit `86cd364a44f1b54b1c672647f920bf1f63814199` (`0.3.0a2` source snapshot) | Apache-2.0 |
 | [Tesseract OCR](https://github.com/tesseract-ocr/tesseract) | 5.5.3, built from source in CI by `scripts/build_tesseract.py`: static, without network code (no libcurl, no libarchive) | Apache-2.0 |
 | Leptonica and image libraries | 1.87.0, via vcpkg `2026.10.16` | BSD-style, see the list |
 | OCR models | `heb` from [tessdata_best](https://github.com/tesseract-ocr/tessdata_best) 4.1.0 (`e12c65a`) and `eng` from [tessdata_fast](https://github.com/tesseract-ocr/tessdata_fast) 4.1.0 (for heocr's second reading of numbers): exactly the files heocr's release gate ran with, pinned by sha256 in `tesseract/pins.json` | Apache-2.0 |

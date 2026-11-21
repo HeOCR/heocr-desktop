@@ -9,6 +9,7 @@ Expectations come from ``expect.json`` in the folder: ``{"file": {"kind": "ok", 
 
 Every reading also records the Tesseract models it used and the document's flags. A document flagged
 ``bundled_model_unavailable`` (heocr's own model missing, stock Tesseract read instead) always fails.
+The structured PDF and Word fixtures also round-trip through the app's Word exporter.
 OCR must use the shipped stock ``heb`` model. ``eng`` may also be used for number checks.
 """
 
@@ -18,9 +19,12 @@ import json
 import os
 import re
 import sys
+from collections import Counter
 from pathlib import Path
 
-from heocr_desktop import engine, licences
+import heocr
+
+from heocr_desktop import engine, exports, licences
 
 _MODEL = re.compile(r"^tesseract:(.+)\.traineddata$")
 
@@ -28,6 +32,47 @@ _MODEL = re.compile(r"^tesseract:(.+)\.traineddata$")
 def models(doc) -> list[str]:
     """The Tesseract models a reading used, from its record (``heb``, ``eng``)."""
     return sorted({m.group(1) for key in getattr(doc, "components", {}) or {} if (m := _MODEL.match(key))})
+
+
+def _word_structure(doc) -> list[tuple]:
+    """Compare ordered headings and tables, including direction and merged cells."""
+    blocks = []
+    for block in doc.blocks:
+        if block.role not in ("body", "textbox"):
+            continue
+        if block.kind == "heading":
+            blocks.append(("heading", block.level, block.text, block.direction))
+        elif block.kind == "table":
+            rows = [
+                [(cell.text, cell.rowspan, cell.colspan) for cell in row]
+                for row in block.cells or []
+            ]
+            blocks.append(("table", block.direction, rows))
+    return blocks
+
+
+def word_roundtrip_problems(doc, expected: dict[str, int], contains: list[str]) -> list[str]:
+    """Check the Save as Word bytes against the reading and the fixture's expected structure."""
+    if doc is None:
+        return ["no document for Word export"]
+    if exports.formats()[0] != "docx":
+        return ["Word is unavailable as the first save format"]
+    before = _word_structure(doc)
+    counts = Counter(block[0] for block in before)
+    problems = [
+        f"expected {count} {kind} blocks before Word export, found {counts[kind]}"
+        for kind, count in expected.items()
+        if counts[kind] != count
+    ]
+    saved = heocr.extract(exports.export(doc, "docx"), ocr=False, convert=False, ocr_model=None)
+    if saved.format != "docx":
+        problems.append("Word export did not read back as DOCX")
+    if _word_structure(saved) != before:
+        problems.append("Word export changed headings or table structure")
+    for needle in contains:
+        if needle not in saved.text:
+            problems.append(f"Word export missing {needle!r}")
+    return problems
 
 
 def run(folder: str, *, resources: Path | None = None) -> int:
@@ -75,6 +120,10 @@ def run(folder: str, *, resources: Path | None = None) -> int:
             for needle in want.get("contains", []):
                 if needle not in text:
                     problems.append(f"missing {needle!r}")
+            if "docx_structure" in want:
+                word_problems = word_roundtrip_problems(result.doc, want["docx_structure"], want["contains"])
+                entry["word_roundtrip"] = not word_problems
+                problems.extend(word_problems)
             entry["problems"] = problems
         except Exception as exc:  # noqa: BLE001
             entry["problems"] = [f"{type(exc).__name__}: {exc}"]

@@ -18,7 +18,7 @@ dependencies = []
 [project.optional-dependencies]
 test = ["pytest>=8"]
 # The desktop app from a checkout (python -m heocr_desktop) and its unit tests.
-desktop = ["heocr @ git+https://github.com/HeOCR/heocr.git@fd2ef3e405f6042abe7cfc27fc21830e49cf349b", "pywebview==6.2.1"]
+desktop = ["heocr @ git+https://github.com/HeOCR/heocr.git@86cd364a44f1b54b1c672647f920bf1f63814199", "pywebview==6.2.1"]
 
 [project.urls]
 Homepage = "https://heocr.github.io"
@@ -54,7 +54,7 @@ Markdown or JSON. It runs entirely on your computer: no network, no telemetry.""
 sources = ["src/heocr_desktop"]
 icon = "icons/heocr"
 requires = [
-  "heocr @ git+https://github.com/HeOCR/heocr.git@fd2ef3e405f6042abe7cfc27fc21830e49cf349b",
+  "heocr @ git+https://github.com/HeOCR/heocr.git@86cd364a44f1b54b1c672647f920bf1f63814199",
   "pypdfium2==5.15.2",
   "Pillow==13.0.0",
   "defusedxml==0.7.1",
@@ -101,7 +101,7 @@ phone itself. It has no internet permission: nothing you read ever leaves the ph
 sources = ["src/heocr_mobile", "src/heocr_desktop"]
 icon = "icons/heocr"
 requires = [
-  "heocr @ git+https://github.com/HeOCR/heocr.git@fd2ef3e405f6042abe7cfc27fc21830e49cf349b",
+  "heocr @ git+https://github.com/HeOCR/heocr.git@86cd364a44f1b54b1c672647f920bf1f63814199",
   "pypdfium2==5.15.2",
   "Pillow==13.0.0",  # built for Android by scripts/build_pillow_android.py (Pillow has no Android wheels)
   "defusedxml==0.7.1",
