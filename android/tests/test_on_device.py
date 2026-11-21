@@ -7,11 +7,12 @@ The fixtures (invented text only) are copied here from ``tests/fixtures`` by the
 import json
 import socket
 import subprocess
+from collections import Counter
 from pathlib import Path
 
 import pytest
 
-from heocr_desktop import diagnostics, engine, smoke
+from heocr_desktop import diagnostics, engine, exports, smoke
 from heocr_mobile import device, view
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
@@ -97,11 +98,14 @@ def test_an_itext_style_bill_reads_from_its_text_layer_as_on_the_host():
     # Two pages of CID fonts with Identity-H and ToUnicode, one font not embedded, a JPEG logo, an
     # incremental update: heocr must read both pages from the text layer, exactly as on the CI host.
     expected = json.loads((FIXTURES / "itext-style.expected.json").read_text("utf-8"))
-    result = engine.convert(ITEXT)
+    updates = []
+    result = engine.convert(ITEXT, report=updates.append)
     got = diagnostics.page_structure(result.doc)
     print(json.dumps(got, indent=1))
     assert [p["route"] for p in got] == ["text_layer", "text_layer"], got
     assert got == expected["pages"], (got, expected["pages"])
+    assert [(p.done, p.total) for p in updates if p.stage == "pages"] == [(0, 2), (1, 2)]
+    assert updates[-1] == engine.Progress(done=2, total=2, stage="finishing")
 
 
 def test_save_intent_carries_its_file_name():
@@ -109,3 +113,21 @@ def test_save_intent_carries_its_file_name():
     intent = device.create_document_intent("garden.txt", "text/plain")
     assert str(intent.getAction()) == str(Intent.ACTION_CREATE_DOCUMENT)
     assert str(intent.getStringExtra(Intent.EXTRA_TITLE)) == "garden.txt" and str(intent.getType()) == "text/plain"
+
+
+@pytest.mark.parametrize("name", ("garden.pdf", "garden.docx"))
+def test_word_export_is_written_through_an_android_content_uri(name):
+    expected = json.loads((FIXTURES / "expect.json").read_text("utf-8"))[name]["docx_structure"]
+    result = engine.convert(FIXTURES / name)
+    assert result.kind == "ok" and "docx" in exports.formats()
+    shared = Path(str(device._android_context().getCacheDir().getAbsolutePath())) / "shared"
+    shared.mkdir(parents=True, exist_ok=True)
+    path = shared / f"{name}.export.docx"
+    path.touch()
+    payload = exports.export(result.doc, "docx")
+    device.write_to(_provider_uri(path), payload)
+    assert path.read_bytes() == payload
+    reread = engine.convert(path)
+    assert reread.kind == "ok"
+    counts = Counter(block.kind for block in reread.doc.blocks)
+    assert {kind: counts[kind] for kind in expected} == expected

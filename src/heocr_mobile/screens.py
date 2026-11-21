@@ -17,7 +17,7 @@ import re
 from html import escape
 from pathlib import Path
 
-from heocr_desktop import render
+from heocr_desktop import i18n, render
 
 HERE = Path(__file__).resolve().parent
 # design/android/css/app-standalone.css: tokens, the embedded fonts, the result view and every screen.
@@ -117,7 +117,9 @@ def scan() -> str:
 
 
 def segments(done: int, total: int) -> str:
-    return "".join('<i class="done"></i>' if i < done else '<i class="now"></i>' if i == done else "<i></i>" for i in range(max(total, 1)))
+    count = min(max(total, 1), 60)
+    completed = done * count // total if total else 0
+    return "".join('<i class="done"></i>' if i < completed else '<i class="now"></i>' if i == completed else "<i></i>" for i in range(count))
 
 
 def elapsed_text(seconds: float) -> str:
@@ -141,17 +143,20 @@ def home(t: dict, lang: str, word: bool) -> str:
 </main>''')
 
 
-def reading(t: dict, d: dict, lang: str, name: str, size: int | None, shared: bool, done: int = 0, total: int = 0, seconds: float = 0) -> str:
-    """2 Received a shared file, or 3 Reading. ``total`` is 0 until heocr knows the page count.
-
-    The count and the segments change by re-rendering at each page; the elapsed time is set from
-    outside (``#elapsed``, ``app.HeOCR.tick``)."""
+def reading_status(t: dict, d: dict, shared: bool, done: int, total: int, *, finishing: bool = False) -> str:
+    if finishing:
+        return d["finishing"]
     if total > 1:
-        count = d["page_of"].format(done=done + 1, total=total)
-    elif shared and total == 0:
-        count = t["starting"]
-    else:
-        count = d["reading"]
+        return d["page_of"].format(done=min(done + 1, total), total=total)
+    if shared and total == 0:
+        return t["starting"]
+    return d["reading"]
+
+
+def reading(t: dict, d: dict, lang: str, name: str, size: int | None, shared: bool, done: int = 0, total: int = 0, seconds: float = 0) -> str:
+    """Show the reading screen once, with a meter the bridge updates in place."""
+    count = escape(reading_status(t, d, shared, done, total))
+    values = f' aria-valuemax="{total}" aria-valuenow="{done}" aria-valuetext="{count}"' if total else ""
     chip = f'<div class="chips" style="margin-top: 6px"><span class="chip ok">{ico("check", "sm")}{t["shared_chip"]}</span></div>' if shared else ""
     title = t["shared_title"] if shared else t["reading_title"]
     sub = f'<p class="muted">{t["shared_sub"]}</p>' if shared else ""
@@ -162,8 +167,8 @@ def reading(t: dict, d: dict, lang: str, name: str, size: int | None, shared: bo
 {file_card(name, size, chip)}
 {sub}
 {scan()}
-<div class="progress" role="status"><div class="count"><strong>{escape(count)}</strong><span class="num" id="elapsed" aria-label="{t["elapsed"]}">{elapsed_text(seconds)}</span></div>
-<div class="pages">{segments(done, total)}</div></div>
+<div class="progress"><div class="count"><strong id="reading-status" role="status">{count}</strong><span class="num" id="elapsed" aria-label="{t["elapsed"]}">{elapsed_text(seconds)}</span></div>
+<div class="pages" id="reading-meter" role="progressbar" aria-labelledby="reading-status" aria-valuemin="0"{values}>{segments(done, total)}</div></div>
 {hint}
 </main>
 <footer class="actionbar"><a class="btn secondary" href="heocr:cancel" role="button">{ico("close")}{t["cancel"]}</a></footer>''')
@@ -235,7 +240,14 @@ def toast(text: str, sub: str = "", low: bool = False, action: tuple[str, str] |
     return f'<div class="{cls}" role="status" id="toast">{ico("check")}<div>{text}{small}</div>{link}</div>'
 
 
-# The four problem states (8.11): engine kind -> (strings, icon, primary, secondary).
+def desktop_copy(d: dict, lang: str, key: str) -> str:
+    """Use the desktop's English fallback for copy awaiting Hebrew approval."""
+    if key in d:
+        return escape(d[key])
+    return f'<span lang="en" dir="ltr">{escape(i18n.text(lang, key))}</span>'
+
+
+# Problem states (8.11): engine kind -> (strings, icon, primary, secondary).
 def problem(t: dict, d: dict, lang: str, kind: str, photo: bool = False, body: str | None = None) -> str:
     if kind == "needs_converter":
         n, icon, primary = 2, "word-doc", ("open", "open-file", t["p2_a"])
@@ -247,14 +259,22 @@ def problem(t: dict, d: dict, lang: str, kind: str, photo: bool = False, body: s
     else:  # unreadable, an incomplete copy, or an error while reading
         n, icon, primary = 1, "warning", ("open", "open-file", t["p1_a"])
         secondary = (t["home_btn"], "home", None)
-    text = body if body is not None else (t[f"p{n}_b"] if photo or n != 3 else escape(d["empty"]))
+    title = t[f"p{n}_t"]
+    text = t[f"p{n}_b"] if photo or n != 3 else escape(d["empty"])
+    if kind == "unsupported":
+        title = desktop_copy(d, lang, "unsupported_title")
+        text = desktop_copy(d, lang, "unsupported")
+    elif kind in ("unreadable", "error"):
+        text = desktop_copy(d, lang, kind)
+    if body is not None:
+        text = body
     hint = t[f"p{n}_h"] if photo or n != 3 else ""
     sec = f'<a class="btn secondary block" href="heocr:{secondary[1]}" role="button">{ico(secondary[2]) if secondary[2] else ""}{secondary[0]}</a>'
     return html(lang, appbar_home(t) + f'''
 <main class="screen">
 <div class="problem">
 <div class="mark">{ico(icon)}</div>
-<h2>{t[f"p{n}_t"]}</h2>
+<h2 role="alert">{title}</h2>
 <p>{text}</p>
 {f'<p class="hint">{hint}</p>' if hint else ""}
 <div class="stack"><a class="btn block" href="heocr:{primary[0]}" role="button">{ico(primary[1])}{primary[2]}</a>{sec}</div>
