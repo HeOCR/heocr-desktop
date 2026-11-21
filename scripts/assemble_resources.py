@@ -78,7 +78,11 @@ def main(dirs: list[str]) -> None:
     else:
         shutil.copy2(builds[0] / exe, target)
     target.chmod(0o755)
-    shutil.copytree(builds[0] / "configs", resources / "tessdata" / "configs")
+    # The pinned heocr invokes Tesseract with the TSV output config. The other
+    # CLI presets are for tools and output formats the app never invokes.
+    configs = resources / "tessdata" / "configs"
+    configs.mkdir()
+    shutil.copy2(builds[0] / "configs" / "tsv", configs / "tsv")
     for name, pin in PINS["tessdata"]["files"].items():
         shutil.copy2(model(name, pin), resources / "tessdata" / name)
     shutil.copytree(builds[0] / "licenses", resources / "licenses")

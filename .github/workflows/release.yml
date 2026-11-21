@@ -40,6 +40,7 @@ jobs:
           python scripts/assemble_resources.py build/tess/windows-x64
           briefcase create windows -a heocr_desktop --no-input
           briefcase build windows -a heocr_desktop --no-input
+          python scripts/prune_desktop_bundle.py build/heocr_desktop/windows/app/src/app_packages
           python scripts/smoke_app.py windows
           briefcase package windows -a heocr_desktop --adhoc-sign --no-input
       - id: unsigned
