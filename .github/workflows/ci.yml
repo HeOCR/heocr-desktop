@@ -129,6 +129,12 @@ jobs:
           if ($p.ExitCode -ne 0) { Get-Content msi-install.log -Tail 50; exit $p.ExitCode }
           python scripts/smoke_app.py windows-installed
       - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: heocr-windows-smoke-reports
+          path: build/smoke-report-windows*.json
+          retention-days: 14
+      - uses: actions/upload-artifact@v4
         with:
           name: heocr-windows-msi-unsigned
           path: dist/*.msi

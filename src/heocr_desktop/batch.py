@@ -69,6 +69,14 @@ def _report_bytes(items: list[dict], total: int, cancelled: bool) -> bytes:
     ]
     if cancelled:
         lines.append(strings["batch_report_remaining"].format(n=total - len(items)))
+    partial = [item for item in items if item["kind"] == "ok" and item["unread"]]
+    if partial:
+        lines.append("")
+        for item in partial:
+            name = json.dumps(item["name"], ensure_ascii=False)
+            unread = item["unread"]
+            warning = strings["unread_1" if unread == 1 else "unread_n"].format(n=unread)
+            lines.append(f"- {name}: {warning}")
     lines.extend(("", strings["batch_report_failures"].format(n=len(failures))))
     for item in failures:
         name = json.dumps(item["name"], ensure_ascii=False)

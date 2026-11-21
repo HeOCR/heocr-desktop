@@ -91,6 +91,27 @@ def test_report_write_failure_keeps_completed_word_file(monkeypatch, tmp_path):
     assert (result.directory / "document.docx").is_file()
 
 
+def test_batch_report_explains_saved_partial_reads_and_is_revealed(monkeypatch, tmp_path):
+    source = tmp_path / "document.docx"
+    shutil.copy(FIX / "garden.docx", source)
+    reading = app.engine.convert(source)
+    reading.unread = 2
+    monkeypatch.setattr(app.engine, "convert", lambda *args, **kwargs: reading)
+    targets = []
+    monkeypatch.setattr(app.reveal, "local_file", lambda path: targets.append(path) or path)
+    api = app.Api()
+
+    assert api._begin()
+    api._run_folder(tmp_path)
+
+    report = tmp_path / "HeOCR" / "batch-report.txt"
+    assert targets == [report]
+    contents = report.read_text("utf-8-sig")
+    assert '- "document.docx": 2 parts not read.' in contents
+    assert "Saved 1 of 1 files." in contents
+    assert "Failures: 0" in contents
+
+
 def test_folder_picker_needs_confirmation_before_saving(monkeypatch, tmp_path):
     shutil.copy(FIX / "garden.docx", tmp_path / "document.docx")
     api = app.Api()

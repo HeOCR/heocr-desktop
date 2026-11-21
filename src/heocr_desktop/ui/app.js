@@ -328,7 +328,7 @@
         }
       } else {
         var state = messages[item.kind] || messages.error;
-        var key = item.kind === "batch_write_error" ? "batch_write_error" : state.title;
+        var key = item.kind === "batch_write_error" ? "batch_write_error" : (state.body || state.title);
         detail.dir = "auto";
         setText(detail, key);
       }
