@@ -65,6 +65,7 @@ class HeOCR(toga.App):
         self.source = None  # (path, name, photo) of the last reading, for "next" on a problem screen
         self.problem_kind = ""
         self.reading = None  # a token for the reading in progress; Cancel drops it
+        self.refresh_reading = None
         self.last = None  # (engine result, input bytes, declared bytes) of the last reading, for diagnostics
         self.last_error = None
         self.screen = "home"
@@ -108,6 +109,8 @@ class HeOCR(toga.App):
             print(f"HeOCR page {screen}: {result}", flush=True)
 
         try:
+            if screen == "reading" and self.refresh_reading is not None:
+                self.refresh_reading()
             self.webview.evaluate_javascript(
                 "'zoom=' + (window.visualViewport ? visualViewport.scale : 0) + ' width=' + innerWidth + ' dpr=' + devicePixelRatio",
                 on_result=report,
@@ -311,18 +314,36 @@ class HeOCR(toga.App):
         loop = asyncio.get_running_loop()
         size = copied if copied is not None else path.stat().st_size
         started = time.monotonic()
-        pages = {"done": 0, "total": 0}
+        current = engine.Progress()
 
-        def render():
-            # The count and the segments change by a new page at each page boundary (SPEC 3.3).
-            if self.reading is token:
-                seconds = time.monotonic() - started
-                self.show(screens.reading(self.t, self.d, self.lang, name, size, shared, pages["done"], pages["total"], seconds), "reading")
+        def refresh(progress=None):
+            nonlocal current
+            if self.reading is not token:
+                return
+            if progress is not None:
+                current = progress
+            total = current.total or 0
+            done = current.done
+            label = screens.reading_status(self.t, self.d, shared, done, total, finishing=current.stage == "finishing")
+            payload = json.dumps({"label": label, "total": total, "done": done,
+                                  "segments": screens.segments(done, total)})
+            # Keep the WebView and its focused controls in place when the page count changes.
+            self.js("""(function(p) {
+                const status = document.getElementById('reading-status');
+                const meter = document.getElementById('reading-meter');
+                if (!status || !meter) return;
+                if (status.textContent !== p.label) status.textContent = p.label;
+                if (meter.innerHTML !== p.segments) meter.innerHTML = p.segments;
+                if (p.total) {
+                    meter.setAttribute('aria-valuemax', p.total);
+                    meter.setAttribute('aria-valuenow', p.done);
+                    meter.setAttribute('aria-valuetext', p.label);
+                }
+            })(""" + payload + ")")
 
         def report(progress):
-            if progress.stage == "pages" and progress.total:
-                pages.update(done=progress.done, total=progress.total)
-                loop.call_soon_threadsafe(render)
+            if progress.stage in ("pages", "finishing"):
+                loop.call_soon_threadsafe(refresh, progress)
 
         async def tick():
             # The elapsed time is set from outside, once a second.
@@ -332,7 +353,8 @@ class HeOCR(toga.App):
                     value = json.dumps(screens.elapsed_text(time.monotonic() - started))
                     self.js(f"(function(){{var e=document.getElementById('elapsed');if(e)e.textContent={value};}})()")
 
-        render()
+        self.refresh_reading = refresh
+        self.show(screens.reading(self.t, self.d, self.lang, name, size, shared), "reading")
         ticker = loop.create_task(tick())
         try:
             result = await loop.run_in_executor(None, engine.convert, path, report, stop)
@@ -346,6 +368,8 @@ class HeOCR(toga.App):
             return
         finally:
             ticker.cancel()
+            if self.refresh_reading is refresh:
+                self.refresh_reading = None
         if self.reading is not token:
             return  # cancelled: the user is already elsewhere
         self.reading = None
@@ -375,7 +399,8 @@ class HeOCR(toga.App):
     async def save(self, kind: str):
         """Save the reading where the user chooses: Word (.docx) or text (.txt), the same bytes as the desktop."""
         self.close_sheet()
-        if self.doc is None or kind not in exports.formats():
+        doc = self.doc
+        if doc is None or kind not in exports.formats():
             return
         done = asyncio.get_running_loop().create_future()
         file_name = f"{self.name}.{kind}"
@@ -385,12 +410,14 @@ class HeOCR(toga.App):
         uri = data.getData() if data is not None else None
         if uri is None:
             return
-        device.write_to(uri, exports.export(self.doc, kind))
+        device.write_to(uri, exports.export(doc, kind))
         shown = device.display_name(uri)
         shown = file_name if shown == "document" else shown
-        self.saved = (uri, exports.MIME[kind])
         viewer = device.view_intent(uri, exports.MIME[kind]) is not None
         print(f"HeOCR saved {kind}: downloads={device.in_downloads(uri)} viewer={viewer}", flush=True)
+        if self.doc is not doc or self.screen != "result":
+            return
+        self.saved = (uri, exports.MIME[kind])
         # "Saved to Downloads" only when it is there; the user may pick another folder.
         text = self.t["saved"] if device.in_downloads(uri) else escape(self.d["saved"])
         self.toast(text, f"<bdi>{escape(shown)}</bdi>", action=(self.t["open_it"], "open-saved") if viewer else None)

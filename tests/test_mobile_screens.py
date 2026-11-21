@@ -45,7 +45,7 @@ def test_every_screen_is_self_contained(monkeypatch, lang):
         "result": screens.result(t, d, lang, doc(monkeypatch), "מכתב.pdf", 3, 41.24, True, ["txt", "md", "json"]),
         "about": screens.about(t, lang, {"app": "0.1.0", "heocr": "0.2.0rc1", "tesseract": "5.5.3"}),
         "licences": screens.licences(t, lang, "# Licences\n\n- **heocr**: Apache-2.0\n\nSome text."),
-        **{kind: screens.problem(t, d, lang, kind) for kind in ("unreadable", "needs_converter", "empty", "error")},
+        **{kind: screens.problem(t, d, lang, kind) for kind in ("unreadable", "unsupported", "needs_converter", "empty", "error")},
     }
     for name, page in pages.items():
         check_page(page, lang)
@@ -78,9 +78,12 @@ def test_reading_counts_pages_from_the_start_side():
     t, d = screens.strings("en"), i18n.STRINGS["en"]
     page = screens.reading(t, d, "en", "a.pdf", 1000, False, 1, 3, 65)
     assert "Page 2 of 3" in page and ">1:05<" in page
-    assert '<div class="pages"><i class="done"></i><i class="now"></i><i></i></div>' in page
+    assert 'role="progressbar" aria-labelledby="reading-status" aria-valuemin="0" aria-valuemax="3" aria-valuenow="1"' in page
+    assert 'aria-valuetext="Page 2 of 3"><i class="done"></i><i class="now"></i><i></i></div>' in page
     single = screens.reading(t, d, "en", "a.png", 1000, False)
-    assert d["reading"] in single and '<div class="pages"><i class="now"></i></div>' in single
+    assert d["reading"] in single and 'aria-valuemin="0"><i class="now"></i></div>' in single
+    assert screens.reading_status(t, d, False, 3, 3, finishing=True) == d["finishing"]
+    assert screens.segments(600, 600).count('<i class="done">') == 60
 
 
 def test_problem_states_offer_one_next_step():
@@ -91,6 +94,17 @@ def test_problem_states_offer_one_next_step():
     assert t["p2_t"] in converter and "open" in links(converter)
     file_empty = screens.problem(t, d, "en", "empty")
     assert d["empty"] in file_empty and t["p3_h"] not in file_empty
+
+
+def test_android_unsupported_error_uses_the_desktop_fallback():
+    t, d = screens.strings("he"), i18n.STRINGS["he"]
+    unsupported = screens.problem(t, d, "he", "unsupported")
+    damaged = screens.problem(t, d, "he", "unreadable")
+    for key in ("unsupported_title", "unsupported"):
+        assert f'<span lang="en" dir="ltr">{i18n.text("en", key)}</span>' in unsupported
+    assert '<h2 role="alert">' in unsupported and "open" in links(unsupported)
+    assert i18n.text("en", "unreadable") in damaged
+    assert i18n.text("en", "unsupported_title") not in damaged
 
 
 def test_about_carries_this_builds_versions_and_the_model_dois():
