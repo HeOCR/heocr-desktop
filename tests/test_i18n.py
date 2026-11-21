@@ -18,5 +18,9 @@ def test_forced_language(monkeypatch):
     assert i18n.load_language() == "he"
 
 
-def test_os_language_is_he_or_en():
-    assert i18n.os_language() in ("he", "en")
+def test_fresh_settings_start_in_hebrew_and_remember_english(monkeypatch, tmp_path):
+    monkeypatch.delenv("HEOCR_DESKTOP_LANG", raising=False)
+    monkeypatch.setattr(i18n, "settings_path", lambda: tmp_path / "settings.json")
+    assert i18n.load_language() == "he"
+    i18n.save_language("en")
+    assert i18n.load_language() == "en"

@@ -21,7 +21,7 @@ def test_ui_loads_nothing_from_the_network():
 def test_every_ui_key_has_a_string():
     keys = set()
     for path in UI.iterdir():
-        keys |= set(re.findall(r'data-i18n="([a-z_]+)"', path.read_text("utf-8")))
+        keys |= set(re.findall(r'data-(?:i18n|label)="([a-z_]+)"', path.read_text("utf-8")))
         keys |= set(re.findall(r'\bt\("([a-z_]+)"', path.read_text("utf-8")))
     src = (UI.parent / "render.py").read_text("utf-8")
     keys |= {k for k in re.findall(r'data-i18n="([a-z_]+)"', src)}
