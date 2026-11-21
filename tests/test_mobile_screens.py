@@ -96,15 +96,14 @@ def test_problem_states_offer_one_next_step():
     assert d["empty"] in file_empty and t["p3_h"] not in file_empty
 
 
-def test_android_unsupported_error_uses_the_desktop_fallback():
+def test_android_errors_use_the_shared_hebrew_copy():
     t, d = screens.strings("he"), i18n.STRINGS["he"]
     unsupported = screens.problem(t, d, "he", "unsupported")
     damaged = screens.problem(t, d, "he", "unreadable")
-    for key in ("unsupported_title", "unsupported"):
-        assert f'<span lang="en" dir="ltr">{i18n.text("en", key)}</span>' in unsupported
-    assert '<h2 role="alert">' in unsupported and "open" in links(unsupported)
-    assert i18n.text("en", "unreadable") in damaged
-    assert i18n.text("en", "unsupported_title") not in damaged
+    assert f'<h2 role="alert">{d["unsupported_title"]}</h2>' in unsupported
+    assert f'<p>{d["unsupported"]}</p>' in unsupported and "open" in links(unsupported)
+    assert f'<p>{d["unreadable"]}</p>' in damaged
+    assert d["unsupported_title"] not in damaged
 
 
 def test_about_carries_this_builds_versions_and_the_model_dois():

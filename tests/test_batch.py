@@ -48,18 +48,20 @@ def test_batch_cancel_keeps_completed_output(tmp_path):
         if index == 2:
             cancel.set()
 
-    result = batch.convert_folder(tmp_path, stop_during_second, lambda p: None, cancel)
+    result = batch.convert_folder(tmp_path, stop_during_second, lambda p: None, cancel, language="he")
     assert result.cancelled and result.total == 2
     assert sorted(p.name for p in result.directory.iterdir()) == ["a.docx", "batch-report.txt"]
     report = result.report.read_text("utf-8-sig")
-    assert "Reading stopped" in report
-    assert "Files not processed: 1" in report
-    assert "Failures: 0" in report
+    assert "הקריאה הופסקה" in report
+    assert "קבצים שלא עובדו: 1" in report
+    assert "קבצים שנכשלו: 0" in report
     assert "b.docx" not in report
 
 
 def test_folder_with_only_failures_saves_and_reveals_its_report(monkeypatch, tmp_path):
     (tmp_path / "bad.bin").write_bytes(b"invented contents")
+    (tmp_path / "broken.pdf").write_bytes(b"%PDF-1.7\ncorrupt document\n")
+    monkeypatch.setenv("HEOCR_DESKTOP_LANG", "he")
     api = app.Api()
     revealed = []
     finished = []
@@ -72,7 +74,11 @@ def test_folder_with_only_failures_saves_and_reveals_its_report(monkeypatch, tmp
     report = tmp_path / "HeOCR" / "batch-report.txt"
     assert revealed == [report]
     assert finished[0]["saved"] == 0 and finished[0]["reveal"] and not finished[0]["report_error"]
-    assert "Files read: 0 of 1" in report.read_text("utf-8-sig")
+    contents = report.read_text("utf-8-sig")
+    assert "דוח קריאת תיקייה ב־HeOCR" in contents
+    assert "קבצים שנקראו: 0 מתוך 2" in contents.splitlines()
+    assert '- "bad.bin": HeOCR לא יכול לקרוא את סוג הקובץ הזה.' in contents
+    assert '- "broken.pdf": לא ניתן היה לקרוא את הקובץ. ייתכן שהוא פגום או מוגן בסיסמה.' in contents
 
 
 def test_report_write_failure_keeps_completed_word_file(monkeypatch, tmp_path):
@@ -99,6 +105,7 @@ def test_batch_report_explains_saved_partial_reads_and_is_revealed(monkeypatch, 
     monkeypatch.setattr(app.engine, "convert", lambda *args, **kwargs: reading)
     targets = []
     monkeypatch.setattr(app.reveal, "local_file", lambda path: targets.append(path) or path)
+    monkeypatch.setenv("HEOCR_DESKTOP_LANG", "en")
     api = app.Api()
 
     assert api._begin()

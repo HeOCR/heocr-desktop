@@ -89,7 +89,7 @@ def _batch_problems(base: Path, fixtures: dict) -> list[str]:
             shutil.copyfile(base / fixture, folder / name)
             expected[name] = want.get("kind", "ok")
 
-        result = batch.convert_folder(folder, lambda *_: None, lambda _: None, threading.Event())
+        result = batch.convert_folder(folder, lambda *_: None, lambda _: None, threading.Event(), language="he")
         if {item["name"]: item["kind"] for item in result.items} != expected:
             problems.append("folder results differ from the expected file and error types")
         outputs = {item["output"] for item in result.items if "output" in item}
@@ -99,7 +99,7 @@ def _batch_problems(base: Path, fixtures: dict) -> list[str]:
         if result.report is None:
             return [*problems, "folder run did not save its batch report"]
         report = result.report.read_text("utf-8-sig")
-        strings = i18n.STRINGS["en"]
+        strings = i18n.STRINGS["he"]
         summary = strings["batch_saved"].format(saved=saved, total=len(expected))
         if summary not in report:
             problems.append("batch report has the wrong saved/total count")
