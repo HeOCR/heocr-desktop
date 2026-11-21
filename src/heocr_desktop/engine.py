@@ -170,7 +170,7 @@ class Progress:
 class Result:
     doc: "heocr.Document | None"
     seconds: float
-    kind: str  # ok | needs_converter | unreadable | empty
+    kind: str  # ok | needs_converter | unsupported | unreadable | empty
     format: str = ""
     routes: dict[str, int] = field(default_factory=dict)  # page route -> pages
     sources: dict[str, int] = field(default_factory=dict)  # block source -> blocks
@@ -268,7 +268,9 @@ def convert(
     document_unread = {u.reason for u in doc.unread if u.scope == "document"}
     if doc.format in NEEDS_CONVERTER and "converter_unavailable" in document_unread:
         kind = "needs_converter"
-    elif "not_read" in doc.flags or document_unread & {"format_not_supported", "pdf_unreadable", "pdf_encrypted"}:
+    elif "format_not_supported" in document_unread:
+        kind = "unsupported"
+    elif "not_read" in doc.flags or document_unread & {"pdf_unreadable", "pdf_encrypted"}:
         kind = "unreadable"
     elif not doc.text.strip():
         kind = "empty"

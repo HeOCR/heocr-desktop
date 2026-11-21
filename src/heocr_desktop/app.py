@@ -18,7 +18,7 @@ from importlib import metadata
 from pathlib import Path
 from uuid import uuid4
 
-from heocr_desktop import engine, exports, i18n, licences, menus, render, reveal
+from heocr_desktop import batch, engine, exports, i18n, licences, menus, render, reveal
 
 UI = Path(__file__).resolve().parent / "ui"
 APP_NAME = "HeOCR"
@@ -92,38 +92,57 @@ class Api:
         self._result: engine.Result | None = None
         self._source: Path | None = None
         self._saved: tuple[str, Path] | None = None
+        self._folder: Path | None = None
         self._cancel = threading.Event()
         self._busy = threading.Lock()
         self._last_push = 0.0
         self._last_progress: engine.Progress | None = None
+        self._language = i18n.load_language()
 
     # -- page -> app -------------------------------------------------------------------
 
     def set_language(self, language: str) -> None:
-        i18n.save_language(language)
+        if language in i18n.STRINGS:
+            self._language = language
+            i18n.save_language(language)
 
     def open_file(self) -> None:
         import webview
 
         patterns = ";".join(f"*.{s}" for s in engine.SUPPORTED_SUFFIXES)
+        documents = i18n.text(self._language, "file_dialog_documents")
+        all_files = i18n.text(self._language, "file_dialog_all_files")
         chosen = self._window.create_file_dialog(
             webview.FileDialog.OPEN,
             allow_multiple=False,
-            file_types=(f"Documents ({patterns})", "All files (*.*)"),
+            file_types=(f"{documents} ({patterns})", f"{all_files} (*.*)"),
         )
         if chosen:
             self.start(chosen[0] if isinstance(chosen, (list, tuple)) else chosen)
 
     def start(self, path: str) -> bool:
-        if not path or not self._busy.acquire(blocking=False):
+        if not path or not self._begin():
             return False
-        self._cancel.clear()
-        self._last_progress = None
         self._source = Path(path)
-        self._saved = None
-        self._result = None
         self._push("heocr.started", {"name": self._source.name})
         threading.Thread(target=self._run, args=(self._source,), daemon=True).start()
+        return True
+
+    def open_folder(self) -> str | None:
+        import webview
+
+        chosen = self._window.create_file_dialog(webview.FileDialog.FOLDER)
+        self._folder = Path(chosen[0] if isinstance(chosen, (list, tuple)) else chosen) if chosen else None
+        return (self._folder.name or self._folder.anchor) if self._folder is not None else None
+
+    def start_folder(self) -> bool:
+        folder = self._folder
+        if folder is None or not self._begin():
+            return False
+        self._folder = None
+        self._source = None
+        self._push("heocr.started", {"name": folder.name or folder.anchor})
+        threading.Thread(target=self._run_folder, args=(folder,), daemon=True).start()
         return True
 
     def cancel(self) -> None:
@@ -211,6 +230,15 @@ class Api:
 
     # -- app -> page -------------------------------------------------------------------
 
+    def _begin(self) -> bool:
+        if not self._busy.acquire(blocking=False):
+            return False
+        self._cancel.clear()
+        self._last_progress = None
+        self._result = None
+        self._saved = None
+        return True
+
     def _push(self, function: str, payload: dict) -> None:
         if self._window is not None:
             self._window.evaluate_js(f"{function}({json.dumps(payload, ensure_ascii=False)})")
@@ -224,6 +252,37 @@ class Api:
         self._last_push = now
         self._last_progress = progress
         self._push("heocr.progress", {"stage": progress.stage, "done": progress.done, "total": progress.total})
+
+    def _start_batch_file(self, name: str, index: int, total: int) -> None:
+        self._last_progress = None
+        self._push("heocr.batchFile", {"name": name, "current": index, "total": total})
+
+    def _run_folder(self, folder: Path) -> None:
+        payload = {"kind": "batch_read_error"}
+        try:
+            result = batch.convert_folder(folder, self._start_batch_file, self._progress, self._cancel)
+            files = [item["output"] for item in result.items if "output" in item]
+            token = None
+            if files and result.directory is not None:
+                first = reveal.local_file(result.directory / files[0])
+                if first is not None:
+                    token = uuid4().hex
+                    self._saved = (token, first)
+            payload = {
+                "kind": "batch",
+                "name": folder.name or folder.anchor,
+                "items": result.items,
+                "total": result.total,
+                "saved": len(files),
+                "cancelled": result.cancelled,
+                "directory": result.directory.name if result.directory is not None else None,
+                "reveal": token,
+            }
+        except Exception:
+            traceback.print_exc()
+        finally:
+            self._busy.release()
+        self._push("heocr.finished", payload)
 
     def _run(self, path: Path) -> None:
         try:

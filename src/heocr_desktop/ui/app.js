@@ -9,6 +9,9 @@
   var readingStarted;
   var elapsedTimer;
   var progress = null;
+  var batchPosition = null;
+  var batchResult = null;
+  var choosingFolder = false;
   var currentMessage;
   var readingId = 0;
   var indexRows = [];
@@ -16,11 +19,23 @@
   document.body.classList.add(BOOT.platform === "darwin" ? "mac" : "win");
 
   function $(id) { return document.getElementById(id); }
+  function textLanguage(key) {
+    return (BOOT.strings[lang] || {})[key] === undefined ? "en" : lang;
+  }
   function t(key, vars) {
-    var s = (BOOT.strings[lang] || {})[key];
-    if (s === undefined) s = (BOOT.strings.en || {})[key] || key;
+    var s = (BOOT.strings[textLanguage(key)] || {})[key];
+    if (s === undefined) s = key;
     if (vars) Object.keys(vars).forEach(function (k) { s = s.split("{" + k + "}").join(String(vars[k])); });
     return s;
+  }
+  function setText(el, key, vars) {
+    var value = key ? t(key, vars) : "";
+    if (el.textContent !== value) el.textContent = value;
+    var language = key ? textLanguage(key) : "";
+    if (el.lang !== language) {
+      if (language) el.lang = language;
+      else el.removeAttribute("lang");
+    }
   }
   function api() { return (window.pywebview && window.pywebview.api) || null; }
 
@@ -30,13 +45,14 @@
     document.querySelectorAll("[data-i18n]").forEach(function (el) {
       var key = el.getAttribute("data-i18n");
       var n = el.getAttribute("data-n");
-      el.textContent = t(key, n !== null ? { n: n } : null);
+      setText(el, key, n !== null ? { n: n } : null);
     });
     document.querySelectorAll("[data-label]").forEach(function (el) {
       el.setAttribute("aria-label", t(el.dataset.label));
     });
     if (working) showProgress(progress);
     if (currentMessage) localizeMessage();
+    if (batchResult) localizeBatch();
     setShortcutTitles();
     $("about-version").textContent = t("version", { v: BOOT.version, h: BOOT.heocr, t: BOOT.tesseract });
     if (current) {
@@ -50,7 +66,7 @@
   function show(name) {
     setSaveMenu(false);
     hideToast();
-    ["start", "reading", "result", "message"].forEach(function (v) {
+    ["start", "reading", "result", "message", "batch"].forEach(function (v) {
       document.body.classList.toggle("is-" + v, v === name);
     });
   }
@@ -251,7 +267,9 @@
 
   var messages = {
     needs_converter: { title: "m_unsupported_t", mark: "converter", body: "needs_converter" },
+    unsupported: { title: "unsupported_title", mark: "warning", body: "unsupported", hint: "drop_hint" },
     unreadable: { title: "m_damaged_t", mark: "warning", body: "unreadable" },
+    batch_read_error: { title: "batch_read_error", mark: "warning" },
     error: { title: "m_damaged_t", mark: "warning", body: "error" },
     empty: { title: "m_empty_t", mark: "image", body: "empty", hint: "m_empty_hint" },
     cancelled: { title: "m_cancelled_t", mark: "stopped", body: "nothing_saved", retry: true }
@@ -260,8 +278,9 @@
   function localizeMessage() {
     var state = currentMessage.state;
     var progress = currentMessage.progress;
-    $("message-title").textContent = t(state.title);
-    $("message-text").textContent = progress ? t("m_cancelled_b", progress) : t(state.body);
+    setText($("message-title"), state.title);
+    setText($("message-text"), progress ? "m_cancelled_b" : state.body, progress);
+    $("message-text").hidden = !progress && !state.body;
     $("message-hint").textContent = state.hint ? t(state.hint) : "";
   }
 
@@ -281,6 +300,42 @@
     $("message-title").focus();
   }
 
+  function localizeBatch() {
+    var result = batchResult;
+    var title = result.cancelled ? "m_cancelled_t" : "batch_done";
+    setText($("batch-title"), title);
+    setText($("batch-summary"), result.total ? "batch_saved" : "batch_empty", result);
+    $("batch-name").textContent = result.name;
+    $("batch-directory").hidden = !result.directory;
+    $("batch-directory").firstElementChild.textContent = result.directory || "";
+    $("batch-reveal").hidden = !result.reveal;
+    var list = $("batch-items");
+    list.replaceChildren();
+    list.hidden = !result.items.length;
+    result.items.forEach(function (item) {
+      var row = document.createElement("li");
+      var name = document.createElement("bdi");
+      name.textContent = item.name;
+      row.appendChild(name);
+      var detail = document.createElement("small");
+      if (item.output) {
+        var output = document.createElement("bdi");
+        output.textContent = item.output;
+        detail.appendChild(output);
+        if (item.unread) {
+          detail.append(" · " + t(item.unread === 1 ? "unread_1" : "unread_n", { n: item.unread }));
+        }
+      } else {
+        var state = messages[item.kind] || messages.error;
+        var key = item.kind === "batch_write_error" ? "batch_write_error" : state.title;
+        detail.dir = "auto";
+        setText(detail, key);
+      }
+      row.appendChild(detail);
+      list.appendChild(row);
+    });
+  }
+
   function showElapsed() {
     var seconds = Math.floor((Date.now() - readingStarted) / 1000);
     $("work-elapsed").textContent = Math.floor(seconds / 60) + ":" + String(seconds % 60).padStart(2, "0");
@@ -293,6 +348,8 @@
     if (p && p.stage === "finishing") status = "finishing";
     var label = t(status, p && { done: total ? Math.min(p.done + 1, total) : p.done + 1, total: total });
     if ($("work-status").textContent !== label) $("work-status").textContent = label;
+    $("work-batch").hidden = !batchPosition;
+    setText($("work-batch"), batchPosition ? "batch_file" : null, batchPosition);
     var type = $("work-name").textContent.match(/\.([^.]+)$/);
     var meta = type ? type[1].toUpperCase() : "";
     if (total) meta += (meta ? " · " : "") + (total === 1 ? t("page") : t("pages", { n: total }));
@@ -325,6 +382,8 @@
       working = true;
       current = null;
       currentMessage = null;
+      batchResult = null;
+      batchPosition = null;
       progress = null;
       $("work-name").textContent = p.name;
       readingStarted = Date.now();
@@ -335,6 +394,12 @@
       show("reading");
       $("cancel").focus();
     },
+    batchFile: function (p) {
+      batchPosition = p;
+      $("work-name").textContent = p.name;
+      progress = null;
+      showProgress(null);
+    },
     progress: function (p) {
       progress = p;
       showProgress(p);
@@ -342,6 +407,13 @@
     finished: function (p) {
       working = false;
       clearInterval(elapsedTimer);
+      if (p.kind === "batch") {
+        batchResult = p;
+        localizeBatch();
+        show("batch");
+        $("batch-title").focus();
+        return;
+      }
       if (p.kind !== "ok") { message(p.kind, p.kind === "cancelled" ? p : null); return; }
       var finishedId = readingId;
       api().result().then(function (result) {
@@ -387,15 +459,28 @@
   }
 
   function closeFile() {
-    if (working || (!current && !currentMessage)) return;
+    if (working || (!current && !currentMessage && !batchResult)) return;
     current = null;
     currentMessage = null;
+    batchResult = null;
     show("start");
     $("open").focus();
   }
 
   function openFile() {
     if (!working && api()) api().open_file();
+  }
+
+  function openFolder() {
+    if (working || choosingFolder || !api()) return;
+    choosingFolder = true;
+    api().open_folder().then(function (name) {
+      if (!name || working) return;
+      var dialog = $("batch-confirm");
+      dialog.returnValue = "";
+      $("batch-confirm-name").textContent = name;
+      dialog.showModal();
+    }).finally(function () { choosingFolder = false; });
   }
 
   function saveFile(format) {
@@ -446,6 +531,7 @@
   // Native menus and keyboard shortcuts share the web view's screen guards.
   var actions = {
     open: openFile,
+    openFolder: openFolder,
     close: closeFile,
     save: function () {
       var first = availableFormats()[0];
@@ -474,7 +560,7 @@
   };
 
   window.heocr.action = function (name) {
-    if (!$("about").open && Object.prototype.hasOwnProperty.call(actions, name)) actions[name]();
+    if (!$("about").open && !$("batch-confirm").open && Object.prototype.hasOwnProperty.call(actions, name)) actions[name]();
   };
 
   var mac = BOOT.platform === "darwin";
@@ -498,7 +584,7 @@
   }
 
   function keyboard(event) {
-    if (event.isComposing || $("about").open) return;
+    if (event.isComposing || $("about").open || $("batch-confirm").open) return;
     var menuOpen = document.body.classList.contains("menu-open");
     if (event.key === "Escape") {
       if (menuOpen) setSaveMenu(false, true);
@@ -546,6 +632,15 @@
     $("zoom-in").addEventListener("click", actions.larger);
     $("zoom-out").addEventListener("click", actions.smaller);
     $("open").addEventListener("click", openFile);
+    $("open-folder").addEventListener("click", openFolder);
+    $("batch-again").addEventListener("click", openFolder);
+    $("batch-close").addEventListener("click", closeFile);
+    $("batch-reveal").addEventListener("click", function () {
+      if (batchResult && batchResult.reveal && api()) api().reveal_saved(batchResult.reveal);
+    });
+    $("batch-confirm").addEventListener("close", function () {
+      if (this.returnValue === "read" && !working && api()) api().start_folder();
+    });
     $("again").addEventListener("click", openFile);
     $("message-again").addEventListener("click", openFile);
     $("message-retry").addEventListener("click", function () {

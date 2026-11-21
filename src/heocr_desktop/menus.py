@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from functools import partial
 
+from heocr_desktop import i18n
+
 
 def build(language, dispatch, quit_app, platform):
     from webview.menu import Menu, MenuAction
@@ -16,6 +18,7 @@ def build(language, dispatch, quit_app, platform):
 
     file_items = [
         item("Open…", "פתיחה…", "open"),
+        MenuAction(i18n.text(language, "open_folder"), partial(dispatch, "openFolder")),
         item("Save", "שמירה", "save"),
         item("Save As…", "שמירה בשם…", "saveAs"),
         item("Close File", "סגירת הקובץ", "close"),

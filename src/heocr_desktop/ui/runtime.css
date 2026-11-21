@@ -8,3 +8,14 @@
 .hw .menu button:focus-visible, .hw .seg button:focus-visible { outline-offset: -2px; }
 .work .hint { color: var(--muted); font-size: 13.5px; }
 .hw .iconbtn:disabled { color: var(--muted); background: transparent; }
+.start-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.is-batch #view-batch { display: flex; justify-content: center; align-items: flex-start; overflow: auto; padding: 32px; }
+#batch-items { max-height: 38vh; overflow: auto; margin-block: 0; padding-inline-start: 22px; }
+#batch-items li { margin-block: 8px; overflow-wrap: anywhere; }
+#batch-items small { display: block; color: var(--muted); }
+#batch-confirm { max-width: min(460px, calc(100vw - 32px)); margin: auto; padding: 22px 24px;
+  border: 1px solid var(--control-line); border-radius: var(--radius); background: var(--bg); color: var(--text); }
+#batch-confirm::backdrop { background: var(--scrim); }
+#batch-confirm h2 { font-size: 20px; margin-bottom: 12px; }
+#batch-confirm .fname { margin-bottom: 10px; overflow-wrap: anywhere; }
+#batch-confirm .row { display: flex; gap: 8px; margin-top: 16px; }

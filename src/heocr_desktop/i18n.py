@@ -34,6 +34,17 @@ STRINGS: dict[str, dict[str, str]] = {
         "drop": "Drop a file here",
         "drop_hint": "PDF, Word (DOCX), images, Excel (XLSX), PowerPoint (PPTX) and saved web pages (HTML)",
         "open": "Open file…",
+        "open_folder": "Open folder…",
+        "batch_start": "Read folder",
+        "batch_hint": "HeOCR reads files in this folder and saves Word copies in a new HeOCR folder. Subfolders are skipped.",
+        "batch_done": "Folder processing complete",
+        "batch_saved": "Saved {saved} of {total} files.",
+        "batch_file": "File {current} of {total}",
+        "batch_empty": "There are no files to read in this folder.",
+        "batch_read_error": "This folder could not be read.",
+        "batch_write_error": "The Word file could not be saved.",
+        "file_dialog_documents": "Documents",
+        "file_dialog_all_files": "All files",
         "or": "or",
         "offline": "Works fully offline. Your files never leave this computer: no network, no telemetry.",
         "reading": "Reading…",
@@ -68,7 +79,9 @@ STRINGS: dict[str, dict[str, str]] = {
         "unread_1": "1 part not read.",
         "ocr_note": "Text read by OCR may have mistakes. Check it before you rely on it.",
         "needs_converter": "Older Word files (.doc), RTF and OpenDocument files aren't supported yet: reading them needs LibreOffice, which this app does not include. Open the file in Word or LibreOffice, save it as .docx or PDF, and drop that here.",
-        "unreadable": "This file could not be read. It may be damaged, password-protected, or a format HeOCR does not read yet.",
+        "unsupported_title": "Unsupported file type",
+        "unsupported": "HeOCR cannot read this file type.",
+        "unreadable": "This file could not be read. It may be damaged or password-protected.",
         "empty": "No text was found in this file.",
         "error": "Something went wrong while reading this file.",
         "no_ocr": "OCR is not available in this build, so scanned pages were not read.",
@@ -101,6 +114,7 @@ STRINGS: dict[str, dict[str, str]] = {
         "licence": "Licence",
     },
     "he": {
+        # Copy awaiting Hebrew approval is provided by the English fallback.
         "unread_picture_title": "חלק {n} לא נקרא:",
         "unread_picture_body": "תמונה בעמוד {page}. הפרטים ברשומת ה־JSON.",
         "unread_details": "הפרטים ברשומת ה־JSON.",
@@ -156,7 +170,6 @@ STRINGS: dict[str, dict[str, str]] = {
         "unread_1": "חלק אחד לא נקרא.",
         "ocr_note": "טקסט שנקרא ב-OCR עלול לכלול טעויות. כדאי לבדוק אותו לפני שמסתמכים עליו.",
         "needs_converter": "קובצי וורד ישנים (‎.doc), ‏RTF וקובצי OpenDocument עדיין לא נתמכים: קריאתם דורשת את LibreOffice, שלא כלול ביישום. פתחו את הקובץ בוורד או ב-LibreOffice, שמרו אותו כ-‎.docx או כ-PDF, וגררו אותו לכאן.",
-        "unreadable": "לא ניתן היה לקרוא את הקובץ. ייתכן שהוא פגום, מוגן בסיסמה, או בפורמט ש-HeOCR עדיין לא קורא.",
         "empty": "לא נמצא טקסט בקובץ.",
         "error": "משהו השתבש בזמן קריאת הקובץ.",
         "no_ocr": "OCR אינו זמין בגרסה זו, ולכן עמודים סרוקים לא נקראו.",
@@ -189,6 +202,11 @@ STRINGS: dict[str, dict[str, str]] = {
         "licence": "רישיון",
     },
 }
+
+
+def text(language: str, key: str) -> str:
+    """Look up a native UI string, using English for unapproved translations."""
+    return STRINGS.get(language, {}).get(key, STRINGS["en"][key])
 
 
 def settings_path() -> Path:
